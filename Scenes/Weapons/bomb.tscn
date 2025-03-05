@@ -1,0 +1,88 @@
+[gd_scene load_steps=9 format=3 uid="uid://c0kv8smv4doo2"]
+
+[ext_resource type="Script" path="res://Scenes/Weapons/bomb.gd" id="1_vx7us"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_dvpj8"]
+[ext_resource type="Texture2D" uid="uid://civoe3tpgge0d" path="res://Assets/Items/BOMB_SPRITE.png" id="2_ncnnx"]
+[ext_resource type="AudioStream" uid="uid://cexni2s4d07wn" path="res://Scenes/Weapons/explosion-6055.mp3" id="4_rmrnv"]
+
+[sub_resource type="Animation" id="Animation_6fpn1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_tl2my"]
+resource_name = "explosion"
+length = 2.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:frame_coords")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 0), Vector2i(1, 0), Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1), Vector2i(7, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(4, 2), Vector2i(5, 2), Vector2i(6, 2), Vector2i(7, 2), Vector2i(0, 3)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ntjxn"]
+_data = {
+"RESET": SubResource("Animation_6fpn1"),
+"explosion": SubResource("Animation_tl2my")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_owj4c"]
+radius = 38.6266
+
+[node name="Bomb" type="Node2D"]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_vx7us")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_ncnnx")
+hframes = 8
+vframes = 4
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ntjxn")
+}
+
+[node name="Hitbox" type="Area2D" parent="."]
+monitoring = false
+script = ExtResource("2_dvpj8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+scale = Vector2(1.165, 1.165)
+shape = SubResource("CircleShape2D_owj4c")
+disabled = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_rmrnv")
+volume_db = -4.0
+pitch_scale = 1.9

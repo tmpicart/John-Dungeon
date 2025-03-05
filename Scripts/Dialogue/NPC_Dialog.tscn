@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bh78n0fysivyr"]
+
+[ext_resource type="Script" path="res://Scripts/Dialogue/NPC_Dialog.gd" id="1_nqmqu"]
+[ext_resource type="Texture2D" uid="uid://72cf32qqgdgy" path="res://Assets/Hud/dialogue_box.png" id="2_0vsf6"]
+
+[node name="NPC Dialog" type="CanvasLayer"]
+script = ExtResource("1_nqmqu")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+offset_left = 386.0
+offset_top = 82.0
+offset_right = 1512.0
+offset_bottom = 368.0
+texture = ExtResource("2_0vsf6")
+region_rect = Rect2(-5, -5, 42, 42)
+patch_margin_left = 10
+patch_margin_top = 10
+patch_margin_right = 11
+patch_margin_bottom = 10
+
+[node name="text" type="RichTextLabel" parent="NinePatchRect"]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 19.0
+offset_right = 1107.0
+offset_bottom = 265.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/normal_font_size = 60
+text = "Dialog"

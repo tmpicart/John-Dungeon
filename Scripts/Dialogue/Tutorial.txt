@@ -1,0 +1,9 @@
+Hello John Dungeon, let me explain a few things:
+You can left click to attack and right click to use your shield
+You can use your shield to reflect certain projectiles
+The Menu in the top right shows you how much stuff you have
+You can press [Q] to use a bomb and [Tab] to use your potions
+You can pick up coins to buy stuff...
+However there is a limited amount so don't spend them all in one place
+Keys can be used to unlock locked doors
+Happy Dungeoning

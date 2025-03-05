@@ -1,0 +1,525 @@
+[gd_scene load_steps=28 format=3 uid="uid://babnmxqdpfmjs"]
+
+[ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://Scenes/Characters/Character.tscn" id="1_3u81v"]
+[ext_resource type="PackedScene" uid="uid://b74j72sy4ihbx" path="res://Scenes/Levels/Dungeon Parts/MultiRoom.tscn" id="1_88w2w"]
+[ext_resource type="Script" path="res://Scripts/Hud/MainScene.gd" id="1_uv7rj"]
+[ext_resource type="PackedScene" uid="uid://bcqpocv0rfv4o" path="res://Scenes/Levels/Objects/Door.tscn" id="4_kb8ps"]
+[ext_resource type="PackedScene" uid="uid://oufsqmno882m" path="res://Scenes/Levels/Dungeon Parts/HallWay.tscn" id="5_e53sq"]
+[ext_resource type="PackedScene" uid="uid://dqovgjukcslmp" path="res://Scenes/Levels/Dungeon Parts/ChestRoomLeft.tscn" id="6_4ceu3"]
+[ext_resource type="PackedScene" uid="uid://rvpiujtilw1o" path="res://Scenes/Levels/Objects/chestNoKey.tscn" id="7_4gpne"]
+[ext_resource type="PackedScene" uid="uid://beu7po4d0rpog" path="res://Scenes/Hud/ItemHud.tscn" id="7_d4npm"]
+[ext_resource type="PackedScene" uid="uid://u1ixxtopxv2p" path="res://Scenes/Levels/Dungeon Parts/Starting Room.tscn" id="8_4yt8a"]
+[ext_resource type="PackedScene" uid="uid://cs5nstle380af" path="res://Scenes/Items/potion.tscn" id="8_kyx11"]
+[ext_resource type="PackedScene" uid="uid://clp3rxlbhwvv6" path="res://Scenes/Characters/slime_green.tscn" id="9_blyy6"]
+[ext_resource type="Texture2D" uid="uid://dthkg88xvlsf5" path="res://Assets/Tilesets/BackGround.png" id="9_pemxe"]
+[ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://Scenes/Items/Key.tscn" id="10_7ae0s"]
+[ext_resource type="PackedScene" uid="uid://cqbfd3ribv0bg" path="res://Scenes/Items/coin.tscn" id="12_8lsky"]
+[ext_resource type="PackedScene" uid="uid://06fson1afemk" path="res://Scenes/Levels/Objects/keyDoor.tscn" id="12_u63x0"]
+[ext_resource type="PackedScene" uid="uid://dl6hpi8ycnpdd" path="res://Scenes/Characters/slime_red.tscn" id="13_8nqph"]
+[ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Characters/necromancer.tscn" id="14_64rlk"]
+[ext_resource type="PackedScene" uid="uid://bji7ka5w8l7k" path="res://Scenes/Characters/blacksmith.tscn" id="15_ng8to"]
+[ext_resource type="PackedScene" uid="uid://bj53m0le6fixn" path="res://Scenes/Characters/arcane_archer.tscn" id="15_p3dh8"]
+[ext_resource type="PackedScene" uid="uid://7i30u8mpwy4y" path="res://Scenes/Hud/heart_bar.tscn" id="17_70ymj"]
+[ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Characters/flail_skeleton.tscn" id="17_bq0el"]
+[ext_resource type="PackedScene" uid="uid://1ybnqh3qmc78" path="res://Scenes/Levels/Dungeon Parts/DoorPathCover.tscn" id="22_x41wc"]
+[ext_resource type="PackedScene" uid="uid://cmf7qxlp6g8rc" path="res://Scenes/Characters/potion_seller.tscn" id="23_65nk1"]
+[ext_resource type="PackedScene" uid="uid://bps0k3jhyu0ia" path="res://Scenes/Levels/Objects/NoOPEN.tscn" id="23_okywr"]
+[ext_resource type="AudioStream" uid="uid://bqhgok2lgcg7o" path="res://Assets/Sounds/Morgana Rides.mp3" id="23_sifkb"]
+[ext_resource type="PackedScene" uid="uid://cghx8ibvkewpx" path="res://Scenes/Levels/Objects/chest.tscn" id="24_xt1mi"]
+[ext_resource type="PackedScene" uid="uid://dgiujaj1xoyn7" path="res://Scenes/Levels/Dungeon Parts/BOSSROOM.tscn" id="26_fcabj"]
+
+[node name="MainScene" type="Node2D"]
+position = Vector2(529, 293)
+script = ExtResource("1_uv7rj")
+
+[node name="Character" parent="." instance=ExtResource("1_3u81v")]
+position = Vector2(-4, 682)
+
+[node name="MultiRoom" parent="." instance=ExtResource("1_88w2w")]
+
+[node name="Door" parent="MultiRoom" instance=ExtResource("4_kb8ps")]
+position = Vector2(127, 1)
+rotation = 1.57079
+
+[node name="Door2" parent="MultiRoom" instance=ExtResource("4_kb8ps")]
+position = Vector2(-127, -1)
+rotation = -1.57079
+
+[node name="Slime_Green" parent="MultiRoom" instance=ExtResource("9_blyy6")]
+position = Vector2(-69, -31)
+
+[node name="Slime_Green2" parent="MultiRoom" instance=ExtResource("9_blyy6")]
+position = Vector2(72, 47)
+
+[node name="Chest Room" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(591, 32)
+rotation = 3.14159
+
+[node name="chest2" parent="Chest Room" instance=ExtResource("7_4gpne")]
+position = Vector2(0.999702, 102)
+rotation = -3.14159
+Path = ExtResource("8_kyx11")
+
+[node name="Flail_Skeleton" parent="Chest Room" instance=ExtResource("17_bq0el")]
+position = Vector2(-2.00012, 22)
+rotation = -3.14159
+
+[node name="HallWay" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(224, -32)
+
+[node name="chest" parent="HallWay" instance=ExtResource("7_4gpne")]
+position = Vector2(95, 7)
+Path = ExtResource("10_7ae0s")
+
+[node name="KeyDoor" parent="HallWay" instance=ExtResource("12_u63x0")]
+position = Vector2(230, 33)
+rotation = 1.57079
+
+[node name="HallWay2" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(32, 224)
+rotation = 1.57079
+
+[node name="HallWay3" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -224)
+rotation = -1.57079
+
+[node name="Slime_Red" parent="HallWay3" instance=ExtResource("13_8nqph")]
+position = Vector2(81.0001, 37.9998)
+rotation = 1.57079
+
+[node name="HallWay4" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -544)
+rotation = -1.57079
+
+[node name="Slime_Green" parent="HallWay4" instance=ExtResource("9_blyy6")]
+position = Vector2(78.0001, 43.9998)
+rotation = 1.57079
+
+[node name="Slime_Red" parent="HallWay4" instance=ExtResource("13_8nqph")]
+position = Vector2(119, 40.9997)
+rotation = 1.57079
+
+[node name="MultiRoom2" parent="." instance=ExtResource("1_88w2w")]
+position = Vector2(0, -960)
+
+[node name="Necromancer" parent="MultiRoom2" instance=ExtResource("14_64rlk")]
+position = Vector2(-2, 35)
+
+[node name="Slime_Green2" parent="MultiRoom2" instance=ExtResource("9_blyy6")]
+position = Vector2(49, 62)
+
+[node name="Slime_Green3" parent="MultiRoom2" instance=ExtResource("9_blyy6")]
+position = Vector2(-47, 55)
+
+[node name="KeyDoor" parent="MultiRoom2" instance=ExtResource("12_u63x0")]
+position = Vector2(135, 1)
+rotation = 1.57079
+
+[node name="KeyDoor2" parent="MultiRoom2" instance=ExtResource("12_u63x0")]
+position = Vector2(-135, -1)
+rotation = -1.57079
+
+[node name="Door" parent="MultiRoom2" instance=ExtResource("4_kb8ps")]
+position = Vector2(1, -127)
+
+[node name="HallWay5" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(224, -992)
+
+[node name="chest2" parent="HallWay5" instance=ExtResource("7_4gpne")]
+position = Vector2(96, 9)
+Path = ExtResource("12_8lsky")
+
+[node name="Chest Room2" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(592, -928)
+rotation = 3.14159
+
+[node name="Blacksmith" parent="Chest Room2" instance=ExtResource("15_ng8to")]
+position = Vector2(-0.000244141, 89)
+rotation = -3.14159
+
+[node name="HallWay6" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-416, -992)
+
+[node name="chest" parent="HallWay6" instance=ExtResource("7_4gpne")]
+position = Vector2(96, 11)
+Path = ExtResource("12_8lsky")
+
+[node name="HallWay8" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -1184)
+rotation = -1.57079
+
+[node name="chest" parent="HallWay8" instance=ExtResource("7_4gpne")]
+position = Vector2(215, 12.9995)
+rotation = 1.57079
+Path = ExtResource("8_kyx11")
+
+[node name="HallWay9" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -1504)
+rotation = -1.57079
+
+[node name="Door" parent="HallWay9" instance=ExtResource("4_kb8ps")]
+position = Vector2(223, 32.9995)
+rotation = 1.57079
+
+[node name="MultiRoom3" parent="." instance=ExtResource("1_88w2w")]
+position = Vector2(0, -1920)
+
+[node name="Arcane_Archer" parent="MultiRoom3" instance=ExtResource("15_p3dh8")]
+position = Vector2(-81, 54)
+
+[node name="Arcane_Archer2" parent="MultiRoom3" instance=ExtResource("15_p3dh8")]
+position = Vector2(-31, 57)
+
+[node name="Arcane_Archer3" parent="MultiRoom3" instance=ExtResource("15_p3dh8")]
+position = Vector2(47, -61)
+
+[node name="Arcane_Archer4" parent="MultiRoom3" instance=ExtResource("15_p3dh8")]
+position = Vector2(-52, -63)
+
+[node name="Door" parent="MultiRoom3" instance=ExtResource("4_kb8ps")]
+position = Vector2(127, 1)
+rotation = 1.57079
+
+[node name="KeyDoor" parent="MultiRoom3" instance=ExtResource("12_u63x0")]
+position = Vector2(-135, -1)
+rotation = -1.57079
+
+[node name="Chest Room4" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(-592, -32)
+
+[node name="Arcane_Archer" parent="Chest Room4" instance=ExtResource("15_p3dh8")]
+position = Vector2(-14, 50)
+
+[node name="Bossroom" parent="." instance=ExtResource("26_fcabj")]
+position = Vector2(0, 2161)
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+modulate = Color(0.266667, 0.243137, 0.243137, 1)
+motion_scale = Vector2(0.2, 0.2)
+motion_mirroring = Vector2(1240, 1240)
+
+[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+rotation = -0.000443679
+texture = ExtResource("9_pemxe")
+
+[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
+energy = 0.6
+blend_mode = 1
+shadow_enabled = true
+shadow_color = Color(0, 0, 0, 1)
+shadow_filter = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+scale = Vector2(4, 4)
+transform = Transform2D(4, 0, 0, 4, 0, 0)
+
+[node name="HeartBar" parent="CanvasLayer" groups=["health"] instance=ExtResource("17_70ymj")]
+metadata/_edit_use_anchors_ = true
+
+[node name="ItemBar" parent="CanvasLayer" instance=ExtResource("7_d4npm")]
+offset_left = -1460.0
+offset_right = -1420.0
+scale = Vector2(0.5, 0.5)
+
+[node name="StartingRoom" parent="." instance=ExtResource("8_4yt8a")]
+position = Vector2(0, 640)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("23_sifkb")
+volume_db = -10.0
+autoplay = true
+
+[node name="Chest Room3" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(-592, -992)
+
+[node name="Potion Seller" parent="Chest Room3" instance=ExtResource("23_65nk1")]
+position = Vector2(0, -23)
+
+[node name="HallWay7" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-416, -32)
+
+[node name="HallWay10" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-416, -1952)
+
+[node name="Door" parent="HallWay10" instance=ExtResource("4_kb8ps")]
+position = Vector2(-31, 31)
+rotation = -1.57079
+
+[node name="chest" parent="HallWay10" instance=ExtResource("7_4gpne")]
+position = Vector2(97, 8)
+Path = ExtResource("8_kyx11")
+
+[node name="Chest Room5" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(-591, -1952)
+
+[node name="chest2" parent="Chest Room5" instance=ExtResource("7_4gpne")]
+position = Vector2(1, -39)
+Path = ExtResource("8_kyx11")
+
+[node name="HallWay11" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(224, -1952)
+
+[node name="chest" parent="HallWay11" instance=ExtResource("7_4gpne")]
+position = Vector2(96, 9)
+Path = ExtResource("10_7ae0s")
+
+[node name="Door" parent="HallWay11" instance=ExtResource("4_kb8ps")]
+position = Vector2(223, 33)
+rotation = 1.57079
+
+[node name="Chest Room6" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(592, -1888)
+rotation = 3.14159
+
+[node name="chest2" parent="Chest Room6" instance=ExtResource("7_4gpne")]
+position = Vector2(63.9995, 95.0004)
+rotation = -3.14159
+Path = ExtResource("12_8lsky")
+
+[node name="chest3" parent="Chest Room6" instance=ExtResource("7_4gpne")]
+position = Vector2(-0.000488281, 95)
+rotation = -3.14159
+Path = ExtResource("8_kyx11")
+
+[node name="chest4" parent="Chest Room6" instance=ExtResource("7_4gpne")]
+position = Vector2(-64.0004, 93.9998)
+rotation = -3.14159
+Path = ExtResource("10_7ae0s")
+
+[node name="Slime_Red" parent="." instance=ExtResource("13_8nqph")]
+position = Vector2(-647, -1861)
+
+[node name="Slime_Red2" parent="." instance=ExtResource("13_8nqph")]
+position = Vector2(-653, -1985)
+
+[node name="Slime_Red3" parent="." instance=ExtResource("13_8nqph")]
+position = Vector2(-522, -1986)
+
+[node name="Slime_Red4" parent="." instance=ExtResource("13_8nqph")]
+position = Vector2(-525, -1858)
+
+[node name="Slime_Red5" parent="." instance=ExtResource("13_8nqph")]
+position = Vector2(-589, -1921)
+
+[node name="Slime_Green" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(590, -1912)
+
+[node name="Top" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, -1440)
+rotation = -1.57079
+
+[node name="HallWay12" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -2144)
+rotation = -1.57079
+
+[node name="HallWay13" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(-32, -2464)
+rotation = -1.57079
+
+[node name="MultiRoom4" parent="." instance=ExtResource("1_88w2w")]
+position = Vector2(0, -2880)
+
+[node name="Door" parent="MultiRoom4" instance=ExtResource("23_okywr")]
+position = Vector2(128, 1)
+rotation = 1.57079
+
+[node name="Door2" parent="MultiRoom4" instance=ExtResource("23_okywr")]
+position = Vector2(-128, -1)
+rotation = -1.57079
+
+[node name="Chest Room7" parent="." instance=ExtResource("6_4ceu3")]
+position = Vector2(32, -3152)
+rotation = 1.57079
+
+[node name="chest" parent="." instance=ExtResource("24_xt1mi")]
+position = Vector2(0, -3217)
+
+[node name="Necromancer" parent="." instance=ExtResource("14_64rlk")]
+position = Vector2(-79, -2891)
+
+[node name="Necromancer2" parent="." instance=ExtResource("14_64rlk")]
+position = Vector2(91, -2905)
+
+[node name="Necromancer3" parent="." instance=ExtResource("14_64rlk")]
+position = Vector2(2, -2971)
+
+[node name="Necromancer4" parent="." instance=ExtResource("14_64rlk")]
+position = Vector2(4, -2790)
+
+[node name="Slime_Green2" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(-74, -2817)
+
+[node name="Slime_Green3" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(82, -2817)
+
+[node name="Slime_Green4" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(-75, -2978)
+
+[node name="Slime_Green5" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(80, -2982)
+
+[node name="Slime_Green6" parent="." instance=ExtResource("9_blyy6")]
+position = Vector2(-3, -2908)
+
+[node name="Arcane_Archer" parent="." instance=ExtResource("15_p3dh8")]
+position = Vector2(1, -2846)
+
+[node name="HallWay14" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(32, 865)
+rotation = 1.57079
+
+[node name="HallWay15" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(32, 1185)
+rotation = 1.57079
+
+[node name="HallWay16" parent="." instance=ExtResource("5_e53sq")]
+position = Vector2(32, 1505)
+rotation = 1.57079
+
+[node name="Top2" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, -479)
+rotation = 1.57079
+
+[node name="Top3" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, 1121)
+rotation = 1.57079
+
+[node name="Top4" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, 1441)
+rotation = 1.57079
+
+[node name="Top5" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, 1761)
+rotation = 1.57079
+
+[node name="Top6" parent="." instance=ExtResource("22_x41wc")]
+position = Vector2(0, -2400)
+rotation = 1.57079
+
+[node name="Coin" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-596, 62)
+
+[node name="Coin2" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-596, 41)
+
+[node name="Coin3" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-584, 51)
+
+[node name="Coin4" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-609, 52)
+
+[node name="Coin5" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-622, 63)
+
+[node name="Coin6" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-570, 61)
+
+[node name="Coin7" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-30, 56)
+
+[node name="Coin8" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-46, -72)
+
+[node name="Coin9" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(65, -50)
+
+[node name="Coin10" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(46, 82)
+
+[node name="Coin11" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(591, 32)
+
+[node name="Coin12" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -257)
+
+[node name="Coin13" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -368)
+
+[node name="Coin14" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3138)
+
+[node name="Coin15" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3152)
+
+[node name="Coin16" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(11, -3174)
+
+[node name="Coin17" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-11, -3175)
+
+[node name="Coin18" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-22, -3166)
+
+[node name="Coin19" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3122)
+
+[node name="Coin20" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(23, -3163)
+
+[node name="Coin21" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3108)
+
+[node name="Coin22" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(654, -1869)
+
+[node name="Coin23" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-107, -1842)
+
+[node name="Coin24" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(653, -1885)
+
+[node name="Coin25" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-2, -1965)
+
+[node name="Coin26" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(654, -1855)
+
+[node name="Coin27" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(111, -1848)
+
+[node name="Coin28" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(530, -1856)
+
+[node name="Coin29" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(530, -1869)
+
+[node name="Coin30" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(530, -1884)
+
+[node name="Coin31" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(592, -1856)
+
+[node name="Coin32" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(592, -1871)
+
+[node name="Coin33" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(592, -1886)
+
+[node name="Coin34" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-620, -1967)
+
+[node name="Coin35" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-591, -1968)
+
+[node name="Coin36" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-559, -1968)
+
+[node name="Coin37" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(37, -945)
+
+[node name="Coin38" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(-38, -969)
+
+[node name="Coin39" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(14, -992)
+
+[node name="Coin40" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3184)
+
+[node name="Coin41" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, -3167)
+
+[node name="Coin42" parent="." instance=ExtResource("12_8lsky")]
+position = Vector2(0, 543)

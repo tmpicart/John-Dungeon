@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgfv24qsybs1e"]
+
+[ext_resource type="Texture2D" uid="uid://dhcuo8omhfujn" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/flasks/flasks_1_1.png" id="1_aj6wm"]
+
+[node name="Panel" type="Panel"]
+custom_minimum_size = Vector2(40, 16)
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 12.5
+offset_top = 0.374999
+offset_right = 36.5
+offset_bottom = 20.375
+theme_override_font_sizes/font_size = 14
+text = "x99"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(6.00001, 10)
+scale = Vector2(0.840001, 0.83)
+texture = ExtResource("1_aj6wm")
+hframes = 3
+frame = 1

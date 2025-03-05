@@ -1,0 +1,204 @@
+[gd_scene load_steps=19 format=3 uid="uid://dl6hpi8ycnpdd"]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/slime_red.gd" id="1_brr4j"]
+[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_pf7gv"]
+[ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://Assets/Enemies/ENEMY_slime.png" id="2_ckhae"]
+[ext_resource type="Texture2D" uid="uid://dooyv6iwtkcqw" path="res://Assets/Items/bombPlaceholder.png" id="3_eodk1"]
+[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="3_le46k"]
+[ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="4_ocfdr"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="6_14bye"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="7_oqxeq"]
+[ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/EnemyChaseRedSlime.gd" id="7_pxx6h"]
+[ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/EnemyAttackRedSlime.gd" id="8_vkf7y"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sfh3l"]
+resource_local_to_scene = true
+shader = ExtResource("1_pf7gv")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_evy1c"]
+radius = 10.6719
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_52k7c"]
+radius = 9.65515
+height = 19.3103
+
+[sub_resource type="Animation" id="Animation_dugc8"]
+resource_name = "Bounce"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [2, 3]
+}
+
+[sub_resource type="Animation" id="Animation_n7kbo"]
+resource_name = "Explode"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("3_eodk1")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [3]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:vframes")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:frame")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Sprite2D:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1.5, 1.5), Vector2(1.75, 1.75), Vector2(2, 2)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Sprite2D/Explosion Hitbox/CollisionShape2D:disabled")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_y2xea"]
+resource_name = "OnHit"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.5, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3e2ay"]
+_data = {
+"Bounce": SubResource("Animation_dugc8"),
+"Explode": SubResource("Animation_n7kbo"),
+"OnHit": SubResource("Animation_y2xea")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_la8bw"]
+radius = 7.0
+height = 14.0
+
+[node name="Slime_Red" type="CharacterBody2D" groups=["Enemies"]]
+scale = Vector2(0.65, 0.65)
+motion_mode = 1
+script = ExtResource("1_brr4j")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_sfh3l")
+position = Vector2(0, -8)
+texture = ExtResource("2_ckhae")
+hframes = 2
+vframes = 4
+frame = 2
+
+[node name="Explosion Hitbox" type="Area2D" parent="Sprite2D"]
+position = Vector2(0, 1.507)
+script = ExtResource("6_14bye")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/Explosion Hitbox"]
+position = Vector2(0, -0.507)
+shape = SubResource("CircleShape2D_evy1c")
+debug_color = Color(1, 0, 0, 0.113725)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+show_behind_parent = true
+position = Vector2(7.62939e-06, -7)
+scale = Vector2(0.725, 0.725)
+shape = SubResource("CapsuleShape2D_52k7c")
+
+[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_le46k")
+initial_state = NodePath("EnemyIdle")
+
+[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("4_ocfdr")
+enemy = NodePath("../..")
+speed = 25
+detection_range = 100
+
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("7_pxx6h")
+enemy = NodePath("../..")
+
+[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("8_vkf7y")
+enemy = NodePath("../..")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3e2ay")
+}
+
+[node name="Hurtbox" type="Area2D" parent="."]
+light_mask = 0
+visibility_layer = 2
+script = ExtResource("7_oqxeq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -7)
+shape = SubResource("CapsuleShape2D_la8bw")
+debug_color = Color(0, 0.6, 0, 0.419608)

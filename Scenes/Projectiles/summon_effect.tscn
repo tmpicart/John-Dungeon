@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://4evtkf3vje6p"]
+
+[ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="1_d2l8j"]
+[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/Summon Effect.gd" id="2_tstum"]
+
+[sub_resource type="Animation" id="Animation_3r415"]
+resource_name = "Arise"
+length = 1.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [153, 154, 156, 157, 158, 159, 160]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6n072"]
+_data = {
+"Arise": SubResource("Animation_3r415")
+}
+
+[sub_resource type="Gradient" id="Gradient_bvo2f"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_nvm5g"]
+gradient = SubResource("Gradient_bvo2f")
+fill = 1
+fill_from = Vector2(0.5, 0.527523)
+fill_to = Vector2(0.830275, 0.169725)
+
+[node name="Summon Effect" type="Sprite2D"]
+light_mask = 0
+position = Vector2(0, -13)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_d2l8j")
+hframes = 9
+vframes = 30
+frame = 157
+script = ExtResource("2_tstum")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6n072")
+}
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, 2.5)
+scale = Vector2(1.21094, 0.924481)
+color = Color(0.392157, 0.180392, 1, 1)
+texture = SubResource("GradientTexture2D_nvm5g")

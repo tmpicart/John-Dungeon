@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://dyxkbx71d8tuv"]
+
+[ext_resource type="Script" path="res://Scenes/Items/bossKey.gd" id="1_uhj3g"]
+[ext_resource type="Texture2D" uid="uid://ws3ngcsd20v1" path="res://Scenes/Items/KEY.png" id="2_xn8gs"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_aq0md"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_daybg"]
+radius = 20.025
+
+[node name="BossKey" type="Node2D"]
+z_index = 100
+script = ExtResource("1_uhj3g")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_xn8gs")
+hframes = 2
+frame = 1
+
+[node name="InteractionArea" parent="." instance=ExtResource("3_aq0md")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_daybg")
+
+[node name="Label" type="Label" parent="."]
+z_index = 100
+offset_left = -47.0
+offset_top = -35.0
+offset_right = 270.0
+offset_bottom = 40.0
+scale = Vector2(0.3, 0.3)
+theme_override_font_sizes/font_size = 16
+text = "You Picked Up the Boss Key Go Back To Where You Came and Find The Purple Door"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3

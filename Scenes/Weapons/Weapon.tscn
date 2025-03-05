@@ -1,0 +1,91 @@
+[gd_scene load_steps=11 format=3 uid="uid://drxv8fgohuj1r"]
+
+[ext_resource type="Script" path="res://Scripts/Player/Weapon.gd" id="1_bqjge"]
+[ext_resource type="Texture2D" uid="uid://cpxo8yur1wbhq" path="res://Assets/Items/WEAPONS.png" id="2_fx64o"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="3_2pag2"]
+[ext_resource type="AudioStream" uid="uid://eutxxirj2smr" path="res://Assets/Sounds/Player/Attack/sword-sound-2-36274.mp3" id="4_p3bgi"]
+[ext_resource type="AudioStream" uid="uid://bsmrclffkkiwa" path="res://Assets/Sounds/Player/Attack/724716__greyfeather__sword-slash-energy-wave.wav" id="5_ycqkl"]
+[ext_resource type="AudioStream" uid="uid://bhmg81tdhc031" path="res://Assets/Sounds/Player/Attack/766477__rtyrtyrtyrtyrtyrtyrtyrty__knife-slash-spike-trap-sharp-sound-1.mp3" id="6_tjjts"]
+
+[sub_resource type="Animation" id="Animation_8hnm3"]
+resource_name = "Swing"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("..:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [-1.5708, 1.5708, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_meh8p"]
+_data = {
+"Swing": SubResource("Animation_8hnm3")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1akml"]
+radius = 4.00003
+height = 18.6667
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_0xu8s"]
+random_pitch = 1.1
+random_volume_offset_db = 1.0
+streams_count = 3
+stream_0/stream = ExtResource("4_p3bgi")
+stream_1/stream = ExtResource("5_ycqkl")
+stream_2/stream = ExtResource("6_tjjts")
+
+[node name="Weapon" type="Node2D"]
+show_behind_parent = true
+rotation = -1.5708
+scale = Vector2(2, 2.039)
+script = ExtResource("1_bqjge")
+
+[node name="Node2D" type="Node2D" parent="."]
+scale = Vector2(1.00239, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D"]
+position = Vector2(0.498808, -15.2035)
+rotation = 1.5708
+texture = ExtResource("2_fx64o")
+offset = Vector2(15, -15)
+hframes = 8
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Node2D"]
+libraries = {
+"": SubResource("AnimationLibrary_meh8p")
+}
+speed_scale = 5.0
+
+[node name="Hitbox" type="Area2D" parent="Node2D"]
+collision_layer = 2
+collision_mask = 0
+script = ExtResource("3_2pag2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Hitbox"]
+position = Vector2(15.463, -0.490438)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_1akml")
+disabled = true
+debug_color = Color(0.891461, 0.399691, 0.56023, 0.42)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_0xu8s")
+volume_db = -6.0
+pitch_scale = 0.95

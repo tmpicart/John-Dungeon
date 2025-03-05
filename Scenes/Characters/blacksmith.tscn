@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://bji7ka5w8l7k"]
+
+[ext_resource type="Texture2D" uid="uid://b1ts73o00mqe0" path="res://Assets/NPC/NPC_SHOPKEEPER.png" id="1_b07xd"]
+[ext_resource type="Script" path="res://Scripts/NPC/blacksmith.gd" id="1_ysehu"]
+[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="2_lbeyw"]
+[ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://Scripts/Dialogue/NPC_Dialog.tscn" id="3_54wft"]
+[ext_resource type="PackedScene" uid="uid://dyt3f5dy5h3es" path="res://Scenes/Shop/shop_2.tscn" id="4_kptqi"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rfcwn"]
+radius = 6.0
+height = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uixec"]
+size = Vector2(12, 18)
+
+[node name="Blacksmith" type="Node2D"]
+script = ExtResource("1_ysehu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -5)
+scale = Vector2(0.77, 0.77)
+texture = ExtResource("1_b07xd")
+hframes = 3
+frame = 1
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_rfcwn")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+script = ExtResource("2_lbeyw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(0, 13)
+shape = SubResource("RectangleShape2D_uixec")
+
+[node name="NPC Dialog" parent="." instance=ExtResource("3_54wft")]
+
+[node name="Shop2" parent="." instance=ExtResource("4_kptqi")]
+
+[connection signal="body_entered" from="InteractionArea" to="InteractionArea" method="_on_body_entered"]
+[connection signal="body_exited" from="InteractionArea" to="InteractionArea" method="_on_body_exited"]

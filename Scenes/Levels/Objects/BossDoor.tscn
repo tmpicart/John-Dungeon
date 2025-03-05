@@ -1,0 +1,112 @@
+[gd_scene load_steps=10 format=3 uid="uid://bxbick14tkq7a"]
+
+[ext_resource type="Script" path="res://Scenes/Levels/Objects/bosskeyDoor.gd" id="1_4kna6"]
+[ext_resource type="Texture2D" uid="uid://bp2uakrp73hja" path="res://Scenes/Levels/Objects/BOSS_DOOR.png" id="2_8b1q1"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_825ch"]
+[ext_resource type="AudioStream" uid="uid://b1nmoff8xioc4" path="res://Scenes/Levels/Objects/dorm-door-opening-6038.mp3" id="4_qbe6s"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xqm0d"]
+size = Vector2(20, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_he8pr"]
+size = Vector2(14, 6)
+
+[sub_resource type="Animation" id="Animation_rk3td"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_tdb0i"]
+resource_name = "open"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [0, 1, 2]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ar63u"]
+_data = {
+"RESET": SubResource("Animation_rk3td"),
+"open": SubResource("Animation_tdb0i")
+}
+
+[node name="KeyDoor" type="Node2D"]
+script = ExtResource("1_4kna6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-1, -1)
+texture = ExtResource("2_8b1q1")
+hframes = 3
+
+[node name="Label" type="Label" parent="."]
+offset_left = 29.0
+offset_top = 35.0
+offset_right = 223.0
+offset_bottom = 58.0
+rotation = -3.14159
+scale = Vector2(0.3, 0.3)
+text = "You Need a Key To Open!"
+horizontal_alignment = 1
+
+[node name="InteractionArea" parent="." instance=ExtResource("3_825ch")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(-1, -2.5)
+shape = SubResource("RectangleShape2D_xqm0d")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-1, 4)
+shape = SubResource("RectangleShape2D_he8pr")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+"": SubResource("AnimationLibrary_ar63u")
+}
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_qbe6s")

@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://cqbfd3ribv0bg"]
+
+[ext_resource type="Script" path="res://Scripts/Objects/coin.gd" id="1_80edu"]
+[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="2_tgf2n"]
+[ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_1.png" id="3_cbks3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0vsgq"]
+radius = 5.0
+
+[node name="Coin" type="Node2D"]
+script = ExtResource("1_80edu")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+script = ExtResource("2_tgf2n")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_0vsgq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_cbks3")
+
+[connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
+[connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]
