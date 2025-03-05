@@ -1,0 +1,195 @@
+[gd_scene load_steps=21 format=3 uid="uid://bj53m0le6fixn"]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
+[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
+[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_dsqkb"]
+[ext_resource type="Texture2D" uid="uid://j3xverou5twt" path="res://Assets/Enemies/ENEMY_archer.png" id="3_xkaj8"]
+[ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="4_dksyp"]
+[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd" id="5_uw5cu"]
+[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd" id="6_qgvvr"]
+[ext_resource type="PackedScene" uid="uid://bcvjqylald7g8" path="res://Scenes/Projectiles/arcane_arrow.tscn" id="7_0t3rh"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="9_jre34"]
+[ext_resource type="AudioStream" uid="uid://bbs7l1gwd8n1m" path="res://Assets/Sounds/Enemies/Archer/bow-release-bow-and-arrow-4-101936.mp3" id="10_gdiw0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
+resource_local_to_scene = true
+shader = ExtResource("3_dsqkb")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
+radius = 9.0
+height = 22.8571
+
+[sub_resource type="Animation" id="Animation_cheg3"]
+resource_name = "Attack"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_a6n62"]
+resource_name = "Death"
+length = 0.85
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1), Vector2i(7, 1), Vector2i(8, 1), Vector2i(9, 1), Vector2i(10, 1), Vector2i(11, 1), Vector2i(12, 1), Vector2i(13, 1), Vector2i(14, 1), Vector2i(15, 1), Vector2i(16, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_spb5g"]
+resource_name = "Idle"
+length = 0.001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_jv2hr"]
+resource_name = "OnHit"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.5, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_c138m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame_coords")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2i(1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_b6ywu"]
+resource_name = "Walk"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.150354),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yixv0"]
+_data = {
+"Attack": SubResource("Animation_cheg3"),
+"Death": SubResource("Animation_a6n62"),
+"Idle": SubResource("Animation_spb5g"),
+"OnHit": SubResource("Animation_jv2hr"),
+"RESET": SubResource("Animation_c138m"),
+"Walk": SubResource("Animation_b6ywu")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to1xr"]
+radius = 8.0
+height = 22.8571
+
+[node name="Arcane_Archer" type="CharacterBody2D" groups=["Enemies"]]
+scale = Vector2(0.7, 0.7)
+motion_mode = 1
+script = ExtResource("1_sqpd4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_iu8kf")
+position = Vector2(1.699, -15)
+texture = ExtResource("3_xkaj8")
+hframes = 17
+vframes = 2
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+show_behind_parent = true
+position = Vector2(-4.03897e-28, -11.4286)
+shape = SubResource("CapsuleShape2D_pdttr")
+
+[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_dk7ir")
+initial_state = NodePath("EnemyIdle")
+
+[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("4_dksyp")
+enemy = NodePath("../..")
+
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("5_uw5cu")
+enemy = NodePath("../..")
+rayCast = NodePath("../../RayCast2D")
+
+[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("6_qgvvr")
+enemy = NodePath("../..")
+projectile = ExtResource("7_0t3rh")
+rayCast = NodePath("../../RayCast2D")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_yixv0")
+}
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(0, -10.46)
+target_position = Vector2(300, 0)
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("9_jre34")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(-1.35525e-20, -11.4286)
+shape = SubResource("CapsuleShape2D_to1xr")
+debug_color = Color(0, 1, 0, 0.0901961)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_gdiw0")
+
+[connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]

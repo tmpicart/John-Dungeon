@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://c5keinhto18dy"]
+
+[ext_resource type="Script" path="res://Scenes/Characters/tutorial_npc.gd" id="1_dvvii"]
+[ext_resource type="Texture2D" uid="uid://crf32w5xu0ss1" path="res://Assets/NPC/NPC.png" id="2_bl230"]
+[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="3_lwwwf"]
+[ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://Scripts/Dialogue/NPC_Dialog.tscn" id="4_3l3jg"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5vtg3"]
+radius = 6.0
+height = 18.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j1cut"]
+size = Vector2(12, 18)
+
+[node name="TutorialNPC" type="Node2D"]
+script = ExtResource("1_dvvii")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -5)
+scale = Vector2(0.77, 0.77)
+texture = ExtResource("2_bl230")
+hframes = 4
+frame = 3
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, -2)
+shape = SubResource("CapsuleShape2D_5vtg3")
+
+[node name="InteractionArea" type="Area2D" parent="."]
+script = ExtResource("3_lwwwf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+position = Vector2(0, 13)
+shape = SubResource("RectangleShape2D_j1cut")
+
+[node name="NPC Dialog" parent="." instance=ExtResource("4_3l3jg")]
+
+[connection signal="body_entered" from="InteractionArea" to="InteractionArea" method="_on_body_entered"]
+[connection signal="body_exited" from="InteractionArea" to="InteractionArea" method="_on_body_exited"]

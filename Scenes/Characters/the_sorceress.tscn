@@ -1,0 +1,394 @@
+[gd_scene load_steps=49 format=3 uid="uid://rhhukbmueh53"]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/the_sorceress.gd" id="1_oe1ie"]
+[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="2_1px53"]
+[ext_resource type="Texture2D" uid="uid://bsmans2qdxlc5" path="res://Assets/Enemies/BOSS_SHADOW.png" id="2_5abyf"]
+[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_galxm"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Engage.gd" id="3_muakj"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="4_h7y1i"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="5_a3rhi"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Melee.gd" id="5_xpevr"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/SlideInto.gd" id="6_ap4us"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Cast.gd" id="7_tkkjf"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Summon.gd" id="8_loxtb"]
+[ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Characters/flail_skeleton.tscn" id="9_obl4o"]
+[ext_resource type="PackedScene" uid="uid://bj53m0le6fixn" path="res://Scenes/Characters/arcane_archer.tscn" id="10_kg8qd"]
+[ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="10_wyx51"]
+[ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://Scenes/Projectiles/magic_missile.tscn" id="12_dflla"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Curse.gd" id="12_kcyhd"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Magic Missile.gd" id="12_uuafg"]
+[ext_resource type="PackedScene" uid="uid://c8882waks7p3i" path="res://Scenes/Projectiles/curse_glyph.tscn" id="13_iphtl"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Force Current.gd" id="13_j7uls"]
+[ext_resource type="PackedScene" uid="uid://dl6hpi8ycnpdd" path="res://Scenes/Characters/slime_red.tscn" id="13_ja1by"]
+[ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Characters/necromancer.tscn" id="14_65sp2"]
+[ext_resource type="PackedScene" uid="uid://cexkcx50jsodx" path="res://Scenes/Projectiles/force_wave.tscn" id="14_bb51k"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Beam.gd" id="18_hi8f4"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/SlideAway.gd" id="21_5oglh"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Intervention.gd" id="22_p483y"]
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Stars.gd" id="23_sgqur"]
+[ext_resource type="PackedScene" uid="uid://lr1c6ppfwvt5" path="res://Scenes/Projectiles/intervention_light.tscn" id="23_y1eak"]
+[ext_resource type="AudioStream" uid="uid://b3shrwwetxpvd" path="res://Assets/Sounds/chargeup.mp3" id="24_4ob3e"]
+[ext_resource type="PackedScene" uid="uid://s0p7t5g4q00k" path="res://Scenes/Projectiles/energy_star.tscn" id="24_dovkt"]
+[ext_resource type="Script" path="res://Scenes/Characters/Idle.gd" id="30_35754"]
+[ext_resource type="AudioStream" uid="uid://sa01ncok46o" path="res://Assets/Sounds/ta-da.mp3" id="31_pndny"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_63oa0"]
+shader = ExtResource("2_galxm")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_value = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_plssy"]
+radius = 15.0
+height = 34.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_e461x"]
+radius = 16.0
+height = 60.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x2ro1"]
+radius = 39.0
+
+[sub_resource type="Animation" id="Animation_cfxup"]
+resource_name = "Beam"
+length = 5.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1, 2, 3, 4, 4.8, 5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [16, 17, 18, 19, 20, 21, 22, 23]
+}
+
+[sub_resource type="Animation" id="Animation_6284q"]
+resource_name = "Cast"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [8, 9, 10, 11, 12, 13, 14, 15]
+}
+
+[sub_resource type="Animation" id="Animation_wqovf"]
+resource_name = "Cast2"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [16, 17, 18, 19, 20, 21, 22, 23]
+}
+
+[sub_resource type="Animation" id="Animation_h2qqr"]
+resource_name = "Death"
+length = 1.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55]
+}
+
+[sub_resource type="Animation" id="Animation_qfsa1"]
+resource_name = "Idle"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="Animation" id="Animation_wmjeh"]
+resource_name = "Melee"
+length = 0.9
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [32, 33, 34, 35, 36]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Melee Hitbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Melee Hitbox/CollisionShape2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -49), Vector2(0, -25), Vector2(0, -17)]
+}
+
+[sub_resource type="Animation" id="Animation_6qijq"]
+resource_name = "Move"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [24, 25, 26, 27, 28, 29, 30, 31]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5rtrg"]
+_data = {
+"Beam": SubResource("Animation_cfxup"),
+"Cast": SubResource("Animation_6284q"),
+"Cast2": SubResource("Animation_wqovf"),
+"Death": SubResource("Animation_h2qqr"),
+"Idle": SubResource("Animation_qfsa1"),
+"Melee": SubResource("Animation_wmjeh"),
+"Move": SubResource("Animation_6qijq")
+}
+
+[sub_resource type="Animation" id="Animation_vrrb8"]
+resource_name = "OnHit"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 0.5, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gqeda"]
+_data = {
+"OnHit": SubResource("Animation_vrrb8")
+}
+
+[sub_resource type="Curve" id="Curve_os55m"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.739583, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_rerdh"]
+curve = SubResource("Curve_os55m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6e4p8"]
+particle_flag_disable_z = true
+spread = 65.0
+initial_velocity_min = 250.0
+initial_velocity_max = 250.0
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_rerdh")
+color = Color(0.992822, 0.673956, 1, 1)
+
+[node name="The Sorceress" type="CharacterBody2D" groups=["Enemies"]]
+motion_mode = 1
+script = ExtResource("1_oe1ie")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = 1
+material = SubResource("ShaderMaterial_63oa0")
+position = Vector2(0, -43)
+texture = ExtResource("2_5abyf")
+hframes = 8
+vframes = 8
+frame = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -17)
+shape = SubResource("CapsuleShape2D_plssy")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+script = ExtResource("4_h7y1i")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_e461x")
+debug_color = Color(0.470588, 1, 0.0980392, 0.419608)
+
+[node name="Melee Hitbox" type="Area2D" parent="."]
+script = ExtResource("5_a3rhi")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Melee Hitbox"]
+position = Vector2(0, -49)
+shape = SubResource("CircleShape2D_x2ro1")
+disabled = true
+debug_color = Color(1, 0.141176, 0.176471, 0.419608)
+
+[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("2_1px53")
+initial_state = NodePath("Idle")
+
+[node name="Engage" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("3_muakj")
+enemy = NodePath("../..")
+
+[node name="Melee" type="Node" parent="State Control/Engage" node_paths=PackedStringArray("enemy")]
+script = ExtResource("5_xpevr")
+enemy = NodePath("../../..")
+projectile = ExtResource("14_bb51k")
+
+[node name="SlideInto" type="Node" parent="State Control/Engage" node_paths=PackedStringArray("enemy")]
+script = ExtResource("6_ap4us")
+enemy = NodePath("../../..")
+
+[node name="Cast" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("7_tkkjf")
+enemy = NodePath("../..")
+rayCast = NodePath("../../RayCast2D")
+
+[node name="Summon" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy")]
+script = ExtResource("8_loxtb")
+enemy = NodePath("../../..")
+summoned_creature1 = ExtResource("9_obl4o")
+summoned_creature2 = ExtResource("10_kg8qd")
+summoned_creature3 = ExtResource("13_ja1by")
+summoned_creature4 = ExtResource("14_65sp2")
+summon_effect = ExtResource("10_wyx51")
+
+[node name="Curse" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy")]
+script = ExtResource("12_kcyhd")
+enemy = NodePath("../../..")
+curse_glyph = ExtResource("13_iphtl")
+
+[node name="Magic Missile" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("12_uuafg")
+enemy = NodePath("../../..")
+projectile = ExtResource("12_dflla")
+rayCast = NodePath("../../../RayCast2D")
+
+[node name="Force Current" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("13_j7uls")
+enemy = NodePath("../../..")
+projectile = ExtResource("14_bb51k")
+rayCast = NodePath("../../../RayCast2D")
+
+[node name="Beam" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy", "beamCast", "beam")]
+script = ExtResource("18_hi8f4")
+enemy = NodePath("../../..")
+beamCast = NodePath("../../../BeamRaycast")
+beam = NodePath("../../../BeamRaycast/BeamLine")
+
+[node name="beam_duration" type="Timer" parent="State Control/Cast/Beam"]
+wait_time = 5.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="State Control/Cast/Beam"]
+stream = ExtResource("24_4ob3e")
+volume_db = 10.0
+
+[node name="Stars" type="Node" parent="State Control/Cast" node_paths=PackedStringArray("enemy", "rayCast")]
+script = ExtResource("23_sgqur")
+enemy = NodePath("../../..")
+projectile = ExtResource("24_dovkt")
+rayCast = NodePath("../../../RayCast2D")
+
+[node name="Retreat" type="Node" parent="State Control"]
+
+[node name="SlideAway" type="Node" parent="State Control/Retreat" node_paths=PackedStringArray("enemy")]
+script = ExtResource("21_5oglh")
+enemy = NodePath("../../..")
+
+[node name="Intervention" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("22_p483y")
+enemy = NodePath("../..")
+intervention_light = ExtResource("23_y1eak")
+glyph = ExtResource("13_iphtl")
+force_wave = ExtResource("14_bb51k")
+
+[node name="Idle" type="Node" parent="State Control"]
+script = ExtResource("30_35754")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_5rtrg")
+}
+
+[node name="OnHitPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_gqeda")
+}
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(250, 0)
+
+[node name="BeamRaycast" type="RayCast2D" parent="."]
+position = Vector2(15, -80)
+target_position = Vector2(500, 0)
+
+[node name="BeamLine" type="Line2D" parent="BeamRaycast"]
+visible = false
+z_index = 1
+points = PackedVector2Array(0, 0, 29, 0)
+width = 0.0
+default_color = Color(1.5, 0.445, 1.5, 1)
+begin_cap_mode = 2
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="BeamRaycast"]
+top_level = true
+position = Vector2(47, -25)
+scale = Vector2(0.612118, 0.464331)
+emitting = false
+amount = 150
+process_material = SubResource("ParticleProcessMaterial_6e4p8")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("31_pndny")
+
+[connection signal="timeout" from="State Control/Cast/Beam/beam_duration" to="State Control/Cast/Beam" method="_on_beam_duration_timeout"]
+[connection signal="animation_finished" from="AnimationPlayer" to="State Control/Cast/Summon" method="_on_animation_player_animation_finished"]
+[connection signal="animation_finished" from="AnimationPlayer" to="State Control/Cast/Magic Missile" method="_on_animation_player_animation_finished"]

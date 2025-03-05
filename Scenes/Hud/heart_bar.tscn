@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://7i30u8mpwy4y"]
+
+[ext_resource type="Script" path="res://Scripts/Hud/heart_bar.gd" id="1_mklmm"]
+
+[node name="HeartBar" type="HBoxContainer"]
+top_level = true
+offset_right = 89.0
+offset_bottom = 8.0
+theme_override_constants/separation = 1
+script = ExtResource("1_mklmm")

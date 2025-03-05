@@ -1,0 +1,88 @@
+[gd_scene load_steps=11 format=3 uid="uid://cexkcx50jsodx"]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/force_wave.gd" id="1_um5a1"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/projectile_hitbox.gd" id="2_18kql"]
+[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_nbn0v"]
+[ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="4_bytw6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_u2g5o"]
+shader = ExtResource("3_nbn0v")
+shader_parameter/flash_color = Color(0.764706, 0.0509804, 0.0705882, 1)
+shader_parameter/flash_value = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
+radius = 6.66667
+height = 58.6667
+
+[sub_resource type="Animation" id="Animation_nt0re"]
+resource_name = "Play"
+length = 0.55
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hitbox/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_sjj7s"]
+_data = {
+"Play": SubResource("Animation_nt0re")
+}
+
+[sub_resource type="Gradient" id="Gradient_8d7y4"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_7odju"]
+gradient = SubResource("Gradient_8d7y4")
+fill = 1
+fill_from = Vector2(0.5, 0.527523)
+fill_to = Vector2(0.830275, 0.169725)
+
+[node name="Force Wave" type="Node2D" groups=["Enemies"]]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("1_um5a1")
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2_18kql")
+
+[node name="Sprite2D" type="Sprite2D" parent="Hitbox"]
+material = SubResource("ShaderMaterial_u2g5o")
+position = Vector2(-1.13687e-13, 0)
+rotation = 3.14159
+scale = Vector2(1, 1.349)
+texture = ExtResource("4_bytw6")
+hframes = 9
+vframes = 30
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+visibility_layer = 2
+position = Vector2(-4, 0)
+shape = SubResource("CapsuleShape2D_r4ntl")
+debug_color = Color(0.933354, 0, 0, 0.419608)
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Hitbox"]
+position = Vector2(-1.33333, 0)
+rotation = -1.5708
+scale = Vector2(1.41667, 0.516667)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_sjj7s")
+}
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+scale = Vector2(0.371745, 0.833333)
+color = Color(0.392157, 0.180392, 1, 1)
+texture = SubResource("GradientTexture2D_7odju")
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_arcane_arrow_area_entered"]
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
+[connection signal="screen_exited" from="Hitbox/VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

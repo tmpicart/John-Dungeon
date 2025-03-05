@@ -1,0 +1,75 @@
+[gd_scene load_steps=10 format=3 uid="uid://s0p7t5g4q00k"]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/energy_star.gd" id="1_e5xby"]
+[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_uurli"]
+[ext_resource type="Texture2D" uid="uid://b3srp2bju2ax8" path="res://Assets/Effects/Retro Impact Effect Pack 3 B.png" id="3_2372p"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6bks0"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mqxuc"]
+radius = 6.0
+
+[sub_resource type="Animation" id="Animation_r1pt7"]
+resource_name = "Play"
+length = 0.55
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("hitbox/Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [138, 139, 140, 141, 142, 143]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t04hj"]
+_data = {
+"Play": SubResource("Animation_r1pt7")
+}
+
+[sub_resource type="Gradient" id="Gradient_qn40s"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ww2ve"]
+gradient = SubResource("Gradient_qn40s")
+fill = 1
+fill_from = Vector2(0.5, 0.527523)
+fill_to = Vector2(0.830275, 0.169725)
+
+[node name="Energy Star" type="CharacterBody2D" groups=["Enemies"]]
+z_index = 1
+script = ExtResource("1_e5xby")
+
+[node name="hitbox" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("2_uurli")
+
+[node name="Sprite2D" type="Sprite2D" parent="hitbox"]
+texture = ExtResource("3_2372p")
+hframes = 6
+vframes = 24
+frame = 138
+
+[node name="Hitbox" type="CollisionShape2D" parent="hitbox"]
+visibility_layer = 2
+shape = SubResource("CircleShape2D_6bks0")
+debug_color = Color(0.933354, 0, 0, 0.419608)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_mqxuc")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_t04hj")
+}
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, 0.5)
+scale = Vector2(0.265625, 0.265625)
+color = Color(0.392157, 0.180392, 1, 1)
+texture = SubResource("GradientTexture2D_ww2ve")

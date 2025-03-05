@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkruttwdv3hnk"]
+
+[ext_resource type="Texture2D" uid="uid://brum2txhf4ce4" path="res://Assets/Items/can.png" id="1_sp22o"]
+
+[node name="Panel" type="Panel"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 667.0
+offset_bottom = 667.0
+color = Color(0.314316, 0.314316, 0.314316, 1)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 75.0
+offset_right = 662.0
+offset_bottom = 262.0
+theme_override_font_sizes/normal_font_size = 100
+text = "item"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = -1.0
+offset_right = 657.0
+offset_bottom = 133.0
+theme_override_font_sizes/normal_font_size = 59
+text = " [1] to buy       cost:"
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 161.0
+offset_top = 247.0
+offset_right = 530.0
+offset_bottom = 616.0
+texture = ExtResource("1_sp22o")
