@@ -159,27 +159,12 @@ func _physics_process(_delta):
 	move_and_slide()
 	move()
 	
-	# Velocity based facing
-	
-	#if velocity.length() < 1:
-		#$AnimationPlayer.stop() # or play an idle animation
-	#elif abs(velocity.y) > abs(velocity.x):
-		#if velocity.y > 0:
-			#$AnimationPlayer.play("Down_Move")
-		#else:
-			#$AnimationPlayer.play("Up_Move")
-	#else:
-		#if velocity.x > 0:
-			#$AnimationPlayer.play("Right_Move")
-		#else:
-			#$AnimationPlayer.play("Left_Move")
-	
 	#rotation based facing
 	var mouse_position = get_global_mouse_position()		
 	var direction = mouse_position - global_position
 	var angle = direction.angle()	
 	
-	if not isHit and not isDead:
+	if not isDead:
 		if velocity.length() < 1:
 				
 			if abs(angle) < PI / 4:

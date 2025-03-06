@@ -64,6 +64,7 @@ func kill():
 
 	is_dead = true
 	$AnimationPlayer.play("Death")
+	$death_sfx.play()
 	var death_duration = $AnimationPlayer.current_animation_length
 	await get_tree().create_timer(death_duration).timeout
 	queue_free() # This will delete the node after the animation completes

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://clp3rxlbhwvv6"]
+[gd_scene load_steps=25 format=3 uid="uid://clp3rxlbhwvv6"]
 
 [ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://Assets/Enemies/ENEMY_slime.png" id="1_75lyw"]
 [ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_d5q7n"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="7_st1ej"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="8_sbseg"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="9_a6klr"]
+[ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="10_5m1q3"]
 
 [sub_resource type="GDScript" id="GDScript_s6cru"]
 script/source = "extends CharacterBody2D
@@ -41,10 +42,10 @@ func take_damage(dmg:int):
 		return
 	
 	is_hit = true
+	$ouch_sfx.play()
 	if HP-dmg <= 0:
 		kill()
 	else:
-		$ouch_sfx.play()
 		$AnimationPlayer.play(\"OnHit\")
 		var stun_duration = $AnimationPlayer.current_animation_length
 		await get_tree().create_timer(stun_duration).timeout
@@ -63,6 +64,7 @@ func kill():
 	
 	is_dead = true
 	$AnimationPlayer.play(\"Death\")
+	$death_sfx.play()
 	var death_duration = $AnimationPlayer.current_animation_length
 	await get_tree().create_timer(death_duration).timeout
 	queue_free() # This will delete the node after the animation completes
@@ -278,6 +280,12 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("9_a6klr")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_3huqu"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("10_5m1q3")
+
 [node name="Slime_Green" type="CharacterBody2D" groups=["Enemies"]]
 position = Vector2(0, -3.045)
 scale = Vector2(0.75, 0.75)
@@ -343,3 +351,7 @@ volume_db = -10.0
 [node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_uphc3")
 volume_db = -5.0
+
+[node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_3huqu")
+volume_db = 6.0
