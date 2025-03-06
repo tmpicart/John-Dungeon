@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bj53m0le6fixn"]
+[gd_scene load_steps=26 format=3 uid="uid://bj53m0le6fixn"]
 
 [ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
 [ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
@@ -9,8 +9,9 @@
 [ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd" id="6_qgvvr"]
 [ext_resource type="PackedScene" uid="uid://bcvjqylald7g8" path="res://Scenes/Projectiles/arcane_arrow.tscn" id="7_0t3rh"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="9_jre34"]
-[ext_resource type="AudioStream" uid="uid://bbs7l1gwd8n1m" path="res://Assets/Sounds/Enemies/Archer/bow-release-bow-and-arrow-4-101936.mp3" id="10_gdiw0"]
+[ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="11_fwn7j"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="11_gng2b"]
+[ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="12_ynpjb"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
 resource_local_to_scene = true
@@ -140,6 +141,18 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("11_gng2b")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_d36xm"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("11_fwn7j")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ht1mq"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("12_ynpjb")
+
 [node name="Arcane_Archer" type="CharacterBody2D" groups=["Enemies"]]
 scale = Vector2(0.7, 0.7)
 motion_mode = 1
@@ -196,11 +209,19 @@ position = Vector2(-1.35525e-20, -11.4286)
 shape = SubResource("CapsuleShape2D_to1xr")
 debug_color = Color(0, 1, 0, 0.0901961)
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("10_gdiw0")
-
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_gm4ve")
 volume_db = 6.0
+
+[node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0, -2)
+stream = SubResource("AudioStreamRandomizer_d36xm")
+volume_db = -10.0
+
+[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_ht1mq")
+volume_db = -5.0
+
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
 
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]

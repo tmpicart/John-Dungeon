@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://ci70mpdu1yk5g"]
+[gd_scene load_steps=31 format=3 uid="uid://ci70mpdu1yk5g"]
 
 [ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/necromancer.gd" id="1_pwncg"]
 [ext_resource type="Texture2D" uid="uid://k5puvnbpg420" path="res://Assets/Enemies/ENEMY_NECROMANCER.png" id="2_0u5aw"]
@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="11_eupuc"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="13_p2als"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="14_1t88p"]
+[ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="15_0uktk"]
+[ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="16_v2j72"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f7sk2"]
 shader = ExtResource("2_byyqd")
@@ -198,6 +200,18 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("14_1t88p")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_m1200"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("15_0uktk")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_nfh73"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("16_v2j72")
+
 [node name="Necromancer" type="CharacterBody2D" groups=["Enemies"]]
 position = Vector2(0, -1)
 scale = Vector2(0.7, 0.7)
@@ -285,6 +299,17 @@ debug_color = Color(0, 1, 0, 0.0901961)
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_jyny8")
 volume_db = 6.0
+
+[node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0, -2)
+stream = SubResource("AudioStreamRandomizer_m1200")
+volume_db = -10.0
+
+[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_nfh73")
+volume_db = -5.0
+
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
 
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemySummon" method="_on_animation_player_animation_finished"]
