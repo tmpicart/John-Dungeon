@@ -1,0 +1,13 @@
+res://Scenes/Levels/Dungeon Parts/Starting Room.tscn
+res://Assets/Effects/on_hit_flash.gdshader
+res://Scenes/Characters/Character.tscn
+res://Scenes/Characters/slime_green.tscn
+res://Scenes/Characters/slime_red.tscn
+res://Scenes/Characters/flail_skeleton.tscn
+res://Scenes/Characters/arcane_archer.tscn
+res://Scenes/Characters/necromancer.tscn
+res://Scenes/Weapons/Weapon.tscn
+res://Scripts/Player/Character.gd
+res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd
+res://Scripts/Enemies/FlailSkeleton/flail_skeleton.gd
+res://Scripts/Enemies/Necromancer/necromancer.gd

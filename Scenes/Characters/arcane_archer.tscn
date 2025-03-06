@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bj53m0le6fixn"]
+[gd_scene load_steps=23 format=3 uid="uid://bj53m0le6fixn"]
 
 [ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
 [ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bcvjqylald7g8" path="res://Scenes/Projectiles/arcane_arrow.tscn" id="7_0t3rh"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="9_jre34"]
 [ext_resource type="AudioStream" uid="uid://bbs7l1gwd8n1m" path="res://Assets/Sounds/Enemies/Archer/bow-release-bow-and-arrow-4-101936.mp3" id="10_gdiw0"]
+[ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="11_gng2b"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
 resource_local_to_scene = true
@@ -133,6 +134,12 @@ _data = {
 radius = 8.0
 height = 22.8571
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_gm4ve"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("11_gng2b")
+
 [node name="Arcane_Archer" type="CharacterBody2D" groups=["Enemies"]]
 scale = Vector2(0.7, 0.7)
 motion_mode = 1
@@ -191,5 +198,9 @@ debug_color = Color(0, 1, 0, 0.0901961)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("10_gdiw0")
+
+[node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_gm4ve")
+volume_db = 6.0
 
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]

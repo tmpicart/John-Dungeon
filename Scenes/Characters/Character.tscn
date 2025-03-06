@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://1h4rtwaxgf8v" path="res://Assets/Player/PLAYER_blade.png" id="3_lddmy"]
 [ext_resource type="PackedScene" uid="uid://r5aogxe6cokx" path="res://Scenes/Weapons/shield.tscn" id="5_yrdbc"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="6_wp5nt"]
-[ext_resource type="AudioStream" uid="uid://db4hyly4pqm7o" path="res://Assets/Sounds/ouch.mp3" id="7_ja2h5"]
 [ext_resource type="AudioStream" uid="uid://b1cmkf8rjm6ka" path="res://Assets/Sounds/Player/Walk/walk1.wav" id="8_72wq4"]
 [ext_resource type="AudioStream" uid="uid://bly6jpfp5o80s" path="res://Assets/Sounds/Player/Walk/walk2.wav" id="9_quh8x"]
 [ext_resource type="AudioStream" uid="uid://bbh2isy5lm0sc" path="res://Assets/Sounds/Player/Walk/walk3.wav" id="10_x1vxe"]
@@ -249,6 +248,10 @@ height = 46.6667
 radius = 15.0
 height = 46.6667
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_l28th"]
+random_pitch = 1.1
+random_volume_offset_db = 1.0
+
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aeaj6"]
 random_pitch = 1.1
 random_volume_offset_db = 1.0
@@ -314,8 +317,9 @@ shape = SubResource("CapsuleShape2D_crbhn")
 debug_color = Color(1, 0, 0, 0.419608)
 
 [node name="ouch_sfx" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_ja2h5")
+stream = SubResource("AudioStreamRandomizer_l28th")
 volume_db = -16.199
+pitch_scale = 0.9
 
 [node name="walk_sfx" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_aeaj6")
