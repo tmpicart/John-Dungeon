@@ -22,8 +22,6 @@ func Physics_Update(delta:float):
 		if player.global_position.y > enemy.global_position.y || enemy.global_position.y  < player.global_position.y:
 			enemy.velocity = (enemy.global_position - player.global_position).rotated(90) * (speed)
 		else: 
-			if player.global_position.x < enemy.global_position.x:
-				enemy.flip()
 			ChangeState.emit(self, "EnemyAttack")
 
 	if direction.length() > chase_drop_distance:

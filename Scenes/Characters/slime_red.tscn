@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dl6hpi8ycnpdd"]
+[gd_scene load_steps=25 format=3 uid="uid://dl6hpi8ycnpdd"]
 
 [ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/slime_red.gd" id="1_brr4j"]
 [ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_pf7gv"]
@@ -10,6 +10,9 @@
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="7_oqxeq"]
 [ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/EnemyChaseRedSlime.gd" id="7_pxx6h"]
 [ext_resource type="Script" path="res://Scripts/Enemies/SlimeRed/EnemyAttackRedSlime.gd" id="8_vkf7y"]
+[ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="11_ya6ns"]
+[ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="12_jslwe"]
+[ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="13_kyiiu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sfh3l"]
 resource_local_to_scene = true
@@ -142,6 +145,24 @@ _data = {
 radius = 7.0
 height = 14.0
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aac6d"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("11_ya6ns")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_6ak6b"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("12_jslwe")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_q2ith"]
+random_pitch = 1.2
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("13_kyiiu")
+
 [node name="Slime_Red" type="CharacterBody2D" groups=["Enemies"]]
 scale = Vector2(0.65, 0.65)
 motion_mode = 1
@@ -202,3 +223,18 @@ script = ExtResource("7_oqxeq")
 position = Vector2(0, -7)
 shape = SubResource("CapsuleShape2D_la8bw")
 debug_color = Color(0, 0.6, 0, 0.419608)
+
+[node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
+position = Vector2(0, -2)
+stream = SubResource("AudioStreamRandomizer_aac6d")
+volume_db = -10.0
+
+[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_6ak6b")
+volume_db = -5.0
+
+[node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_q2ith")
+volume_db = 6.0
+
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]

@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://Assets/Enemies/ENEMY_slime.png" id="1_75lyw"]
 [ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_d5q7n"]
+[ext_resource type="Script" path="res://Scripts/Enemies/SlimeGreen/slime_green.gd" id="1_dnrxr"]
 [ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="2_bmv2t"]
 [ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="2_ebbn7"]
 [ext_resource type="Script" path="res://Scripts/Enemies/SlimeGreen/EnemyChaseGreenSlime.gd" id="4_xd2gi"]
@@ -12,64 +13,6 @@
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="9_a6klr"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="10_5m1q3"]
 
-[sub_resource type="GDScript" id="GDScript_s6cru"]
-script/source = "extends CharacterBody2D
-
-@export var HP:int = 3
-@export var damage:int = 1
-
-var is_dead = false
-var is_hit = false
-
-func _physics_process(_delta):
-	
-	if is_hit or is_dead:
-		return
-		
-	move_and_slide()
-		
-	if velocity.length() > 0:
-		$AnimationPlayer.play(\"Bounce\")
-		if $walk_sfx.playing == false:
-				$walk_sfx.play()
-	if velocity.x > 0:
-		$Sprite2D.set_scale(Vector2(1,1))
-	else:
-		$Sprite2D.set_scale(Vector2(-1,1))
-	
-func take_damage(dmg:int):
-	if is_hit:
-		return
-	
-	is_hit = true
-	$ouch_sfx.play()
-	if HP-dmg <= 0:
-		kill()
-	else:
-		$AnimationPlayer.play(\"OnHit\")
-		var stun_duration = $AnimationPlayer.current_animation_length
-		await get_tree().create_timer(stun_duration).timeout
-		set_hp(HP - dmg)
-		is_hit = false
-	
-func set_hp(newHP):
-	if newHP <= 0:
-		HP = 0
-	else:
-		HP = newHP
-
-func kill():
-	if is_dead:
-		return
-	
-	is_dead = true
-	$AnimationPlayer.play(\"Death\")
-	$death_sfx.play()
-	var death_duration = $AnimationPlayer.current_animation_length
-	await get_tree().create_timer(death_duration).timeout
-	queue_free() # This will delete the node after the animation completes
-"
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oclns"]
 resource_local_to_scene = true
 shader = ExtResource("1_d5q7n")
@@ -79,22 +22,6 @@ shader_parameter/flash_value = 0.0
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nokm8"]
 radius = 8.27585
 height = 16.5517
-
-[sub_resource type="Animation" id="Animation_mxul5"]
-resource_name = "Bounce"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
-}
 
 [sub_resource type="Animation" id="Animation_devur"]
 resource_name = "Death"
@@ -252,12 +179,28 @@ tracks/4/keys = {
 "values": [false]
 }
 
+[sub_resource type="Animation" id="Animation_mxul5"]
+resource_name = "Walk"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7udel"]
 _data = {
-"Bounce": SubResource("Animation_mxul5"),
 "Death": SubResource("Animation_devur"),
 "OnHit": SubResource("Animation_tyvg6"),
-"RESET": SubResource("Animation_hcn56")
+"RESET": SubResource("Animation_hcn56"),
+"Walk": SubResource("Animation_mxul5")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wso5k"]
@@ -290,7 +233,7 @@ stream_0/stream = ExtResource("10_5m1q3")
 position = Vector2(0, -3.045)
 scale = Vector2(0.75, 0.75)
 motion_mode = 1
-script = SubResource("GDScript_s6cru")
+script = ExtResource("1_dnrxr")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_oclns")
@@ -355,3 +298,5 @@ volume_db = -5.0
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_3huqu")
 volume_db = 6.0
+
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]

@@ -24,8 +24,6 @@ func Physics_Update(delta:float):
 		direction = enemy.global_position - player.global_position
 		enemy.velocity = direction * speed
 	else:	
-		if player.global_position.x < enemy.global_position.x:
-			enemy.flip()
 		if rayCast.is_colliding() and rayCast.get_collider() == player:
 			ChangeState.emit(self, "EnemyAttack")
 

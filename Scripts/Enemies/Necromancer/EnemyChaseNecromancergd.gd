@@ -21,8 +21,6 @@ func Physics_Update(delta:float):
 	if direction.length() > attempt_attack_range:
 		enemy.velocity = direction * speed
 	else:	
-		if player.global_position.x < enemy.global_position.x:
-			enemy.flip()
 			
 		var action = randi_range(1,4)
 		print(action)
@@ -33,4 +31,3 @@ func Physics_Update(delta:float):
 
 	if direction.length() > chase_drop_distance:
 		ChangeState.emit(self, "EnemyIdle")
-
