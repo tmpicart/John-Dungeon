@@ -6,6 +6,6 @@ func summon():
 
 	attacking = true
 	$AnimationPlayer.play("Summon")
-	attack_sfx.play() # Uses attack_sfx for summoning sounds
+	$summon_sfx.play() # Uses attack_sfx for summoning sounds
 	await wait_for_animation()
 	attacking = false

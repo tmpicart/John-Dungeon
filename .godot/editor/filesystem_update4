@@ -6,14 +6,4 @@ res://Scenes/Characters/slime_red.tscn
 res://Scenes/Characters/flail_skeleton.tscn
 res://Scenes/Characters/arcane_archer.tscn
 res://Scenes/Characters/necromancer.tscn
-res://Scenes/Weapons/Weapon.tscn
 res://Scripts/Player/Character.gd
-res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd
-res://Scripts/Enemies/FlailSkeleton/flail_skeleton.gd
-res://Scripts/Enemies/Necromancer/necromancer.gd
-res://Scripts/Enemies/BaseEnemy.gd
-res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd
-res://Scripts/Enemies/SlimeGreen/slime_green.gd
-res://Scripts/Enemies/FlailSkeleton/EnemyChaseSkeleton.gd
-res://Scripts/Enemies/Necromancer/EnemyChaseNecromancergd.gd
-res://Scripts/Enemies/SlimeRed/slime_red.gd

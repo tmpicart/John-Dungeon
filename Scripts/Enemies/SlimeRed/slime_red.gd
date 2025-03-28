@@ -15,7 +15,7 @@ func explode():
 	remove_from_group("Enemies")
 	velocity = Vector2.ZERO
 	$AnimationPlayer.play("Explode")
-	attack_sfx.play() # Uses attack sound for explosion if desired
+	$explode_sfx.play() # Uses attack sound for explosion if desired
 	await wait_for_animation()
 	queue_free()
 

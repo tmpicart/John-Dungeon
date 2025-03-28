@@ -3,10 +3,10 @@ extends CharacterBody2D
 @export var HP: int = 1
 @export var damage: int = 1
 
-@onready var walk_sfx = $walk_sfx
-@onready var attack_sfx = $attack_sfx
-@onready var ouch_sfx = $ouch_sfx
-@onready var death_sfx = $death_sfx
+@onready var walk_sfx = $walk_sfx if has_node("walk_sfx") else null
+@onready var attack_sfx = $attack_sfx if has_node("attack_sfx") else null
+@onready var ouch_sfx = $ouch_sfx if has_node("ouch_sfx") else null
+@onready var death_sfx = $death_sfx if has_node("death_sfx") else null
 
 var attacking = false
 var is_dead = false
@@ -20,25 +20,28 @@ func _physics_process(_delta):
 
 func handle_animations():
 	if velocity.length() > 0:
-		$AnimationPlayer.play("Walk")
-		if not walk_sfx.playing:
+		if $AnimationPlayer.has_animation("Walk"):
+			$AnimationPlayer.play("Walk")
+		if walk_sfx and not walk_sfx.playing:
 			walk_sfx.play()
 	else:
-		$AnimationPlayer.play("Idle")
+		if $AnimationPlayer.has_animation("Idle"):
+			$AnimationPlayer.play("Idle")
 	
-	$Sprite2D.set_scale(Vector2(1, 1) if velocity.x >= 0 else Vector2(-1, 1))
+	$Sprite2D.flip_h = velocity.x < 0
 
 func take_damage(dmg: int):
 	if is_dead or is_hit:
 		return
 
 	is_hit = true
-	ouch_sfx.play()
-	5
-	if HP-dmg <= 0:
+	if ouch_sfx:
+		ouch_sfx.play()
+	if HP - dmg <= 0:
 		kill()
 	else:
-		$AnimationPlayer.play("OnHit")
+		if $AnimationPlayer.has_animation("OnHit"):
+			$AnimationPlayer.play("OnHit")
 		await wait_for_animation()
 		HP = max(HP - dmg, 0)
 		is_hit = false
@@ -48,8 +51,10 @@ func kill():
 		return
 
 	is_dead = true
-	$AnimationPlayer.play("Death")
-	death_sfx.play()
+	if $AnimationPlayer.has_animation("Death"):
+		$AnimationPlayer.play("Death")
+	if death_sfx:
+		death_sfx.play()
 	await wait_for_animation()
 	queue_free()
 
@@ -58,8 +63,10 @@ func attack():
 		return
 
 	attacking = true
-	$AnimationPlayer.play("Attack")
-	attack_sfx.play()
+	if $AnimationPlayer.has_animation("Attack"):
+		$AnimationPlayer.play("Attack")
+	if attack_sfx:
+		attack_sfx.play()
 	await wait_for_animation()
 	attacking = false
 
