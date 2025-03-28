@@ -1,14 +1,14 @@
 extends CharacterBody2D
 class_name Character
 
-const FRICTION: float = 0.2
+const FRICTION: float = 200
 
 # Custom Values
-@onready var healthbar = get_tree().get_first_node_in_group("health")
-@onready var label = $Label
 # walking
-@export var acceleration: int = 50
-@export var maxSpeed: int = 100
+@export var acceleration: int = 300
+@export var maxSpeed: int = 125
+@export var dash_speed: float = 150 # Speed during dash
+
 # hp stuff/items yea
 @export var maxHP: int = 6
 @export var HP: int = 6
@@ -28,6 +28,8 @@ signal potion_changed
 
 
 #Onready's
+@onready var healthbar = get_tree().get_first_node_in_group("health")
+@onready var label = $Label
 @onready var sprite:Sprite2D = get_node("CharSprite")
 @onready var hurtBox:Hurtbox = get_node("Hurtbox")
 #@onready var inventory = get_node("Inventory")
@@ -35,6 +37,8 @@ signal potion_changed
 @onready var weapon:Node2D = get_node("Weapon")
 @onready var shield:Sprite2D = get_node("Shield")
 @onready var damage = weapon.damage
+@onready var dash_cooldown_timer = $"Dash Cooldown"
+
 
 #other used variables
 var mov_Direction:Vector2 = Vector2.ZERO
@@ -42,6 +46,8 @@ var blocking = false
 var isDead = false
 var isHit = false
 var talking = false
+var is_dashing: bool = false
+var can_dash: bool = true
 
 func _ready():
 	label.hide()
@@ -139,34 +145,34 @@ func kill():
 	await get_tree().create_timer($OnHitPlayer.current_animation_length).timeout
 	$OnHitPlayer.play("Death")
 	
-	# NOTE: IF THE PLAYER DIES THE GAME WILL CLOSE LOL
-	#queue_free() # apparently this will delete node after it can be
-	
 # Movement Stuff
-func move():
+func move(delta):
 	mov_Direction = Vector2.ZERO
-	if not(isDead or talking):
+	if not (isDead or talking):
 		mov_Direction = Vector2(
 			Input.get_action_strength("right") - Input.get_action_strength("left"),
 			Input.get_action_strength("down") - Input.get_action_strength("up")
 		).normalized()
-	velocity += mov_Direction * acceleration
-	velocity = velocity.limit_length(maxSpeed)
-	velocity = lerp(velocity,Vector2.ZERO,FRICTION)
 	
-func _physics_process(_delta):
-	# Character Move OverHere
+	velocity += mov_Direction * acceleration * delta
+	
+	if not is_dashing:
+		velocity = velocity.limit_length(maxSpeed)
+		
+	velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+
+func _physics_process(delta):
 	move_and_slide()
-	move()
+	move(delta)
 	
 	#rotation based facing
 	var mouse_position = get_global_mouse_position()		
 	var direction = mouse_position - global_position
 	var angle = direction.angle()	
 	
-	if not isDead:
-		if velocity.length() < 1:
-				
+	if not isDead and not is_dashing:
+		
+		if velocity.length() < 1:  # If the player is not moving (idle)
 			if abs(angle) < PI / 4:
 				shield.Right()
 				$AnimationPlayer.play("Right")
@@ -179,8 +185,8 @@ func _physics_process(_delta):
 			else:
 				shield.Up()
 				$AnimationPlayer.play("Up")
-		else:
-			if $walk_sfx.playing == false:
+		else:  # If the player is moving
+			if not $walk_sfx.playing:
 				$walk_sfx.play()
 				
 			if abs(angle) < PI / 4:
@@ -195,7 +201,35 @@ func _physics_process(_delta):
 			else:
 				shield.Up()
 				$AnimationPlayer.play("Up_Move")
-			
+		
+func dash():
+	if can_dash and not isDead and not talking and mov_Direction != Vector2.ZERO:
+		can_dash = false
+		is_dashing = true
+		velocity = mov_Direction * dash_speed  # Apply dash speed\
+		
+		shield.hide()
+		weapon.hide()
+		
+		if velocity.x > 0:
+			$AnimationPlayer.play("Right_Dash")  # Play the right dash animation
+		elif velocity.x < 0:
+			$AnimationPlayer.play("Left_Dash")  # Play the left dash animation
+		elif velocity.y > 0:
+			$AnimationPlayer.play("Down_Dash")  # Play the down dash animation
+		else:
+			$AnimationPlayer.play("Up_Dash")  # Play the up dash animation
+		# Wait for the dash duration
+		await get_tree().create_timer($AnimationPlayer.current_animation_length).timeout
+	
+		is_dashing = false
+		shield.show()
+		weapon.show()
+		dash_cooldown_timer.start()
+
+func _on_dash_cooldown_timeout():
+	can_dash = true  # Reset dash availability when cooldown ends
+		
 func _input(event):
 	if (isDead or talking): #Can't Perform Actions if dead
 		if event.is_action_pressed("quit"):
@@ -213,3 +247,5 @@ func _input(event):
 		block()
 	if event.is_action_pressed("bomb"):
 		use_Bomb()
+	if event.is_action_pressed("dash"):
+		dash()

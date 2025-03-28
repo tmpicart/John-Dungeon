@@ -234,6 +234,7 @@ position = Vector2(0, -3.045)
 scale = Vector2(0.75, 0.75)
 motion_mode = 1
 script = ExtResource("1_dnrxr")
+HP = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_oclns")
@@ -241,6 +242,7 @@ position = Vector2(0, -4)
 texture = ExtResource("1_75lyw")
 hframes = 2
 vframes = 4
+frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
@@ -298,5 +300,3 @@ volume_db = -5.0
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_3huqu")
 volume_db = 6.0
-
-[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]

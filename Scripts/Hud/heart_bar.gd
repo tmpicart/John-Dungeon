@@ -1,6 +1,6 @@
 extends HBoxContainer
 
-@onready var heart_scene = preload("res://Hud/heart.tscn")
+@onready var heart_scene = preload("res://Scenes/Hud/heart.tscn")
 
 func add_MaxHealth():
 	var heart = heart_scene.instantiate()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://bddrcwkuo7k48"]
+[gd_scene load_steps=33 format=3 uid="uid://bddrcwkuo7k48"]
 
 [ext_resource type="Script" path="res://Scripts/Player/Character.gd" id="1_pcl0v"]
 [ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_mrv5d"]
@@ -225,18 +225,86 @@ tracks/0/keys = {
 "values": [120, 121, 122, 123, 124, 125, 126, 127]
 }
 
+[sub_resource type="Animation" id="Animation_qbimq"]
+resource_name = "Up_Dash"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [133, 134, 135, 136]
+}
+
+[sub_resource type="Animation" id="Animation_uhcgd"]
+resource_name = "Down_Dash"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [13, 14, 15, 16]
+}
+
+[sub_resource type="Animation" id="Animation_s5x24"]
+resource_name = "Left_Dash"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [93, 94, 95, 96]
+}
+
+[sub_resource type="Animation" id="Animation_totl6"]
+resource_name = "Right_Dash"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [53, 54, 55, 56]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vyssx"]
 _data = {
 "Death": SubResource("Animation_mhlbg"),
 "Death_Roll": SubResource("Animation_vkye4"),
 "Down": SubResource("Animation_4fjer"),
+"Down_Dash": SubResource("Animation_uhcgd"),
 "Down_Move": SubResource("Animation_hjs10"),
 "Left": SubResource("Animation_qbhi2"),
+"Left_Dash": SubResource("Animation_s5x24"),
 "Left_Move": SubResource("Animation_gj5oh"),
 "OnHit": SubResource("Animation_ct02w"),
 "Right": SubResource("Animation_5gvdc"),
+"Right_Dash": SubResource("Animation_totl6"),
 "Right_Move": SubResource("Animation_gfwco"),
 "Up": SubResource("Animation_vhl7o"),
+"Up_Dash": SubResource("Animation_qbimq"),
 "Up_Move": SubResource("Animation_kd73c")
 }
 
@@ -279,6 +347,7 @@ scale = Vector2(2.10417, 2.10417)
 texture = ExtResource("3_lddmy")
 hframes = 40
 vframes = 4
+frame = 133
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -343,3 +412,8 @@ text = "YOU ARE DEAD!
 Press Esc to return to Title Screen!"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Dash Cooldown" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]

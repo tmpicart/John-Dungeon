@@ -120,7 +120,7 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_y2xea"]
 resource_name = "OnHit"
-length = 0.3
+length = 0.25
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -167,6 +167,7 @@ stream_0/stream = ExtResource("13_kyiiu")
 scale = Vector2(0.65, 0.65)
 motion_mode = 1
 script = ExtResource("1_brr4j")
+damage = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_sfh3l")
@@ -237,4 +238,4 @@ volume_db = -5.0
 stream = SubResource("AudioStreamRandomizer_q2ith")
 volume_db = 6.0
 
-[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="explode_sfx" type="AudioStreamPlayer2D" parent="."]
