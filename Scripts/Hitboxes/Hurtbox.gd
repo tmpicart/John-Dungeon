@@ -18,6 +18,7 @@ func _on_area_entered(area: Area2D) -> void:
 		if hurtOwner.is_in_group("Player"):
 			if hurtOwner.blocking == true:
 				if hitbox.get_parent().has_method("reflect"):
+					print("player reflected")
 					hitbox.owner.reflect()
 					if hurtOwner.blocking == true:
 						hurtOwner.parry()

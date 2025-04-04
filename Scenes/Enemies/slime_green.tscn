@@ -5,9 +5,9 @@
 [ext_resource type="Script" path="res://Scripts/Enemies/SlimeGreen/slime_green.gd" id="1_dnrxr"]
 [ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="2_bmv2t"]
 [ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="2_ebbn7"]
-[ext_resource type="Script" path="res://Scripts/Enemies/SlimeGreen/EnemyChaseGreenSlime.gd" id="4_xd2gi"]
 [ext_resource type="Texture2D" uid="uid://cyuinmnunmfx1" path="res://Assets/Enemies/ENEMY_SKELETON.png" id="6_0kd7w"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="6_ky8sd"]
+[ext_resource type="Script" path="res://Scripts/States/EnemyChase.gd" id="6_pt62m"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="7_st1ej"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="8_sbseg"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="9_a6klr"]
@@ -242,7 +242,6 @@ position = Vector2(0, -4)
 texture = ExtResource("1_75lyw")
 hframes = 2
 vframes = 4
-frame = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
@@ -257,11 +256,11 @@ initial_state = NodePath("EnemyIdle")
 [node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("2_bmv2t")
 enemy = NodePath("../..")
-detection_range = 100
 
 [node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
-script = ExtResource("4_xd2gi")
+script = ExtResource("6_pt62m")
 enemy = NodePath("../..")
+attempt_attack_range = 0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -5,9 +5,10 @@ const FRICTION: float = 200
 
 # Custom Values
 # walking
-@export var acceleration: int = 300
-@export var maxSpeed: int = 125
-@export var dash_speed: float = 150 # Speed during dash
+@export var acceleration: int = 350
+@export var maxSpeed: int = 85
+@export var dash_speed: float = 175 # Speed during dash
+@export var deceleration := 400
 
 # hp stuff/items yea
 @export var maxHP: int = 6
@@ -113,9 +114,9 @@ func take_damage(dmg:int):
 	else:
 		kill()
 	$ouch_sfx.play()
+	set_hp(HP - dmg)
 	var  invincibility_length = $OnHitPlayer.current_animation_length
 	await get_tree().create_timer(invincibility_length).timeout
-	set_hp(HP - dmg)
 	isHit = false
 
 func set_maxHP(amount:int):
@@ -137,8 +138,8 @@ func kill():
 	#print("Player Dead?")
 	isDead = true
 	acceleration = 0
-	weapon.visible = false
-	shield.visible = false  
+	weapon.hide()
+	shield.hide()
 	$AnimationPlayer.stop()
 	$OnHitPlayer.play("Death_Roll")
 	label.show()
@@ -148,22 +149,37 @@ func kill():
 # Movement Stuff
 func move(delta):
 	mov_Direction = Vector2.ZERO
+	
+	# Get movement input only if not dead or talking
 	if not (isDead or talking):
 		mov_Direction = Vector2(
 			Input.get_action_strength("right") - Input.get_action_strength("left"),
 			Input.get_action_strength("down") - Input.get_action_strength("up")
 		).normalized()
 	
-	velocity += mov_Direction * acceleration * delta
-	
-	if not is_dashing:
-		velocity = velocity.limit_length(maxSpeed)
+	# If dashing, temporarily override movement speed
+	if is_dashing:
+		# Dash movement (exceeding maxSpeed)
+		velocity += mov_Direction * dash_speed * delta
+	else:
+		# Normal acceleration towards movement direction
+		velocity += mov_Direction * acceleration * delta
 		
+		# Gradually slow down if exceeding maxSpeed
+		if velocity.length() > maxSpeed:
+			velocity = velocity.move_toward(mov_Direction * maxSpeed, deceleration * delta)
+		elif velocity.length() > maxSpeed and !is_dashing:
+			velocity = velocity.move_toward(mov_Direction * maxSpeed, deceleration * delta)
+
+	# Apply friction so movement stops smoothly when no input is given
 	velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
+
+
 
 func _physics_process(delta):
 	move_and_slide()
 	move(delta)
+	#print(velocity)
 	
 	#rotation based facing
 	var mouse_position = get_global_mouse_position()		
@@ -206,7 +222,7 @@ func dash():
 	if can_dash and not isDead and not talking and mov_Direction != Vector2.ZERO:
 		can_dash = false
 		is_dashing = true
-		velocity = mov_Direction * dash_speed  # Apply dash speed\
+		velocity = mov_Direction.normalized() * dash_speed  # Apply dash speed\
 		
 		shield.hide()
 		weapon.hide()
@@ -223,8 +239,10 @@ func dash():
 		await get_tree().create_timer($AnimationPlayer.current_animation_length).timeout
 	
 		is_dashing = false
-		shield.show()
-		weapon.show()
+		
+		if not isDead:
+			shield.show()
+			weapon.show()
 		dash_cooldown_timer.start()
 
 func _on_dash_cooldown_timeout():

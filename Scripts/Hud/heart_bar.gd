@@ -6,11 +6,11 @@ func add_MaxHealth():
 	var heart = heart_scene.instantiate()
 	add_child(heart)
 	
-func setMaxHealth(max: int):
+func setMaxHealth(max_hp: int):
 	var hearts = get_children().size() + 1 #since indexes at 0
-	var need = max - hearts
+	var need = max_hp - hearts
 	
-	for hp in max:
+	for hp in max_hp:
 		if hp > need:
 			print(hp)
 			print(hearts)

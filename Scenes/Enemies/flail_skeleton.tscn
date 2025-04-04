@@ -94,7 +94,7 @@ tracks/1/keys = {
 
 [sub_resource type="Animation" id="Animation_6s8tn"]
 resource_name = "Idle"
-length = 0.5
+length = 0.1
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -283,7 +283,6 @@ initial_state = NodePath("EnemyIdle")
 [node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("3_h1s6u")
 enemy = NodePath("../..")
-detection_range = 120
 
 [node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("6_nnboq")
