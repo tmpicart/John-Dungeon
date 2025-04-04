@@ -1,14 +1,14 @@
 extends Node2D
 class_name Projectile
 
-@export var speed := 10
+@export var speed := 500
 @export var damage:int = 1
 
 var player: CharacterBody2D	
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	var direction = Vector2.RIGHT.rotated(rotation)
-	global_position += speed * direction 
+	global_position += speed * direction * delta
 
 func destroy():
 	queue_free()

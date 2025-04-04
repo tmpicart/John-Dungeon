@@ -1,22 +1,22 @@
-extends State
+extends EnemyAttack
 class_name EnemyAttackArcaneArcher
 
-@export var enemy: CharacterBody2D
 @export var projectile: PackedScene = null
 @export var rayCast: RayCast2D
 
 func Enter():
-	#print("Attack")
-	enemy.velocity = Vector2.ZERO
+	# Common attack behavior from base class
 	await enemy.attack()
+	spawn_projectile()
 	ChangeState.emit(self, "EnemyChase")
+	# Unique behavior for Arcane Archer attack
 
-func _on_animation_player_animation_finished(animation):
-	if animation == "Attack":
-		if projectile:
-			var arrow = projectile.instantiate()
-			get_tree().current_scene.add_child(arrow)
-			arrow.add_to_group("Enemies")
-			
-			arrow.global_position = rayCast.global_position
-			arrow.global_rotation = rayCast.global_rotation
+func spawn_projectile():
+	if projectile and not enemy.is_hit:
+		print("ARROW")
+		var arrow = projectile.instantiate()
+		get_tree().current_scene.add_child(arrow)
+		arrow.add_to_group("Enemies")
+		
+		arrow.global_position = rayCast.global_position
+		arrow.global_rotation = rayCast.global_rotation

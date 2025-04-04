@@ -1,9 +1,12 @@
 res://Scenes/Levels/Dungeon Parts/Starting Room.tscn
 res://Assets/Effects/on_hit_flash.gdshader
+res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd
 res://Scenes/Characters/Character.tscn
-res://Scenes/Characters/slime_green.tscn
-res://Scenes/Characters/slime_red.tscn
-res://Scenes/Characters/flail_skeleton.tscn
-res://Scenes/Characters/arcane_archer.tscn
-res://Scenes/Characters/necromancer.tscn
+res://Scenes/Enemies/slime_green.tscn
+res://Scenes/Enemies/slime_red.tscn
+res://Scenes/Enemies/flail_skeleton.tscn
+res://Scenes/Enemies/arcane_archer.tscn
+res://Scenes/Enemies/necromancer.tscn
+res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd
+res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd
 res://Scripts/Player/Character.gd

@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/Tilesets/TILESET_DUNGEON.png" id="1_gp13s"]
 [ext_resource type="Script" path="res://Scripts/Environment/BOSSROOM.gd" id="1_vks44"]
-[ext_resource type="PackedScene" uid="uid://rhhukbmueh53" path="res://Scenes/Characters/the_sorceress.tscn" id="2_h5iji"]
+[ext_resource type="PackedScene" uid="uid://rhhukbmueh53" path="res://Scenes/Enemies/the_sorceress.tscn" id="2_h5iji"]
 [ext_resource type="PackedScene" uid="uid://bps0k3jhyu0ia" path="res://Scenes/Levels/Objects/NoOPEN.tscn" id="4_tgjfn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_amkkw"]

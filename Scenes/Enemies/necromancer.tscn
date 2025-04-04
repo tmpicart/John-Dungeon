@@ -5,12 +5,12 @@
 [ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_byyqd"]
 [ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="4_f2shu"]
 [ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="5_l3tat"]
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemyChaseNecromancergd.gd" id="6_eko0r"]
+[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd" id="6_eko0r"]
 [ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd" id="7_woxk7"]
 [ext_resource type="Script" path="res://Scripts/States/EnemyRetreat.gd" id="8_7y2c8"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://Scenes/Projectiles/magic_missile.tscn" id="8_ctycn"]
 [ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemySummon.gd" id="9_vb21g"]
-[ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Characters/flail_skeleton.tscn" id="10_eo0t0"]
+[ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Enemies/flail_skeleton.tscn" id="10_eo0t0"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="11_eupuc"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="13_p2als"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="14_1t88p"]
@@ -252,17 +252,17 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("5_l3tat")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "rayCast")]
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("6_eko0r")
+rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 attempt_attack_range = 100
-rayCast = NodePath("../../AimRaycast")
 
-[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "rayCast")]
+[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("7_woxk7")
-enemy = NodePath("../..")
 projectile = ExtResource("8_ctycn")
 rayCast = NodePath("../../AimRaycast")
+enemy = NodePath("../..")
 
 [node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("8_7y2c8")
