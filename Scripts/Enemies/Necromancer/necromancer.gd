@@ -1,5 +1,7 @@
 extends "res://Scripts/Enemies/BaseEnemy.gd"
 
+var retreat = false
+
 func summon():
 	if attacking or is_dead:
 		return
@@ -9,3 +11,8 @@ func summon():
 	$summon_sfx.play() # Uses attack_sfx for summoning sounds
 	await wait_for_animation()
 	attacking = false
+
+func take_damage(num):
+	super.take_damage(num)
+	await wait_for_animation()
+	retreat = true

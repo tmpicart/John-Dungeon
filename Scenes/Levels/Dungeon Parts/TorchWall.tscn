@@ -36,8 +36,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_plu53"]
 _data = {
-"Idle": SubResource("Animation_b87c4"),
-"RESET": SubResource("Animation_7t1mh")
+&"Idle": SubResource("Animation_b87c4"),
+&"RESET": SubResource("Animation_7t1mh")
 }
 
 [sub_resource type="Gradient" id="Gradient_bvo2f"]

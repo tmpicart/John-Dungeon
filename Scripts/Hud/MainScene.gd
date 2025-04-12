@@ -5,18 +5,25 @@ extends Node2D
 @onready var player = $Character
 
 func _ready():
+	# Set the global player reference for other scripts to access
 	Global.player = player
-	health_bar.setMaxHealth(player.maxHP)
-	health_bar.update(player.HP)
-	player.maxHp_changed.connect(health_bar.setMaxHealth)
+	
+	# Set the initial values for the health bar and update it
+	health_bar.set_max_health(player.max_hp)
+	health_bar.update(player.hp)
+	
+	# Connect signals for health changes
+	player.max_hp_changed.connect(health_bar.set_max_health)
 	player.hp_changed.connect(health_bar.update)
-	#Items
-	item_bar.update_bomb(player.bombs)
-	item_bar.update_key(player.keys)
-	item_bar.update_potion(player.potions)
-	item_bar.update_coin(player.coins)
-	# Item Signals
-	player.bomb_changed.connect(item_bar.update_bomb)
-	player.key_changed.connect(item_bar.update_key)
-	player.potion_changed.connect(item_bar.update_potion)
-	player.coin_changed.connect(item_bar.update_coin)
+	
+	# Update item bar with initial values
+	item_bar.update_bombs(player.bombs)
+	item_bar.update_keys(player.keys)
+	item_bar.update_potions(player.potions)
+	item_bar.update_coins(player.coins)
+	
+	# Connect signals for item changes
+	player.bombs_changed.connect(item_bar.update_bombs)
+	player.keys_changed.connect(item_bar.update_keys)
+	player.potions_changed.connect(item_bar.update_potions)
+	player.coins_changed.connect(item_bar.update_coins)

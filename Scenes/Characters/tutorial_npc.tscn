@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://c5keinhto18dy"]
 
-[ext_resource type="Script" path="res://Scenes/Characters/tutorial_npc.gd" id="1_dvvii"]
+[ext_resource type="Script" uid="uid://chyde3qbuba2q" path="res://Scenes/Characters/tutorial_npc.gd" id="1_dvvii"]
 [ext_resource type="Texture2D" uid="uid://crf32w5xu0ss1" path="res://Assets/NPC/NPC.png" id="2_bl230"]
-[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="3_lwwwf"]
+[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://Scripts/Interaction/Interaction_area.gd" id="3_lwwwf"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://Scripts/Dialogue/NPC_Dialog.tscn" id="4_3l3jg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5vtg3"]

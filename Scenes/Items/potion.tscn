@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://cs5nstle380af"]
 
-[ext_resource type="Script" path="res://Scenes/Items/potion.gd" id="1_d5if6"]
+[ext_resource type="Script" uid="uid://c88asbrurfajm" path="res://Scenes/Items/potion.gd" id="1_d5if6"]
 [ext_resource type="Texture2D" uid="uid://dqedk2fisvka1" path="res://Assets/Items/Potion.png" id="1_e5bpn"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_dk3c5"]
 
@@ -41,8 +41,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qrtxy"]
 _data = {
-"RESET": SubResource("Animation_jy1w8"),
-"idle": SubResource("Animation_5symb")
+&"RESET": SubResource("Animation_jy1w8"),
+&"idle": SubResource("Animation_5symb")
 }
 
 [node name="Potion" type="Node2D"]

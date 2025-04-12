@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://7i30u8mpwy4y"]
 
-[ext_resource type="Script" path="res://Scripts/Hud/heart_bar.gd" id="1_mklmm"]
+[ext_resource type="Script" uid="uid://dcihdk2inxijn" path="res://Scripts/Hud/heart_bar.gd" id="1_mklmm"]
 
 [node name="HeartBar" type="HBoxContainer"]
 top_level = true

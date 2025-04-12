@@ -1,4 +1,5 @@
 extends State
+class_name EnemySummonNecromancer
 
 @export var enemy: CharacterBody2D
 @export var summoned_creature: PackedScene = null
@@ -8,20 +9,19 @@ extends State
 @export var monster2_pos: RayCast2D
 @export var monster3_pos: RayCast2D
 
-var on_cooldown = false
-var positions = []
+var can_summon := true
+var positions := []
 const DEG_TO_RAD = PI / 180
 
 func Enter():
-	_set_initial_ray_positions()
-	if not on_cooldown:
-		enemy.velocity = Vector2.ZERO
-		await enemy.summon()
-		ChangeState.emit(self, "EnemyRetreat")
-	else: 
-		print("ON COOLDOWN")
-		ChangeState.emit(self, "EnemyAttack")
-		
+	if can_summon and not enemy.is_hit and not enemy.is_dead:
+		_set_initial_ray_positions()
+		enemy.summon()
+		can_summon = false
+		$summon_cooldown.start()
+	
+	ChangeState.emit(self, "EnemyChase")
+	
 func _on_animation_player_animation_finished(animation):
 	if animation == "Summon":
 		positions = [
@@ -30,9 +30,6 @@ func _on_animation_player_animation_finished(animation):
 			_get_valid_position(monster3_pos)
 		]
 		
-		print(positions)
-
-		# Summon skeletons at valid positions
 		for position in positions:
 			if position != Vector2.INF:
 				var effect = summon_effect.instantiate()
@@ -43,11 +40,13 @@ func _on_animation_player_animation_finished(animation):
 				get_tree().current_scene.add_child(skeleton)
 				skeleton.global_position = position
 
+		# Only return to chase **after** the summon completes
+
 func _set_initial_ray_positions():
 	monster1_pos.global_rotation = aim.global_rotation
 	monster2_pos.global_rotation = aim.global_rotation + 45 * DEG_TO_RAD
 	monster3_pos.global_rotation = aim.global_rotation - 45 * DEG_TO_RAD
-	
+
 	monster1_pos.force_raycast_update()
 	monster2_pos.force_raycast_update()
 	monster3_pos.force_raycast_update()
@@ -60,3 +59,6 @@ func _get_valid_position(ray: RayCast2D) -> Vector2:
 		if not ray.is_colliding():
 			return ray.global_position + ray.target_position.rotated(ray.rotation)
 	return Vector2.INF
+
+func _on_summon_cooldown_timeout():
+	can_summon = true

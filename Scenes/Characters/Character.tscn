@@ -1,14 +1,14 @@
-[gd_scene load_steps=33 format=3 uid="uid://bddrcwkuo7k48"]
+[gd_scene load_steps=35 format=3 uid="uid://bddrcwkuo7k48"]
 
-[ext_resource type="Script" path="res://Scripts/Player/Character.gd" id="1_pcl0v"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_mrv5d"]
+[ext_resource type="Script" uid="uid://ya0vjowkvkgc" path="res://Scripts/Player/Character.gd" id="1_pcl0v"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_mrv5d"]
 [ext_resource type="PackedScene" uid="uid://drxv8fgohuj1r" path="res://Scenes/Weapons/Weapon.tscn" id="3_dru47"]
 [ext_resource type="Texture2D" uid="uid://1h4rtwaxgf8v" path="res://Assets/Player/PLAYER_blade.png" id="3_lddmy"]
 [ext_resource type="PackedScene" uid="uid://r5aogxe6cokx" path="res://Scenes/Weapons/shield.tscn" id="5_yrdbc"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="6_wp5nt"]
-[ext_resource type="AudioStream" uid="uid://b1cmkf8rjm6ka" path="res://Assets/Sounds/Player/Walk/walk1.wav" id="8_72wq4"]
-[ext_resource type="AudioStream" uid="uid://bly6jpfp5o80s" path="res://Assets/Sounds/Player/Walk/walk2.wav" id="9_quh8x"]
-[ext_resource type="AudioStream" uid="uid://bbh2isy5lm0sc" path="res://Assets/Sounds/Player/Walk/walk3.wav" id="10_x1vxe"]
+[ext_resource type="Script" uid="uid://cq63flqq6qh13" path="res://Scripts/Hurtboxes/PlayerHurtbox.gd" id="6_vkrg6"]
+[ext_resource type="AudioStream" uid="uid://knnnqipbcoxk" path="res://Assets/Sounds/Player/Movement/Whoosh,Organic,Styrofoam,Plank,Airy,Smooth,Texture,1.wav" id="7_6yhys"]
+[ext_resource type="AudioStream" uid="uid://db4hyly4pqm7o" path="res://Assets/Sounds/Player/ouch.mp3" id="9_efh8l"]
+[ext_resource type="AudioStream" uid="uid://lidpusv14cod" path="res://Assets/Sounds/Player/Grunt_Pain_Male_BB_10_SCREAM LIBRARY_BRFX-004.wav" id="9_t3wk8"]
 [ext_resource type="AudioStream" uid="uid://b28k0d573exg7" path="res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3" id="11_wwn7j"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dqhrg"]
@@ -188,6 +188,57 @@ tracks/0/keys = {
 "update": 0,
 "values": [1.0, 0.5, 0.0]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hurtbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.733333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CollisionShape2D2:disabled")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.733333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_vkrg6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hurtbox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CollisionShape2D2:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
 
 [sub_resource type="Animation" id="Animation_5gvdc"]
 resource_name = "Right"
@@ -291,21 +342,22 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vyssx"]
 _data = {
-"Death": SubResource("Animation_mhlbg"),
-"Death_Roll": SubResource("Animation_vkye4"),
-"Down": SubResource("Animation_4fjer"),
-"Down_Dash": SubResource("Animation_uhcgd"),
-"Down_Move": SubResource("Animation_hjs10"),
-"Left": SubResource("Animation_qbhi2"),
-"Left_Dash": SubResource("Animation_s5x24"),
-"Left_Move": SubResource("Animation_gj5oh"),
-"OnHit": SubResource("Animation_ct02w"),
-"Right": SubResource("Animation_5gvdc"),
-"Right_Dash": SubResource("Animation_totl6"),
-"Right_Move": SubResource("Animation_gfwco"),
-"Up": SubResource("Animation_vhl7o"),
-"Up_Dash": SubResource("Animation_qbimq"),
-"Up_Move": SubResource("Animation_kd73c")
+&"Death": SubResource("Animation_mhlbg"),
+&"Death_Roll": SubResource("Animation_vkye4"),
+&"Down": SubResource("Animation_4fjer"),
+&"Down_Dash": SubResource("Animation_uhcgd"),
+&"Down_Move": SubResource("Animation_hjs10"),
+&"Left": SubResource("Animation_qbhi2"),
+&"Left_Dash": SubResource("Animation_s5x24"),
+&"Left_Move": SubResource("Animation_gj5oh"),
+&"OnHit": SubResource("Animation_ct02w"),
+&"RESET": SubResource("Animation_vkrg6"),
+&"Right": SubResource("Animation_5gvdc"),
+&"Right_Dash": SubResource("Animation_totl6"),
+&"Right_Move": SubResource("Animation_gfwco"),
+&"Up": SubResource("Animation_vhl7o"),
+&"Up_Dash": SubResource("Animation_qbimq"),
+&"Up_Move": SubResource("Animation_kd73c")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7qqmo"]
@@ -316,17 +368,9 @@ height = 46.6667
 radius = 15.0
 height = 46.6667
 
-[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_l28th"]
-random_pitch = 1.1
-random_volume_offset_db = 1.0
-
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aeaj6"]
 random_pitch = 1.1
 random_volume_offset_db = 1.0
-streams_count = 3
-stream_0/stream = ExtResource("8_72wq4")
-stream_1/stream = ExtResource("9_quh8x")
-stream_2/stream = ExtResource("10_x1vxe")
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wlrv3"]
 random_pitch = 1.2
@@ -334,10 +378,25 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("11_wwn7j")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_l28th"]
+random_pitch = 1.1
+random_volume_offset_db = 1.0
+streams_count = 1
+stream_0/stream = ExtResource("7_6yhys")
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_liijn"]
+playback_mode = 1
+random_pitch = 1.1
+random_volume_offset_db = 1.0
+streams_count = 2
+stream_0/stream = ExtResource("9_t3wk8")
+stream_1/stream = ExtResource("9_efh8l")
+stream_1/weight = 0.1
+
 [node name="Character" type="CharacterBody2D" groups=["Player"]]
 position = Vector2(-1.90735e-06, -9.53674e-07)
 scale = Vector2(0.3, 0.3)
-collision_layer = 3
+collision_mask = 7
 script = ExtResource("1_pcl0v")
 
 [node name="CharSprite" type="Sprite2D" parent="."]
@@ -347,16 +406,16 @@ scale = Vector2(2.10417, 2.10417)
 texture = ExtResource("3_lddmy")
 hframes = 40
 vframes = 4
-frame = 133
+frame = 137
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_vyssx")
+&"": SubResource("AnimationLibrary_vyssx")
 }
 
 [node name="OnHitPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_vyssx")
+&"": SubResource("AnimationLibrary_vyssx")
 }
 
 [node name="Weapon" parent="." instance=ExtResource("3_dru47")]
@@ -378,17 +437,14 @@ position = Vector2(4.76838e-06, -25)
 zoom = Vector2(6, 6)
 
 [node name="Hurtbox" type="Area2D" parent="."]
-script = ExtResource("6_wp5nt")
+collision_layer = 64
+collision_mask = 128
+script = ExtResource("6_vkrg6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(7.62939e-06, -16.6667)
 shape = SubResource("CapsuleShape2D_crbhn")
 debug_color = Color(1, 0, 0, 0.419608)
-
-[node name="ouch_sfx" type="AudioStreamPlayer" parent="."]
-stream = SubResource("AudioStreamRandomizer_l28th")
-volume_db = -16.199
-pitch_scale = 0.9
 
 [node name="walk_sfx" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_aeaj6")
@@ -396,6 +452,15 @@ volume_db = -8.0
 
 [node name="reflect_sfx" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_wlrv3")
+
+[node name="dash_sfx" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_l28th")
+volume_db = -7.0
+pitch_scale = 0.95
+
+[node name="ouch_sfx" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_liijn")
+pitch_scale = 1.3
 
 [node name="Label" type="Label" parent="."]
 modulate = Color(0.811765, 0.184314, 0, 1)

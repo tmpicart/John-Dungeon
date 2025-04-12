@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cumy44mytfkbq"]
 
 [ext_resource type="Texture2D" uid="uid://cicrq067sfe37" path="res://Assets/Hud/hearts.png" id="1_edm2m"]
-[ext_resource type="Script" path="res://Scripts/Hud/heart.gd" id="1_uwkwk"]
+[ext_resource type="Script" uid="uid://dhhn6lvy7l766" path="res://Scripts/Hud/heart.gd" id="1_uwkwk"]
 
 [node name="Heart" type="Panel"]
 self_modulate = Color(1, 1, 1, 0)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://c0kv8smv4doo2"]
 
-[ext_resource type="Script" path="res://Scenes/Weapons/bomb.gd" id="1_vx7us"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_dvpj8"]
+[ext_resource type="Script" uid="uid://cun5afkhd2k80" path="res://Scenes/Weapons/bomb.gd" id="1_vx7us"]
+[ext_resource type="Script" uid="uid://bj3btdgx6w336" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_dvpj8"]
 [ext_resource type="Texture2D" uid="uid://civoe3tpgge0d" path="res://Assets/Items/BOMB_SPRITE.png" id="2_ncnnx"]
 [ext_resource type="AudioStream" uid="uid://cexni2s4d07wn" path="res://Scenes/Weapons/explosion-6055.mp3" id="4_rmrnv"]
 
@@ -51,8 +51,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ntjxn"]
 _data = {
-"RESET": SubResource("Animation_6fpn1"),
-"explosion": SubResource("Animation_tl2my")
+&"RESET": SubResource("Animation_6fpn1"),
+&"explosion": SubResource("Animation_tl2my")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_owj4c"]
@@ -70,7 +70,7 @@ vframes = 4
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ntjxn")
+&"": SubResource("AnimationLibrary_ntjxn")
 }
 
 [node name="Hitbox" type="Area2D" parent="."]

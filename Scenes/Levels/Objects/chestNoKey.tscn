@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://rvpiujtilw1o"]
 
-[ext_resource type="Script" path="res://Scripts/Objects/chestNoKey.gd" id="1_5bdnu"]
+[ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://Scripts/Objects/chestNoKey.gd" id="1_5bdnu"]
 [ext_resource type="Texture2D" uid="uid://bs30ohxi52fd2" path="res://Assets/Objects/CHEST.png" id="2_x4dhw"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_wswgy"]
 
@@ -84,9 +84,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_jyqg5"]
 _data = {
-"Open": SubResource("Animation_dr2cx"),
-"RESET": SubResource("Animation_o601p"),
-"idle": SubResource("Animation_1h0g8")
+&"Open": SubResource("Animation_dr2cx"),
+&"RESET": SubResource("Animation_o601p"),
+&"idle": SubResource("Animation_1h0g8")
 }
 
 [node name="chest" type="Node2D"]

@@ -12,7 +12,7 @@ config_version=5
 
 config/name="John Dungeon"
 run/main_scene="res://Scenes/Hud/MainMenu.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -104,8 +104,18 @@ dash={
 
 [layer_names]
 
-2d_physics/layer_1="World"
-2d_physics/layer_2="Player"
+2d_render/layer_1="Player"
+2d_render/layer_2="Enemies"
+2d_physics/layer_1="Player"
+2d_physics/layer_2="Enemies"
+2d_physics/layer_3="Environment"
+2d_physics/layer_4="Pickups"
+2d_physics/layer_5="Interactables"
+2d_physics/layer_6="PlayerHitbox"
+2d_physics/layer_7="PlayerHurtbox"
+2d_physics/layer_8="EnemyHitbox"
+2d_physics/layer_9="EnemyHurtbox"
+2d_physics/layer_10="NPC"
 
 [rendering]
 

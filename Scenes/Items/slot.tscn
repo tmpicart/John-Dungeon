@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://4wu2fbqejtba"]
 
 [ext_resource type="Texture2D" uid="uid://cw30qc3fs3oar" path="res://Assets/Items/placeHolderWeapon.png" id="1_6amai"]
-[ext_resource type="Script" path="res://Scenes/Items/slot.gd" id="1_it4wv"]
+[ext_resource type="Script" uid="uid://bu4tp044xt3e7" path="res://Scenes/Items/slot.gd" id="1_it4wv"]
 
 [node name="Slot1" type="Panel"]
 layout_direction = 2

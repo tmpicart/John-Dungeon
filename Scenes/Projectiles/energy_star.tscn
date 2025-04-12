@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://s0p7t5g4q00k"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/energy_star.gd" id="1_e5xby"]
+[ext_resource type="Script" uid="uid://b4fk0hyjb4qwb" path="res://Scripts/Projectiles and Effects/energy_star.gd" id="1_e5xby"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_uurli"]
 [ext_resource type="Texture2D" uid="uid://b3srp2bju2ax8" path="res://Assets/Effects/Retro Impact Effect Pack 3 B.png" id="3_2372p"]
 
@@ -29,7 +29,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_t04hj"]
 _data = {
-"Play": SubResource("Animation_r1pt7")
+&"Play": SubResource("Animation_r1pt7")
 }
 
 [sub_resource type="Gradient" id="Gradient_qn40s"]

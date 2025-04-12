@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://cexkcx50jsodx"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/force_wave.gd" id="1_um5a1"]
+[ext_resource type="Script" uid="uid://bcm0huht7kuns" path="res://Scripts/Projectiles and Effects/force_wave.gd" id="1_um5a1"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/projectile_hitbox.gd" id="2_18kql"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_nbn0v"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_nbn0v"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="4_bytw6"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u2g5o"]
@@ -33,7 +33,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_sjj7s"]
 _data = {
-"Play": SubResource("Animation_nt0re")
+&"Play": SubResource("Animation_nt0re")
 }
 
 [sub_resource type="Gradient" id="Gradient_8d7y4"]

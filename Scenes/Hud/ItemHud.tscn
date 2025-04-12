@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://beu7po4d0rpog"]
 
-[ext_resource type="Script" path="res://Scripts/Hud/ItemHud.gd" id="1_2igkr"]
+[ext_resource type="Script" uid="uid://bn6opqv8amnst" path="res://Scripts/Hud/ItemHud.gd" id="1_2igkr"]
 [ext_resource type="PackedScene" uid="uid://bgfv24qsybs1e" path="res://Scenes/Hud/ItemBox.tscn" id="1_355cn"]
 [ext_resource type="Texture2D" uid="uid://dooyv6iwtkcqw" path="res://Assets/Items/bombPlaceholder.png" id="2_3gq1c"]
 [ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_1.png" id="3_2oiq6"]

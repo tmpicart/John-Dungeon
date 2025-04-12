@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://Scenes/Characters/Character.tscn" id="1_3u81v"]
 [ext_resource type="PackedScene" uid="uid://b74j72sy4ihbx" path="res://Scenes/Levels/Dungeon Parts/MultiRoom.tscn" id="1_88w2w"]
-[ext_resource type="Script" path="res://Scripts/Hud/MainScene.gd" id="1_uv7rj"]
+[ext_resource type="Script" uid="uid://fc4ub6qla4bf" path="res://Scripts/Hud/MainScene.gd" id="1_uv7rj"]
 [ext_resource type="PackedScene" uid="uid://bcqpocv0rfv4o" path="res://Scenes/Levels/Objects/Door.tscn" id="4_kb8ps"]
 [ext_resource type="PackedScene" uid="uid://oufsqmno882m" path="res://Scenes/Levels/Dungeon Parts/HallWay.tscn" id="5_e53sq"]
 [ext_resource type="PackedScene" uid="uid://dqovgjukcslmp" path="res://Scenes/Levels/Dungeon Parts/ChestRoomLeft.tscn" id="6_4ceu3"]

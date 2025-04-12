@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://ccs6qq200vu74"]
 
-[ext_resource type="Script" path="res://Scenes/Characters/shopGuy.gd" id="1_omsui"]
+[ext_resource type="Script" uid="uid://do2upq57n6ogl" path="res://Scenes/Characters/shopGuy.gd" id="1_omsui"]
 [ext_resource type="Texture2D" uid="uid://cstqny7x0fq8" path="res://Assets/2D Pixel Dungeon Asset Pack/Character_animation/priests_idle/priest1/v1/priest1_v1_1.png" id="2_nlpgn"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_1mlpa"]
 

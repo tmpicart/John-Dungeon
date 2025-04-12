@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dyxkbx71d8tuv"]
 
-[ext_resource type="Script" path="res://Scenes/Items/bossKey.gd" id="1_uhj3g"]
+[ext_resource type="Script" uid="uid://dw4lmk58x05ck" path="res://Scenes/Items/bossKey.gd" id="1_uhj3g"]
 [ext_resource type="Texture2D" uid="uid://ws3ngcsd20v1" path="res://Scenes/Items/KEY.png" id="2_xn8gs"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_aq0md"]
 

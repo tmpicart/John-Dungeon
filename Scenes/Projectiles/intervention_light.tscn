@@ -1,8 +1,8 @@
 [gd_scene load_steps=11 format=3 uid="uid://lr1c6ppfwvt5"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/intervention_light.gd" id="1_yrb63"]
+[ext_resource type="Script" uid="uid://b7nyedt5ky8eu" path="res://Scripts/Projectiles and Effects/intervention_light.gd" id="1_yrb63"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_yr4t7"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_3ref0"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_3ref0"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="4_jamcx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u2g5o"]
@@ -40,7 +40,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_w8eap"]
 _data = {
-"Play": SubResource("Animation_ewj34")
+&"Play": SubResource("Animation_ewj34")
 }
 
 [node name="Intervention Light" type="Node2D" groups=["Enemies"]]

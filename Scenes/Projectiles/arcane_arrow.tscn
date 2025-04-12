@@ -1,8 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://bcvjqylald7g8"]
+[gd_scene load_steps=6 format=3 uid="uid://bcvjqylald7g8"]
 
 [ext_resource type="Texture2D" uid="uid://ckwt2gmgc4jli" path="res://Assets/Items/arcane_arrow.png" id="1_22rqq"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/projectile_hitbox.gd" id="2_svd85"]
-[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/arcane_arrow.gd" id="2_xg6i5"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_fhy1d"]
+[ext_resource type="Script" uid="uid://diqaxripf11j5" path="res://Scripts/Projectiles and Effects/arcane_arrow.gd" id="2_xg6i5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oxt4s"]
+resource_local_to_scene = true
+shader = ExtResource("2_fhy1d")
+shader_parameter/flash_color = Color(0, 0, 0, 1)
+shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
 radius = 2.0
@@ -11,22 +17,30 @@ height = 32.0
 [node name="Arrow" type="Node2D"]
 script = ExtResource("2_xg6i5")
 
-[node name="arcane_arrow" type="Area2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_oxt4s")
 scale = Vector2(0.5, 0.5)
-script = ExtResource("2_svd85")
-
-[node name="Sprite2D" type="Sprite2D" parent="arcane_arrow"]
 texture = ExtResource("1_22rqq")
 
-[node name="Hitbox" type="CollisionShape2D" parent="arcane_arrow"]
+[node name="Collider" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collider"]
+visibility_layer = 2
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+shape = SubResource("CapsuleShape2D_r4ntl")
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+collision_layer = 128
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visibility_layer = 2
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_r4ntl")
 debug_color = Color(0.933354, 0, 0, 0.419608)
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="arcane_arrow"]
-scale = Vector2(1, 0.2)
-
-[connection signal="area_entered" from="arcane_arrow" to="." method="_on_arcane_arrow_area_entered"]
-[connection signal="body_entered" from="arcane_arrow" to="." method="_on_arcane_arrow_body_entered"]
-[connection signal="screen_exited" from="arcane_arrow/VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
+[connection signal="body_entered" from="Collider" to="." method="_on_collider_body_entered"]

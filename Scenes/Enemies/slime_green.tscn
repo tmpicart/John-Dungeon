@@ -1,27 +1,26 @@
 [gd_scene load_steps=25 format=3 uid="uid://clp3rxlbhwvv6"]
 
 [ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://Assets/Enemies/ENEMY_slime.png" id="1_75lyw"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_d5q7n"]
-[ext_resource type="Script" path="res://Scripts/Enemies/SlimeGreen/slime_green.gd" id="1_dnrxr"]
-[ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="2_bmv2t"]
-[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="2_ebbn7"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_d5q7n"]
+[ext_resource type="Script" uid="uid://d364oudqo1ov6" path="res://Scripts/Enemies/SlimeGreen/slime_green.gd" id="1_dnrxr"]
+[ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://Scripts/States/EnemyIdle.gd" id="2_bmv2t"]
+[ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="2_ebbn7"]
 [ext_resource type="Texture2D" uid="uid://cyuinmnunmfx1" path="res://Assets/Enemies/ENEMY_SKELETON.png" id="6_0kd7w"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="6_ky8sd"]
-[ext_resource type="Script" path="res://Scripts/States/EnemyChase.gd" id="6_pt62m"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="7_st1ej"]
+[ext_resource type="Script" uid="uid://bj8p1bwlk2xlw" path="res://Scripts/States/EnemyChase.gd" id="6_pt62m"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="8_sbseg"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="9_a6klr"]
+[ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="9_ijt3p"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="10_5m1q3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oclns"]
 resource_local_to_scene = true
 shader = ExtResource("1_d5q7n")
-shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nokm8"]
-radius = 8.27585
-height = 16.5517
+radius = 5.51724
+height = 11.0345
 
 [sub_resource type="Animation" id="Animation_devur"]
 resource_name = "Death"
@@ -99,6 +98,18 @@ tracks/5/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_tyvg6"]
 resource_name = "OnHit"
@@ -110,10 +121,22 @@ tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2),
+"times": PackedFloat32Array(0, 0.1, 0.233333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [1.0, 0.5, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_hcn56"]
@@ -178,6 +201,42 @@ tracks/4/keys = {
 "update": 1,
 "values": [false]
 }
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Sprite2D:frame")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 1)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_mxul5"]
 resource_name = "Walk"
@@ -195,21 +254,49 @@ tracks/0/keys = {
 "values": [0, 1]
 }
 
+[sub_resource type="Animation" id="Animation_vuqpf"]
+resource_name = "stun"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.233333, 0.366667, 0.466667, 0.6, 0.766667, 0.866667, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [1.0, 0.5, 0.0, 1.0, 0.5, 0.0, 1.0, 0.5, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 0, 1)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7udel"]
 _data = {
-"Death": SubResource("Animation_devur"),
-"OnHit": SubResource("Animation_tyvg6"),
-"RESET": SubResource("Animation_hcn56"),
-"Walk": SubResource("Animation_mxul5")
+&"Death": SubResource("Animation_devur"),
+&"OnHit": SubResource("Animation_tyvg6"),
+&"RESET": SubResource("Animation_hcn56"),
+&"Walk": SubResource("Animation_mxul5"),
+&"stun": SubResource("Animation_vuqpf")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wso5k"]
-radius = 6.0
-height = 16.0
+radius = 4.0
+height = 10.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to14j"]
-radius = 6.0
-height = 16.0
+radius = 4.0
+height = 10.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_70uj3"]
 random_pitch = 1.2
@@ -230,22 +317,23 @@ streams_count = 1
 stream_0/stream = ExtResource("10_5m1q3")
 
 [node name="Slime_Green" type="CharacterBody2D" groups=["Enemies"]]
-position = Vector2(0, -3.045)
-scale = Vector2(0.75, 0.75)
+collision_layer = 2
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_dnrxr")
 HP = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_oclns")
-position = Vector2(0, -4)
+position = Vector2(0, -5.345)
+scale = Vector2(0.67, 0.67)
 texture = ExtResource("1_75lyw")
 hframes = 2
 vframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(1.90735e-06, -2)
+position = Vector2(9.53674e-07, -4)
 scale = Vector2(0.725, 0.725)
 shape = SubResource("CapsuleShape2D_nokm8")
 
@@ -260,18 +348,20 @@ enemy = NodePath("../..")
 [node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("6_pt62m")
 enemy = NodePath("../..")
+speed = 3000
 attempt_attack_range = 0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_7udel")
+&"": SubResource("AnimationLibrary_7udel")
 }
 
 [node name="Hitbox" type="Area2D" parent="."]
-script = ExtResource("6_ky8sd")
+collision_layer = 128
+collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -2)
+position = Vector2(0, -4)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_wso5k")
 debug_color = Color(0.999972, 0.184834, 0.214931, 0.545098)
@@ -279,10 +369,12 @@ debug_color = Color(0.999972, 0.184834, 0.214931, 0.545098)
 [node name="Hurtbox" type="Area2D" parent="."]
 light_mask = 0
 visibility_layer = 2
-script = ExtResource("7_st1ej")
+collision_layer = 256
+collision_mask = 32
+script = ExtResource("9_ijt3p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -2)
+position = Vector2(0, -4)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_to14j")
 debug_color = Color(0, 0.6, 0, 0.419608)
@@ -290,11 +382,11 @@ debug_color = Color(0, 0.6, 0, 0.419608)
 [node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
 position = Vector2(0, -2)
 stream = SubResource("AudioStreamRandomizer_70uj3")
-volume_db = -10.0
+volume_db = -12.0
 
 [node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_uphc3")
-volume_db = -5.0
+volume_db = -7.0
 
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_3huqu")

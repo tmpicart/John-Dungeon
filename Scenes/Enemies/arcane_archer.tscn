@@ -1,22 +1,23 @@
-[gd_scene load_steps=26 format=3 uid="uid://bj53m0le6fixn"]
+[gd_scene load_steps=27 format=3 uid="uid://bj53m0le6fixn"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
-[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_dsqkb"]
+[ext_resource type="Script" uid="uid://buv3isgiyuqcm" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
+[ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_dsqkb"]
 [ext_resource type="Texture2D" uid="uid://j3xverou5twt" path="res://Assets/Enemies/ENEMY_archer.png" id="3_xkaj8"]
-[ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="4_dksyp"]
-[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd" id="5_uw5cu"]
-[ext_resource type="Script" path="res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd" id="6_qgvvr"]
+[ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://Scripts/States/EnemyIdle.gd" id="4_dksyp"]
+[ext_resource type="Script" uid="uid://blh07mgm8ix5j" path="res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd" id="5_uw5cu"]
+[ext_resource type="Script" uid="uid://ceme8hxwc2vr" path="res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd" id="6_qgvvr"]
 [ext_resource type="PackedScene" uid="uid://bcvjqylald7g8" path="res://Scenes/Projectiles/arcane_arrow.tscn" id="7_0t3rh"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="9_jre34"]
+[ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="9_k7gki"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="11_fwn7j"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="11_gng2b"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="12_ynpjb"]
+[ext_resource type="AudioStream" uid="uid://2abbl0ptiwav" path="res://Assets/Sounds/Enemies/Archer/whoosh_weapon_knife_swing_04.wav" id="13_87241"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
 resource_local_to_scene = true
 shader = ExtResource("3_dsqkb")
-shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
@@ -147,12 +148,12 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yixv0"]
 _data = {
-"Attack": SubResource("Animation_cheg3"),
-"Death": SubResource("Animation_a6n62"),
-"Idle": SubResource("Animation_spb5g"),
-"OnHit": SubResource("Animation_jv2hr"),
-"RESET": SubResource("Animation_c138m"),
-"Walk": SubResource("Animation_b6ywu")
+&"Attack": SubResource("Animation_cheg3"),
+&"Death": SubResource("Animation_a6n62"),
+&"Idle": SubResource("Animation_spb5g"),
+&"OnHit": SubResource("Animation_jv2hr"),
+&"RESET": SubResource("Animation_c138m"),
+&"Walk": SubResource("Animation_b6ywu")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to1xr"]
@@ -179,6 +180,8 @@ stream_0/stream = ExtResource("12_ynpjb")
 
 [node name="Arcane_Archer" type="CharacterBody2D" groups=["Enemies"]]
 scale = Vector2(0.7, 0.7)
+collision_layer = 2
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_sqpd4")
 HP = 2
@@ -215,9 +218,13 @@ projectile = ExtResource("7_0t3rh")
 rayCast = NodePath("../../RayCast2D")
 enemy = NodePath("../..")
 
+[node name="attack_cooldown" type="Timer" parent="State Control/EnemyAttack"]
+wait_time = 0.25
+one_shot = true
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_yixv0")
+&"": SubResource("AnimationLibrary_yixv0")
 }
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
@@ -225,9 +232,9 @@ position = Vector2(0, -10.46)
 target_position = Vector2(300, 0)
 
 [node name="Hurtbox" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 2
-script = ExtResource("9_jre34")
+collision_layer = 256
+collision_mask = 32
+script = ExtResource("9_k7gki")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
 position = Vector2(-1.35525e-20, -11.4286)
@@ -248,5 +255,7 @@ stream = SubResource("AudioStreamRandomizer_ht1mq")
 volume_db = -5.0
 
 [node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_87241")
 
+[connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]
