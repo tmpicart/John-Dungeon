@@ -51,13 +51,13 @@ func reflect():
 	collider.collision_mask = (1 << 2)  # Collides with Layer 3
 	
 	var sprite = $Sprite2D  # Replace with your actual node path
-	var material := sprite.material as ShaderMaterial
+	var shader_material := sprite.material as ShaderMaterial
 	
 	# Set flash color to #0076e3 (RGB: 0, 118, 227)
-	material.set_shader_parameter("flash_color", Color8(0, 118, 227))
+	shader_material.set_shader_parameter("flash_color", Color8(0, 118, 227))
 	
 	# Set flash value to max (fully show the flash color)
-	material.set_shader_parameter("flash_value", 0.60)
+	shader_material.set_shader_parameter("flash_value", 0.60)
 	
 	$PointLight2D.color = Color.html("#0076e3")
 	

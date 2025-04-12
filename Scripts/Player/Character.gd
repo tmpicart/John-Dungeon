@@ -110,6 +110,7 @@ func take_damage(dmg: int):
 		return
 	
 	is_hit = true
+	frame_freeze()
 	
 	if hp - dmg > 0:
 		$OnHitPlayer.play("OnHit")
@@ -273,3 +274,76 @@ func _input(event):
 func get_facing_direction() -> Vector2:
 	var mouse_pos = get_global_mouse_position()
 	return (mouse_pos - global_position).normalized()
+
+# Time-slow function
+func timeslow(multiplier: int = 1):
+	print("Starting timeslow")
+
+	# Set duration and target scale based on multiplier
+	var target_scale := 0.25 * multiplier  # Decrease time more for higher multiplier
+	var duration := 0.35 * multiplier     # Shorten duration for higher multiplier
+
+	# Apply time scale directly (no need for tweening)
+	Engine.time_scale = target_scale
+
+	# Create a Timer node to wait for the specified duration
+	var timer := Timer.new()
+	add_child(timer)  # Add the Timer node to the scene tree
+	timer.wait_time = duration  # Set the duration for the timer
+	timer.one_shot = true  # Ensure the timer only runs once
+
+	# Start the timer
+	timer.start()
+
+	# Wait until the timer is done
+	await timer.timeout
+
+	print("Returning to normal speed")
+
+	# Restore time scale to normal
+	Engine.time_scale = 1.0
+
+func frame_freeze(multiplier: int = 1):
+	print("Starting frame freeze")
+
+	# ==== Settings ====
+	var target_scale := 0.5 * multiplier
+	var duration := 0.15 * multiplier
+	var shake_strength := 2 * multiplier
+	var shake_interval := 0.01  # Time interval for shake
+
+	var camera := get_viewport().get_camera_2d()
+	var original_position := camera.position if camera else Vector2.ZERO
+
+	# Apply time scale (slowing the game down)
+	Engine.time_scale = target_scale
+
+	# Create timer that controls both freeze duration and shake interval
+	var timer := Timer.new()
+	timer.wait_time = shake_interval
+	timer.one_shot = false  # Repeating every shake_interval
+	add_child(timer)
+	timer.start()
+
+	var time_passed := 0.0
+	while time_passed < duration:
+		# Shake the camera if it exists
+		if camera:
+			var offset := Vector2(
+				randf_range(-shake_strength, shake_strength),
+				randf_range(-shake_strength, shake_strength)
+			)
+			camera.position = original_position + offset
+
+		# Wait until the next shake interval
+		await timer.timeout
+		time_passed += shake_interval
+
+	# Reset camera position back to original after shaking
+	if camera:
+		camera.position = original_position
+
+	print("Returning to normal speed")
+
+	# Restore normal time scale
+	Engine.time_scale = 1.0

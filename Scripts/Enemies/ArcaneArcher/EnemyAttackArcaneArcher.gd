@@ -8,7 +8,7 @@ var can_attack = true
 
 func Enter():
 	# Common attack behavior from base class
-	if can_attack and not enemy.is_hit:
+	if can_attack:
 		await enemy.attack()
 		spawn_projectile()
 		can_attack = false
@@ -16,7 +16,7 @@ func Enter():
 	ChangeState.emit(self, "EnemyChase")
 
 func spawn_projectile():
-	if projectile and not enemy.is_hit:
+	if projectile and not enemy.is_hit and not enemy.is_dead:
 		var arrow = projectile.instantiate()
 		get_tree().current_scene.add_child(arrow)
 		arrow.add_to_group("Enemies")

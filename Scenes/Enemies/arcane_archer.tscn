@@ -206,10 +206,11 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("4_dksyp")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
 script = ExtResource("5_uw5cu")
 rayCast = NodePath("../../RayCast2D")
 enemy = NodePath("../..")
+navigation_agent = NodePath("../../NavigationAgent2D")
 attempt_attack_range = 100
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
@@ -256,6 +257,8 @@ volume_db = -5.0
 
 [node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("13_87241")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
 [connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]
