@@ -42,6 +42,7 @@ func take_damage(dmg: int):
 	is_hit = true
 	if ouch_sfx:
 		ouch_sfx.play()
+		
 	if HP - dmg <= 0:
 		kill()
 	else:

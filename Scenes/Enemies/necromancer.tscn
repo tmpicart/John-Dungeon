@@ -286,7 +286,6 @@ scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_0u5aw")
 hframes = 17
 vframes = 2
-frame = 17
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
@@ -301,10 +300,11 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("5_l3tat")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
 script = ExtResource("6_eko0r")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
+navigation_agent = NodePath("../../NavigationAgent2D")
 attempt_attack_range = 200
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
@@ -383,6 +383,8 @@ volume_db = -5.0
 [node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
 
 [node name="summon_sfx" type="AudioStreamPlayer2D" parent="."]
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 
 [connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
 [connection signal="timeout" from="State Control/EnemySummon/summon_cooldown" to="State Control/EnemySummon" method="_on_summon_cooldown_timeout"]

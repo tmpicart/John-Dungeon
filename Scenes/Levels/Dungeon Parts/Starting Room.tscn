@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://u1ixxtopxv2p"]
+[gd_scene load_steps=16 format=4 uid="uid://u1ixxtopxv2p"]
 
 [ext_resource type="PackedScene" uid="uid://7i30u8mpwy4y" path="res://Scenes/Hud/heart_bar.tscn" id="1_0f1wp"]
 [ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/Tilesets/TILESET_DUNGEON.png" id="1_8oiwq"]
@@ -11,10 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://bxbick14tkq7a" path="res://Scenes/Levels/Objects/BossDoor.tscn" id="7_e0a6t"]
 [ext_resource type="PackedScene" uid="uid://c5keinhto18dy" path="res://Scenes/Characters/tutorial_npc.tscn" id="8_ax6jy"]
 [ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://Scenes/Characters/Character.tscn" id="8_vdcoy"]
-[ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Enemies/necromancer.tscn" id="12_rjpqy"]
-[ext_resource type="PackedScene" uid="uid://bj53m0le6fixn" path="res://Scenes/Enemies/arcane_archer.tscn" id="13_jqteg"]
+[ext_resource type="PackedScene" uid="uid://clp3rxlbhwvv6" path="res://Scenes/Enemies/slime_green.tscn" id="14_d47hb"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_mu2e2"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_rjpqy"]
 texture = ExtResource("1_8oiwq")
 0:0/0 = 0
 1:0/0 = 0
@@ -225,7 +224,7 @@ texture = ExtResource("1_8oiwq")
 17:13/0 = 0
 18:13/0 = 0
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_b33qs"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_jqteg"]
 texture = ExtResource("2_mp1bw")
 0:0/0 = 0
 1:0/0 = 0
@@ -329,8 +328,8 @@ texture = ExtResource("2_mp1bw")
 9:9/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_qcfcn"]
-sources/0 = SubResource("TileSetAtlasSource_mu2e2")
-sources/1 = SubResource("TileSetAtlasSource_b33qs")
+sources/0 = SubResource("TileSetAtlasSource_rjpqy")
+sources/1 = SubResource("TileSetAtlasSource_jqteg")
 
 [node name="StartingRoom" type="Node2D"]
 z_index = -1
@@ -347,6 +346,7 @@ metadata/_edit_use_anchors_ = true
 offset_left = -1460.0
 offset_right = -1420.0
 scale = Vector2(0.5, 0.5)
+metadata/_edit_use_anchors_ = true
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_qcfcn")
@@ -414,8 +414,5 @@ position = Vector2(-35, -111)
 [node name="Character" parent="." instance=ExtResource("8_vdcoy")]
 position = Vector2(-3, 84)
 
-[node name="Necromancer" parent="." instance=ExtResource("12_rjpqy")]
-position = Vector2(0, -25)
-
-[node name="Arcane_Archer" parent="." instance=ExtResource("13_jqteg")]
-position = Vector2(-75, 20)
+[node name="Slime_Green" parent="." instance=ExtResource("14_d47hb")]
+position = Vector2(-1, 33)

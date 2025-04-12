@@ -11,6 +11,6 @@ func _onready():
 	$"John Duoungeon GUy".texture = Images[rand]
 	
 func _on_button_pressed():
-	get_tree().change_scene_to_file("res://Scenes/Levels/Dungeon Parts/Starting Room.tscn")
+	get_tree().change_scene_to_file("res://Scenes/Levels/Floor1.tscn")
 func _on_button_2_pressed():
 	get_tree().quit()

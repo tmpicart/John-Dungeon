@@ -345,9 +345,10 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("2_bmv2t")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent")]
 script = ExtResource("6_pt62m")
 enemy = NodePath("../..")
+navigation_agent = NodePath("../../NavigationAgent2D")
 speed = 3000
 attempt_attack_range = 0
 
@@ -391,3 +392,5 @@ volume_db = -7.0
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_3huqu")
 volume_db = 6.0
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
