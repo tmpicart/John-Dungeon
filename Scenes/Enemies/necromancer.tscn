@@ -1,30 +1,30 @@
 [gd_scene load_steps=31 format=3 uid="uid://ci70mpdu1yk5g"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/necromancer.gd" id="1_pwncg"]
+[ext_resource type="Script" uid="uid://dgxbx852w1ogj" path="res://Scripts/Enemies/Necromancer/necromancer.gd" id="1_pwncg"]
 [ext_resource type="Texture2D" uid="uid://k5puvnbpg420" path="res://Assets/Enemies/ENEMY_NECROMANCER.png" id="2_0u5aw"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_byyqd"]
-[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="4_f2shu"]
-[ext_resource type="Script" path="res://Scripts/States/EnemyIdle.gd" id="5_l3tat"]
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd" id="6_eko0r"]
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd" id="7_woxk7"]
-[ext_resource type="Script" path="res://Scripts/States/EnemyRetreat.gd" id="8_7y2c8"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_byyqd"]
+[ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="4_f2shu"]
+[ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://Scripts/States/EnemyIdle.gd" id="5_l3tat"]
+[ext_resource type="Script" uid="uid://bsvmvi373paec" path="res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd" id="6_eko0r"]
+[ext_resource type="Script" uid="uid://ck5gaaab0fvfa" path="res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd" id="7_woxk7"]
+[ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://Scripts/States/EnemyRetreat.gd" id="8_7y2c8"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://Scenes/Projectiles/magic_missile.tscn" id="8_ctycn"]
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/EnemySummon.gd" id="9_vb21g"]
+[ext_resource type="Script" uid="uid://dcc0go2d02ckp" path="res://Scripts/Projectiles and Effects/EnemySummon.gd" id="9_vb21g"]
 [ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Enemies/flail_skeleton.tscn" id="10_eo0t0"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="11_eupuc"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="13_p2als"]
+[ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="13_f46sl"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="14_1t88p"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="15_0uktk"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav" id="16_v2j72"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f7sk2"]
 shader = ExtResource("2_byyqd")
-shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
-radius = 8.57143
-height = 25.7143
+radius = 7.0
+height = 20.0
 
 [sub_resource type="Animation" id="Animation_6pa2e"]
 resource_name = "Attack"
@@ -71,6 +71,18 @@ tracks/1/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
 
 [sub_resource type="Animation" id="Animation_spb5g"]
 resource_name = "Idle"
@@ -116,9 +128,50 @@ tracks/1/keys = {
 "update": 0,
 "values": [1.0, 0.5, 0.0]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_6vsbk"]
 length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 0, 0, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_cheg3"]
+resource_name = "Summon"
+length = 0.9
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -129,36 +182,31 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2i(0, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_cheg3"]
-resource_name = "Summon"
-length = 0.9
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite2D:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"update": 1,
-"values": []
+"values": [Vector2i(5, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite2D:frame_coords")
+tracks/1/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(5, 0), Vector2i(6, 0)]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.835398, 0.356332, 0.824726, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.09, 0.14, 0.19, 0.24, 0.29, 0.34, 0.39, 0.44, 0.49, 0.54, 0.59, 0.64, 0.69, 0.74, 0.79, 0.84, 0.89),
+"transitions": PackedFloat32Array(1, 8.93604e-05, 0.00285954, 1e-05, 1.00671e-05, 1e-05, 3.88965e-05, 8.05362e-05, 4.16883e-05, 1e-05, 7.25834e-05, 0.0005055, 0.000505501, 1e-05, 0.000102649, 0.000396607, 0.00390625, 1e-05, 0.000106268),
+"update": 0,
+"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_b6ywu"]
@@ -193,18 +241,18 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yixv0"]
 _data = {
-"Attack": SubResource("Animation_6pa2e"),
-"Death": SubResource("Animation_a6n62"),
-"Idle": SubResource("Animation_spb5g"),
-"OnHit": SubResource("Animation_jv2hr"),
-"RESET": SubResource("Animation_6vsbk"),
-"Summon": SubResource("Animation_cheg3"),
-"Walk": SubResource("Animation_b6ywu")
+&"Attack": SubResource("Animation_6pa2e"),
+&"Death": SubResource("Animation_a6n62"),
+&"Idle": SubResource("Animation_spb5g"),
+&"OnHit": SubResource("Animation_jv2hr"),
+&"RESET": SubResource("Animation_6vsbk"),
+&"Summon": SubResource("Animation_cheg3"),
+&"Walk": SubResource("Animation_b6ywu")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to1xr"]
-radius = 17.1429
-height = 48.0
+radius = 14.0
+height = 40.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_jyny8"]
 random_pitch = 1.2
@@ -225,15 +273,16 @@ streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
 [node name="Necromancer" type="CharacterBody2D" groups=["Enemies"]]
-position = Vector2(0, -1)
-scale = Vector2(0.7, 0.7)
+collision_layer = 2
+collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_pwncg")
 HP = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_f7sk2")
-position = Vector2(0, -13.73)
+position = Vector2(0, -11.365)
+scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_0u5aw")
 hframes = 17
 vframes = 2
@@ -241,7 +290,7 @@ frame = 17
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(-1.90735e-06, -11.4286)
+position = Vector2(0, -10)
 shape = SubResource("CapsuleShape2D_pdttr")
 
 [node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
@@ -256,7 +305,7 @@ enemy = NodePath("../..")
 script = ExtResource("6_eko0r")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
-attempt_attack_range = 100
+attempt_attack_range = 200
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("7_woxk7")
@@ -264,10 +313,9 @@ projectile = ExtResource("8_ctycn")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 
-[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
-script = ExtResource("8_7y2c8")
-enemy = NodePath("../..")
-retreat_range = 50
+[node name="attack_cooldown" type="Timer" parent="State Control/EnemyAttack"]
+wait_time = 1.5
+one_shot = true
 
 [node name="EnemySummon" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "aim", "monster1_pos", "monster2_pos", "monster3_pos")]
 script = ExtResource("9_vb21g")
@@ -279,9 +327,19 @@ monster1_pos = NodePath("../../SummonRaycast1")
 monster2_pos = NodePath("../../SummonRaycast2")
 monster3_pos = NodePath("../../SummonRaycast3")
 
+[node name="summon_cooldown" type="Timer" parent="State Control/EnemySummon"]
+wait_time = 10.0
+one_shot = true
+
+[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("8_7y2c8")
+enemy = NodePath("../..")
+speed = 4000
+retreat_duration = 3
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_yixv0")
+&"": SubResource("AnimationLibrary_yixv0")
 }
 
 [node name="AimRaycast" type="RayCast2D" parent="."]
@@ -299,12 +357,12 @@ rotation = -0.785398
 target_position = Vector2(50, 0)
 
 [node name="Hurtbox" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 2
-script = ExtResource("13_p2als")
+collision_layer = 256
+collision_mask = 32
+script = ExtResource("13_f46sl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -11.4286)
+position = Vector2(0, -10)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("CapsuleShape2D_to1xr")
 debug_color = Color(0, 1, 0, 0.0901961)
@@ -326,5 +384,7 @@ volume_db = -5.0
 
 [node name="summon_sfx" type="AudioStreamPlayer2D" parent="."]
 
+[connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
+[connection signal="timeout" from="State Control/EnemySummon/summon_cooldown" to="State Control/EnemySummon" method="_on_summon_cooldown_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemySummon" method="_on_animation_player_animation_finished"]

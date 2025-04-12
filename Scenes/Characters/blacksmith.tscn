@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://bji7ka5w8l7k"]
 
 [ext_resource type="Texture2D" uid="uid://b1ts73o00mqe0" path="res://Assets/NPC/NPC_SHOPKEEPER.png" id="1_b07xd"]
-[ext_resource type="Script" path="res://Scripts/NPC/blacksmith.gd" id="1_ysehu"]
-[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="2_lbeyw"]
+[ext_resource type="Script" uid="uid://fi7vnc3elj4f" path="res://Scripts/NPC/blacksmith.gd" id="1_ysehu"]
+[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://Scripts/Interaction/Interaction_area.gd" id="2_lbeyw"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://Scripts/Dialogue/NPC_Dialog.tscn" id="3_54wft"]
 [ext_resource type="PackedScene" uid="uid://dyt3f5dy5h3es" path="res://Scenes/Shop/shop_2.tscn" id="4_kptqi"]
 

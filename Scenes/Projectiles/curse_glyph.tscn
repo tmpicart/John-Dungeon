@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c8882waks7p3i"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/curse_glyph.gd" id="1_7fpou"]
+[ext_resource type="Script" uid="uid://cv1b1q7froo8i" path="res://Scripts/Projectiles and Effects/curse_glyph.gd" id="1_7fpou"]
 [ext_resource type="Texture2D" uid="uid://b3srp2bju2ax8" path="res://Assets/Effects/Retro Impact Effect Pack 3 B.png" id="2_xfxdw"]
 
 [sub_resource type="Animation" id="Animation_dg72q"]
@@ -33,7 +33,7 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_po35d"]
 _data = {
-"Play": SubResource("Animation_dg72q")
+&"Play": SubResource("Animation_dg72q")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_785e0"]

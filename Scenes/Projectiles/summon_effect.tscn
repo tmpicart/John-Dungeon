@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://4evtkf3vje6p"]
 
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="1_d2l8j"]
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/Summon Effect.gd" id="2_tstum"]
+[ext_resource type="Script" uid="uid://c44mklnkj61nm" path="res://Scripts/Projectiles and Effects/Summon Effect.gd" id="2_tstum"]
 
 [sub_resource type="Animation" id="Animation_3r415"]
 resource_name = "Arise"
@@ -21,7 +21,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_6n072"]
 _data = {
-"Arise": SubResource("Animation_3r415")
+&"Arise": SubResource("Animation_3r415")
 }
 
 [sub_resource type="Gradient" id="Gradient_bvo2f"]

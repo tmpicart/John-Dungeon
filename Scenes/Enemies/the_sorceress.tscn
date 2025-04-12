@@ -1,35 +1,35 @@
 [gd_scene load_steps=49 format=3 uid="uid://rhhukbmueh53"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/the_sorceress.gd" id="1_oe1ie"]
-[ext_resource type="Script" path="res://Scripts/States/State Control.gd" id="2_1px53"]
+[ext_resource type="Script" uid="uid://c8c4nxdy3w8lh" path="res://Scripts/Enemies/TheSorceress/the_sorceress.gd" id="1_oe1ie"]
+[ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="2_1px53"]
 [ext_resource type="Texture2D" uid="uid://bsmans2qdxlc5" path="res://Assets/Enemies/BOSS_SHADOW.png" id="2_5abyf"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_galxm"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Engage.gd" id="3_muakj"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/Hurtbox.gd" id="4_h7y1i"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_galxm"]
+[ext_resource type="Script" uid="uid://b8d752p0dnvld" path="res://Scripts/Enemies/TheSorceress/Engage.gd" id="3_muakj"]
+[ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="4_h7y1i"]
 [ext_resource type="Script" path="res://Scripts/Hitboxes/Hitbox.gd" id="5_a3rhi"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Melee.gd" id="5_xpevr"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/SlideInto.gd" id="6_ap4us"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Cast.gd" id="7_tkkjf"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Summon.gd" id="8_loxtb"]
+[ext_resource type="Script" uid="uid://dnbxedsfcb2t1" path="res://Scripts/Enemies/TheSorceress/Melee.gd" id="5_xpevr"]
+[ext_resource type="Script" uid="uid://cidld05xqm4qy" path="res://Scripts/Enemies/TheSorceress/SlideInto.gd" id="6_ap4us"]
+[ext_resource type="Script" uid="uid://bfb04x5u04y8r" path="res://Scripts/Enemies/TheSorceress/Cast.gd" id="7_tkkjf"]
+[ext_resource type="Script" uid="uid://b0ck6eko2xfjl" path="res://Scripts/Enemies/TheSorceress/Summon.gd" id="8_loxtb"]
 [ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Enemies/flail_skeleton.tscn" id="9_obl4o"]
 [ext_resource type="PackedScene" uid="uid://bj53m0le6fixn" path="res://Scenes/Enemies/arcane_archer.tscn" id="10_kg8qd"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="10_wyx51"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://Scenes/Projectiles/magic_missile.tscn" id="12_dflla"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Curse.gd" id="12_kcyhd"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Magic Missile.gd" id="12_uuafg"]
+[ext_resource type="Script" uid="uid://bi0ldwnvgtdeo" path="res://Scripts/Enemies/TheSorceress/Curse.gd" id="12_kcyhd"]
+[ext_resource type="Script" uid="uid://b8yunoqa17d04" path="res://Scripts/Enemies/TheSorceress/Magic Missile.gd" id="12_uuafg"]
 [ext_resource type="PackedScene" uid="uid://c8882waks7p3i" path="res://Scenes/Projectiles/curse_glyph.tscn" id="13_iphtl"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Force Current.gd" id="13_j7uls"]
+[ext_resource type="Script" uid="uid://dnn6q604irtyj" path="res://Scripts/Enemies/TheSorceress/Force Current.gd" id="13_j7uls"]
 [ext_resource type="PackedScene" uid="uid://dl6hpi8ycnpdd" path="res://Scenes/Enemies/slime_red.tscn" id="13_ja1by"]
 [ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Enemies/necromancer.tscn" id="14_65sp2"]
 [ext_resource type="PackedScene" uid="uid://cexkcx50jsodx" path="res://Scenes/Projectiles/force_wave.tscn" id="14_bb51k"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Beam.gd" id="18_hi8f4"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/SlideAway.gd" id="21_5oglh"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Intervention.gd" id="22_p483y"]
-[ext_resource type="Script" path="res://Scripts/Enemies/TheSorceress/Stars.gd" id="23_sgqur"]
+[ext_resource type="Script" uid="uid://dvvy2jb1dqtol" path="res://Scripts/Enemies/TheSorceress/Beam.gd" id="18_hi8f4"]
+[ext_resource type="Script" uid="uid://ddgpo73lxi8ki" path="res://Scripts/Enemies/TheSorceress/SlideAway.gd" id="21_5oglh"]
+[ext_resource type="Script" uid="uid://b86rkfu63me26" path="res://Scripts/Enemies/TheSorceress/Intervention.gd" id="22_p483y"]
+[ext_resource type="Script" uid="uid://dwmq0lgo713kl" path="res://Scripts/Enemies/TheSorceress/Stars.gd" id="23_sgqur"]
 [ext_resource type="PackedScene" uid="uid://lr1c6ppfwvt5" path="res://Scenes/Projectiles/intervention_light.tscn" id="23_y1eak"]
 [ext_resource type="AudioStream" uid="uid://b3shrwwetxpvd" path="res://Assets/Sounds/chargeup.mp3" id="24_4ob3e"]
 [ext_resource type="PackedScene" uid="uid://s0p7t5g4q00k" path="res://Scenes/Projectiles/energy_star.tscn" id="24_dovkt"]
-[ext_resource type="Script" path="res://Scenes/Characters/Idle.gd" id="30_35754"]
+[ext_resource type="Script" uid="uid://jmjdtufdhke8" path="res://Scenes/Characters/Idle.gd" id="30_35754"]
 [ext_resource type="AudioStream" uid="uid://sa01ncok46o" path="res://Assets/Sounds/ta-da.mp3" id="31_pndny"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_63oa0"]
@@ -188,13 +188,13 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5rtrg"]
 _data = {
-"Beam": SubResource("Animation_cfxup"),
-"Cast": SubResource("Animation_6284q"),
-"Cast2": SubResource("Animation_wqovf"),
-"Death": SubResource("Animation_h2qqr"),
-"Idle": SubResource("Animation_qfsa1"),
-"Melee": SubResource("Animation_wmjeh"),
-"Move": SubResource("Animation_6qijq")
+&"Beam": SubResource("Animation_cfxup"),
+&"Cast": SubResource("Animation_6284q"),
+&"Cast2": SubResource("Animation_wqovf"),
+&"Death": SubResource("Animation_h2qqr"),
+&"Idle": SubResource("Animation_qfsa1"),
+&"Melee": SubResource("Animation_wmjeh"),
+&"Move": SubResource("Animation_6qijq")
 }
 
 [sub_resource type="Animation" id="Animation_vrrb8"]
@@ -215,7 +215,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_gqeda"]
 _data = {
-"OnHit": SubResource("Animation_vrrb8")
+&"OnHit": SubResource("Animation_vrrb8")
 }
 
 [sub_resource type="Curve" id="Curve_os55m"]

@@ -1,14 +1,18 @@
 [gd_scene load_steps=11 format=3 uid="uid://5dnflp2x3nl4"]
 
-[ext_resource type="Script" path="res://Scripts/Enemies/Necromancer/magic_missile.gd" id="1_oudw1"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/projectile_hitbox.gd" id="2_ws8qn"]
+[ext_resource type="Script" uid="uid://c6urgg1a0uscd" path="res://Scripts/Projectiles and Effects/magic_missile.gd" id="1_oudw1"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://Assets/Effects/Retro Impact Effect Pack 5 B.png" id="3_rjssa"]
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_rrxm4"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="3_rrxm4"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u2g5o"]
+resource_local_to_scene = true
 shader = ExtResource("3_rrxm4")
-shader_parameter/flash_color = Color(0.764706, 0.0509804, 0.0705882, 1)
+shader_parameter/flash_color = Color(0, 0.462745, 0.890196, 1)
 shader_parameter/flash_value = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gq3fx"]
+radius = 2.66667
+height = 16.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
 radius = 5.33333
@@ -20,7 +24,7 @@ length = 1.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Hitbox/Sprite2D:frame")
+tracks/0/path = NodePath("Sprite2D:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -32,7 +36,7 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xw8l7"]
 _data = {
-"Track": SubResource("Animation_rsxjp")
+&"Track": SubResource("Animation_rsxjp")
 }
 
 [sub_resource type="Gradient" id="Gradient_wvvnu"]
@@ -48,39 +52,46 @@ fill_to = Vector2(0.830275, 0.169725)
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_oudw1")
 
-[node name="Hitbox" type="Area2D" parent="."]
-scale = Vector2(0.5, 0.5)
-script = ExtResource("2_ws8qn")
-
-[node name="Sprite2D" type="Sprite2D" parent="Hitbox"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_u2g5o")
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("3_rjssa")
 hframes = 9
 vframes = 30
 frame = 72
 
+[node name="Collider" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Collider"]
+position = Vector2(2.66667, 0)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_gq3fx")
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(0.5, 0.5)
+collision_layer = 128
+collision_mask = 64
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visibility_layer = 2
-position = Vector2(4, 0)
+position = Vector2(3.857, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_r4ntl")
 debug_color = Color(0.933354, 0, 0, 0.419608)
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="Hitbox"]
-position = Vector2(5.33333, 0)
-scale = Vector2(1.41667, 0.516667)
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_xw8l7")
+&"": SubResource("AnimationLibrary_xw8l7")
 }
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(2.66667, 5.96046e-07)
+position = Vector2(0, -4.76837e-07)
 scale = Vector2(0.347656, 0.291667)
 color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_ua7vb")
 
+[connection signal="body_entered" from="Collider" to="." method="_on_collider_body_entered"]
 [connection signal="area_entered" from="Hitbox" to="." method="_on_arcane_arrow_area_entered"]
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
-[connection signal="screen_exited" from="Hitbox/VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

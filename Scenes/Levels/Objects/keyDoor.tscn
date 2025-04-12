@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://06fson1afemk"]
 
-[ext_resource type="Script" path="res://Scenes/Levels/Objects/keyDoor.gd" id="1_jb23n"]
+[ext_resource type="Script" uid="uid://b841tyqchsknk" path="res://Scenes/Levels/Objects/keyDoor.gd" id="1_jb23n"]
 [ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://Assets/Objects/image.png" id="2_34n7f"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_eki16"]
 [ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://Assets/Sounds/dorm-door-opening-6038.mp3" id="4_5ta5b"]
@@ -68,8 +68,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ar63u"]
 _data = {
-"RESET": SubResource("Animation_rk3td"),
-"open": SubResource("Animation_tdb0i")
+&"RESET": SubResource("Animation_rk3td"),
+&"open": SubResource("Animation_tdb0i")
 }
 
 [node name="KeyDoor" type="Node2D"]

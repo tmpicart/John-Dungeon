@@ -1,41 +1,38 @@
 extends VBoxContainer
 
-@export var BombSprite:CompressedTexture2D = null
-@export var KeySprite:CompressedTexture2D = null
-@export var CoinSprite:CompressedTexture2D = null
-@export var PotionSprite:CompressedTexture2D = null
+# Exported variables for item sprites
+@export var BombSprite: CompressedTexture2D = null
+@export var KeySprite: CompressedTexture2D = null
+@export var CoinSprite: CompressedTexture2D = null
+@export var PotionSprite: CompressedTexture2D = null
 
+# Onready variables to get references to the item containers
 @onready var Bomb = $Bomb
 @onready var Key = $Key
 @onready var Coin = $Coin
 @onready var Potion = $Potions
 
-func changeSprite(sprite2D:Sprite2D,sprite:CompressedTexture2D):
+# Helper function to change sprite textures
+func change_sprite(sprite2D: Sprite2D, sprite: CompressedTexture2D):
 	sprite2D.texture = sprite
-	
-func _ready(): #Hard Coded Stuff for now
-	# Bomb
-	var sprite:Sprite2D = Bomb.get_node("Sprite2D")
-	changeSprite(sprite,BombSprite)
-	#Key
-	sprite = Key.get_node("Sprite2D")
-	changeSprite(sprite,KeySprite)
-	#Coin
-	sprite = Coin.get_node("Sprite2D")
-	changeSprite(sprite,CoinSprite)
-	#Potion
-	sprite = Potion.get_node("Sprite2D")
-	changeSprite(sprite,PotionSprite)
 
+# Called when the node is ready
+func _ready(): 
+	# Change sprites for each item (Bomb, Key, Coin, Potion)
+	change_sprite(Bomb.get_node("Sprite2D"), BombSprite)
+	change_sprite(Key.get_node("Sprite2D"), KeySprite)
+	change_sprite(Coin.get_node("Sprite2D"), CoinSprite)
+	change_sprite(Potion.get_node("Sprite2D"), PotionSprite)
 
-func update_coin(num:int):
-	Coin.get_node("Label").text = "x"+str(num)
-	
-func update_bomb(num:int):
-	Bomb.get_node("Label").text = "x"+str(num)
-	
-func update_key(num:int):
-	Key.get_node("Label").text = "x"+str(num)
-	
-func update_potion(num:int):
-	Potion.get_node("Label").text = "x"+str(num)
+# Update functions to reflect the current number of items
+func update_coins(num: int):
+	Coin.get_node("Label").text = "x" + str(num)
+
+func update_bombs(num: int):
+	Bomb.get_node("Label").text = "x" + str(num)
+
+func update_keys(num: int):
+	Key.get_node("Label").text = "x" + str(num)
+
+func update_potions(num: int):
+	Potion.get_node("Label").text = "x" + str(num)

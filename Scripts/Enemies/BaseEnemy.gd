@@ -9,11 +9,13 @@ extends CharacterBody2D
 @onready var death_sfx = $death_sfx if has_node("death_sfx") else null
 
 var attacking = false
+var stunned = false
 var is_dead = false
 var is_hit = false
 
+
 func _physics_process(_delta):
-	if is_dead or is_hit or attacking:
+	if is_dead or is_hit or attacking or stunned:
 		return
 	move_and_slide()
 	handle_animations()
@@ -33,7 +35,10 @@ func handle_animations():
 func take_damage(dmg: int):
 	if is_dead or is_hit:
 		return
-
+		
+	if stunned:
+		dmg *= 2
+	
 	is_hit = true
 	if ouch_sfx:
 		ouch_sfx.play()
@@ -46,6 +51,14 @@ func take_damage(dmg: int):
 		HP = max(HP - dmg, 0)
 		is_hit = false
 
+func stun():
+	stunned = true
+	attacking = false
+	if $AnimationPlayer.has_animation("stun"):
+		$AnimationPlayer.play("stun")
+		await wait_for_animation()
+	stunned = false
+	
 func kill():
 	if is_dead:
 		return
@@ -59,7 +72,7 @@ func kill():
 	queue_free()
 
 func attack():
-	if attacking or is_dead or is_hit:
+	if attacking or is_dead or is_hit or stunned:
 		return
 
 	attacking = true

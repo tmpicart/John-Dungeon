@@ -1,8 +1,8 @@
 [gd_scene load_steps=14 format=3 uid="uid://r5aogxe6cokx"]
 
-[ext_resource type="Shader" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_cwkhn"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_cwkhn"]
 [ext_resource type="Texture2D" uid="uid://dg4xyqxl33fsj" path="res://Assets/Items/shield.png" id="2_tc453"]
-[ext_resource type="Script" path="res://Scripts/Player/shield.gd" id="3_mxq6r"]
+[ext_resource type="Script" uid="uid://d2jgjiyvi5h7b" path="res://Scripts/Player/shield.gd" id="3_mxq6r"]
 [ext_resource type="AudioStream" uid="uid://b7dm0qarbxbig" path="res://Assets/Sounds/Player/Shield/126491__ayavaron__key_drop-03-shuffle.wav" id="4_u7x5c"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_267t3"]
@@ -61,10 +61,10 @@ tracks/0/path = NodePath(".:material:shader_parameter/flash_value")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.533333, 0.7),
+"times": PackedFloat32Array(0, 0.5, 0.733333),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.8, 0.4, 0.0]
+"values": [0.8, 0.7, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_sv345"]
@@ -207,12 +207,12 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_papq1"]
 _data = {
-"Backward": SubResource("Animation_0ksrj"),
-"Block": SubResource("Animation_twwyn"),
-"Forward": SubResource("Animation_sv345"),
-"Left": SubResource("Animation_6onsn"),
-"RESET": SubResource("Animation_jp81y"),
-"Right": SubResource("Animation_qm0q8")
+&"Backward": SubResource("Animation_0ksrj"),
+&"Block": SubResource("Animation_twwyn"),
+&"Forward": SubResource("Animation_sv345"),
+&"Left": SubResource("Animation_6onsn"),
+&"RESET": SubResource("Animation_jp81y"),
+&"Right": SubResource("Animation_qm0q8")
 }
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_h2c54"]
@@ -232,12 +232,12 @@ script = ExtResource("3_mxq6r")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_papq1")
+&"": SubResource("AnimationLibrary_papq1")
 }
 
 [node name="BlockPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_papq1")
+&"": SubResource("AnimationLibrary_papq1")
 }
 
 [node name="block_sfx" type="AudioStreamPlayer" parent="."]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://mijfb7acl1x1"]
 
-[ext_resource type="Script" path="res://Scripts/Objects/Key.gd" id="1_mp82r"]
+[ext_resource type="Script" uid="uid://xr0ft60cg4vn" path="res://Scripts/Objects/Key.gd" id="1_mp82r"]
 [ext_resource type="Texture2D" uid="uid://ddrtt14rnkv4p" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/keys/keys_1_1.png" id="2_3h0xl"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_60pol"]
 

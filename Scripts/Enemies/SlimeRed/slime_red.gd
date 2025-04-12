@@ -12,15 +12,19 @@ func _physics_process(_delta):
 	handle_animations()
 
 func explode():
+	is_dead = true
 	# Start explosion logic
 	remove_from_group("Enemies")
 	velocity = Vector2.ZERO
-	$AnimationPlayer.play("Death")
-	$explode_sfx.play()  # Uses attack sound for explosion if desired
+	$explode_sfx.play()
+	$AnimationPlayer.play("Death")  # Uses attack sound for explosion if desired
 
 	# Wait for the animation to finish before continuing
 	await wait_for_animation()  # This waits for the animation to finish before calling queue_free
 	queue_free()  # Free the object after the animation
+
+func stun():
+	kill()
 	
 func take_damage(_num):
 	kill()

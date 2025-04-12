@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bbb8ig83mxoo3"]
 
-[ext_resource type="Script" path="res://Scenes/Levels/Objects/Door.gd" id="1_wtffu"]
+[ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://Scenes/Levels/Objects/Door.gd" id="1_wtffu"]
 [ext_resource type="Texture2D" uid="uid://bqtcnoupjlua2" path="res://Assets/Objects/Door2 Animation.png" id="2_exnfa"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Scenes/Interaction/Interaction_area.tscn" id="3_iowql"]
 
@@ -66,8 +66,8 @@ tracks/1/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7ykm2"]
 _data = {
-"RESET": SubResource("Animation_wdqx0"),
-"open": SubResource("Animation_cquit")
+&"RESET": SubResource("Animation_wdqx0"),
+&"open": SubResource("Animation_cquit")
 }
 
 [node name="Door" type="Node2D"]

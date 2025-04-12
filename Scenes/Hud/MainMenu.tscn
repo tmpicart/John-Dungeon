@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://dmwnmxg8cp250"]
 
-[ext_resource type="Script" path="res://Scripts/Hud/MainMenu.gd" id="1_44hk2"]
+[ext_resource type="Script" uid="uid://e3p4uo144lpd" path="res://Scripts/Hud/MainMenu.gd" id="1_44hk2"]
 [ext_resource type="Texture2D" uid="uid://78v8dad0ynym" path="res://Assets/Hud/Title1.png" id="2_aet3l"]
 [ext_resource type="Texture2D" uid="uid://c7o5ncw62btlp" path="res://Assets/Hud/PlayButton.png" id="2_v20y5"]
 [ext_resource type="Texture2D" uid="uid://dbunxm3qqde4g" path="res://Assets/Hud/fantasy_desktop_wallpaper_5887_by_grimwalds_ai_fantasy_dgf82rt-pre.jpg" id="2_xptpa"]

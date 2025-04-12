@@ -1,12 +1,22 @@
-res://Scenes/Levels/Dungeon Parts/Starting Room.tscn
+res://Scenes/Characters/Character.tscn
 res://Assets/Effects/on_hit_flash.gdshader
 res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd
-res://Scenes/Characters/Character.tscn
 res://Scenes/Enemies/slime_green.tscn
 res://Scenes/Enemies/slime_red.tscn
 res://Scenes/Enemies/flail_skeleton.tscn
+res://Scenes/Levels/Dungeon Parts/Starting Room.tscn
 res://Scenes/Enemies/arcane_archer.tscn
+res://Scenes/Projectiles/arcane_arrow.tscn
+res://Scenes/Projectiles/magic_missile.tscn
 res://Scenes/Enemies/necromancer.tscn
-res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd
-res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd
+res://Scenes/Weapons/Weapon.tscn
+res://Scenes/Weapons/shield.tscn
+res://Scripts/Player/shield.gd
+res://Scripts/Projectiles and Effects/magic_missile.gd
+res://Scripts/Projectiles and Effects/arcane_arrow.gd
+res://Scripts/Hurtboxes/PlayerHurtbox.gd
 res://Scripts/Player/Character.gd
+res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd
+res://Scripts/Enemies/FlailSkeleton/flail_skeleton.gd
+res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd
+res://Scripts/Projectiles and Effects/EnemySummon.gd

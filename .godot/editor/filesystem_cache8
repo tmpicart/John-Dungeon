@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1743214118
+::res://::1743814713
 README.md::TextFile::-1::1741236028::0::1::::<><>::
 ::res://Assets/::1741150591
 ::res://Assets/2D Pixel Dungeon Asset Pack/::1741561727
@@ -230,8 +230,8 @@ torch_1.png::CompressedTexture2D::7352847181998871168::1719686507::1741561727::1
 torch_2.png::CompressedTexture2D::4766290481606587844::1719686507::1741561727::1::::<><>::
 torch_3.png::CompressedTexture2D::2236708104076750381::1719686507::1741561727::1::::<><>::
 torch_4.png::CompressedTexture2D::7834761065874911136::1719686507::1741561727::1::::<><>::
-::res://Assets/Effects/::1743203639
-on_hit_flash.gdshader::Shader::-1::1743203639::0::1::::<><>::
+::res://Assets/Effects/::1743814128
+on_hit_flash.gdshader::Shader::-1::1743814128::0::1::::<><>::
 Retro Impact Effect Pack 3 B.png::CompressedTexture2D::4389927501028652967::1719686507::1741561727::1::::<><>::
 Retro Impact Effect Pack 5 A.png::CompressedTexture2D::7171165071934270448::1719686507::1741561728::1::::<><>::
 Retro Impact Effect Pack 5 B.png::CompressedTexture2D::434401339980709330::1719686507::1741561728::1::::<><>::
@@ -286,46 +286,57 @@ WallTorchH.png::CompressedTexture2D::5228670794538289933::1719686507::1741561727
 ::res://Assets/Player/::1741561727
 PLAYER_blade.png::CompressedTexture2D::1841152762114199467::1719686507::1741561727::1::::<><>::
 spritePixel.png::CompressedTexture2D::3207828889189980630::1719686507::1741561727::1::::<><>::
-::res://Assets/Sounds/::1741561727
+::res://Assets/Sounds/::1743741004
 458867__raclure__damage-sound-effect.mp3::AudioStreamMP3::7294191177455227921::1740799485::1741561727::1::::<><>::
 chargeup.mp3::AudioStreamMP3::4389323672284286705::1719686507::1741561727::1::::<><>::
 dorm-door-opening-6038.mp3::AudioStreamMP3::9126880352075582940::1719686507::1741561727::1::::<><>::
 Morgana Rides.mp3::AudioStreamMP3::3524282696702419958::1719686507::1741561727::1::::<><>::
-ouch.mp3::AudioStreamMP3::7289786343758625550::1719686507::1741561727::1::::<><>::
 ta-da.mp3::AudioStreamMP3::37204830220266704::1719686507::1741561727::1::::<><>::
 ::res://Assets/Sounds/Coin/::1741561729
 Pickup_Coin2.wav::AudioStreamWAV::9170991877627172034::1740812203::1741561729::1::::<><>::
 Pickup_Coin3.wav::AudioStreamWAV::7862586612450029359::1740812203::1741561729::1::::<><>::
 Pickup_Coin.wav::AudioStreamWAV::5749676992435871489::1740812203::1741561729::1::::<><>::
-::res://Assets/Sounds/Enemies/::1741561729
+::res://Assets/Sounds/Enemies/::1743736741
 478271__joao_janz__8-bit-explosion-1_4.wav::AudioStreamWAV::5556843212625940830::1741234933::1741561729::1::::<><>::
-::res://Assets/Sounds/Enemies/Archer/::1741561727
+::res://Assets/Sounds/Enemies/Archer/::1743814713
+BOW Arrow Hit 05.wav::AudioStreamWAV::6756234345856414776::1743735743::1743735752::1::::<><>::
 bow-release-bow-and-arrow-4-101936.mp3::AudioStreamMP3::2495732290286521644::1719686507::1741561727::1::::<><>::
+whoosh_weapon_knife_swing_04.wav::AudioStreamWAV::1895161898097769341::1743814052::1743814053::1::::<><>::
+::res://Assets/Sounds/Enemies/Skeleton/::1743814713
+Bone Cracking 34.wav::AudioStreamWAV::3418742524605601569::1743814708::1743814714::1::::<><>::
+FS Concrete Soldier Crouch N02.wav::AudioStreamWAV::480425068813533271::1743736737::1743736741::1::::<><>::
+FS Concrete Soldier Crouch N05.wav::AudioStreamWAV::2209437821579301328::1743736737::1743736741::1::::<><>::
+Leeks,Break,Bone,Crack,Body,Arm13.wav::AudioStreamWAV::105930924490440714::1743735776::1743735781::1::::<><>::
+SWSH_Swing 3 Large 03_DDUMAIS_NONE.wav::AudioStreamWAV::5859232198303973856::1743735776::1743735781::1::::<><>::
 ::res://Assets/Sounds/Enemies/Slime/::1741561729
 353250__zuzek06__slimejump.wav::AudioStreamWAV::2963772230291344593::1740817827::1741561729::1::::<><>::
 524952__magnuswaker__squelch-2.wav::AudioStreamWAV::8014296287640730186::1740818498::1741561729::1::::<><>::
 ::res://Assets/Sounds/Music/::1741561727
 medieval-background-196571.mp3::AudioStreamMP3::264064185742045830::1719686507::1741561727::1::::<><>::
-::res://Assets/Sounds/Player/::1740814988
-::res://Assets/Sounds/Player/Attack/::1741561729
+::res://Assets/Sounds/Player/::1743741171
+Grunt_Pain_Male_BB_10_SCREAM LIBRARY_BRFX-004.wav::AudioStreamWAV::788802319201220879::1743741171::1743741171::1::::<><>::
+ouch.mp3::AudioStreamMP3::7289786343758625550::1719686507::1743741005::1::::<><>::
+::res://Assets/Sounds/Player/Attack/::1743737859
 724716__greyfeather__sword-slash-energy-wave.wav::AudioStreamWAV::3675628748413058140::1740813373::1741561729::1::::<><>::
-766477__rtyrtyrtyrtyrtyrtyrtyrty__knife-slash-spike-trap-sharp-sound-1.mp3::AudioStreamMP3::2902939750467662166::1740813385::1741561727::1::::<><>::
+Organic_Whoosh_14.wav::AudioStreamWAV::861279132094503797::1743737814::1743737822::1::::<><>::
 sword-sound-2-36274.mp3::AudioStreamMP3::323238846936700793::1719686507::1741561727::1::::<><>::
+Whoosh,Sound Design,Cartoon,Whir,2.wav::AudioStreamWAV::772239684971612011::1743737814::1743737838::1::::<><>::
+::res://Assets/Sounds/Player/Movement/::1743737837
+walk1.wav::AudioStreamWAV::4216206150022542624::1740812788::1743737085::1::::<><>::
+walk2.wav::AudioStreamWAV::3209942125026281304::1740812788::1743737085::1::::<><>::
+walk3.wav::AudioStreamWAV::2472714800639357722::1740812788::1743737085::1::::<><>::
+Whoosh,Organic,Styrofoam,Plank,Airy,Smooth,Texture,1.wav::AudioStreamWAV::729538736824829520::1743737354::1743737356::1::::<><>::
 ::res://Assets/Sounds/Player/Shield/::1741561729
 126491__ayavaron__key_drop-03-shuffle.wav::AudioStreamWAV::4639430903281382914::1740814983::1741561729::1::::<><>::
 334302__sojan__coinflic6.mp3::AudioStreamMP3::4350295947984953000::1740815287::1741561727::1::::<><>::
-::res://Assets/Sounds/Player/Walk/::1741561729
-walk1.wav::AudioStreamWAV::4216206150022542624::1740812788::1741561729::1::::<><>::
-walk2.wav::AudioStreamWAV::3209942125026281304::1740812788::1741561729::1::::<><>::
-walk3.wav::AudioStreamWAV::2472714800639357722::1740812788::1741561729::1::::<><>::
 ::res://Assets/Tilesets/::1741561728
 BackGround.png::CompressedTexture2D::8507920394494062552::1719686507::1741561728::1::::<><>::
 Dungeon_Tileset.png::CompressedTexture2D::5805832042069013238::1719686507::1741561727::1::::<><>::
 TILESET_DUNGEON.png::CompressedTexture2D::1260371920789798156::1719686507::1741561728::1::::<><>::
 ::res://Scenes/::1743134659
-::res://Scenes/Characters/::1743203624
+::res://Scenes/Characters/::1743814127
 blacksmith.tscn::PackedScene::89311651398933150::1741150643::0::1::::<><>::uid://b1ts73o00mqe0::::res://Assets/NPC/NPC_SHOPKEEPER.png<>res://Scripts/NPC/blacksmith.gd<>res://Scripts/Interaction/Interaction_area.gd<>uid://bh78n0fysivyr::::res://Scripts/Dialogue/NPC_Dialog.tscn<>uid://dyt3f5dy5h3es::::res://Scenes/Shop/shop_2.tscn
-Character.tscn::PackedScene::2604217280224652035::1743203624::0::1::::<><>::res://Scripts/Player/Character.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://drxv8fgohuj1r::::res://Scenes/Weapons/Weapon.tscn<>uid://1h4rtwaxgf8v::::res://Assets/Player/PLAYER_blade.png<>uid://r5aogxe6cokx::::res://Scenes/Weapons/shield.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://b1cmkf8rjm6ka::::res://Assets/Sounds/Player/Walk/walk1.wav<>uid://bly6jpfp5o80s::::res://Assets/Sounds/Player/Walk/walk2.wav<>uid://bbh2isy5lm0sc::::res://Assets/Sounds/Player/Walk/walk3.wav<>uid://b28k0d573exg7::::res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3
+Character.tscn::PackedScene::2604217280224652035::1743814127::0::1::::<><>::res://Scripts/Player/Character.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://drxv8fgohuj1r::::res://Scenes/Weapons/Weapon.tscn<>uid://1h4rtwaxgf8v::::res://Assets/Player/PLAYER_blade.png<>uid://r5aogxe6cokx::::res://Scenes/Weapons/shield.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://knnnqipbcoxk::::res://Assets/Sounds/Player/Movement/Whoosh,Organic,Styrofoam,Plank,Airy,Smooth,Texture,1.wav<>uid://db4hyly4pqm7o::::res://Assets/Sounds/Player/ouch.mp3<>uid://lidpusv14cod::::res://Assets/Sounds/Player/Grunt_Pain_Male_BB_10_SCREAM LIBRARY_BRFX-004.wav<>uid://b28k0d573exg7::::res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3
 EnemyStun.gd::GDScript::-1::1740773010::0::1::::EnemyStun<>State<>::
 Idle.gd::GDScript::-1::1719686507::0::1::::<>State<>::
 potion_seller.tscn::PackedScene::5627402122037029000::1741150655::0::1::::<><>::uid://b1ts73o00mqe0::::res://Assets/NPC/NPC_SHOPKEEPER.png<>res://Scripts/NPC/potion_seller.gd<>res://Scripts/Interaction/Interaction_area.gd<>uid://bh78n0fysivyr::::res://Scripts/Dialogue/NPC_Dialog.tscn<>uid://dyt3f5dy5h3es::::res://Scenes/Shop/shop_2.tscn
@@ -333,12 +344,12 @@ shopGuy.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 shopGuy.tscn::PackedScene::4952289536967046725::1741149607::0::1::::<><>::res://Scenes/Characters/shopGuy.gd<>uid://cstqny7x0fq8::::res://Assets/2D Pixel Dungeon Asset Pack/Character_animation/priests_idle/priest1/v1/priest1_v1_1.png<>uid://dhajlijwh6uy4::::res://Scenes/Interaction/Interaction_area.tscn
 tutorial_npc.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 tutorial_npc.tscn::PackedScene::6899408302890301138::1741150288::0::1::::<><>::res://Scenes/Characters/tutorial_npc.gd<>uid://crf32w5xu0ss1::::res://Assets/NPC/NPC.png<>res://Scripts/Interaction/Interaction_area.gd<>uid://bh78n0fysivyr::::res://Scripts/Dialogue/NPC_Dialog.tscn
-::res://Scenes/Enemies/::1743203624
-arcane_archer.tscn::PackedScene::3081774444681482387::1743203624::0::1::::<><>::res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd<>res://Scripts/States/State Control.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://j3xverou5twt::::res://Assets/Enemies/ENEMY_archer.png<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd<>res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd<>uid://bcvjqylald7g8::::res://Scenes/Projectiles/arcane_arrow.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav
-flail_skeleton.tscn::PackedScene::6269307881465609721::1743203624::0::1::::<><>::res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/Enemies/FlailSkeleton/flail_skeleton.gd<>uid://cyuinmnunmfx1::::res://Assets/Enemies/ENEMY_SKELETON.png<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/States/EnemyAttack.gd<>res://Scripts/Enemies/FlailSkeleton/EnemyChaseSkeleton.gd<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav
-necromancer.tscn::PackedScene::5401952352395468874::1743203624::0::1::::<><>::res://Scripts/Enemies/Necromancer/necromancer.gd<>uid://k5puvnbpg420::::res://Assets/Enemies/ENEMY_NECROMANCER.png<>res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd<>res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd<>res://Scripts/States/EnemyRetreat.gd<>uid://5dnflp2x3nl4::::res://Scenes/Projectiles/magic_missile.tscn<>res://Scripts/Enemies/Necromancer/EnemySummon.gd<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn<>uid://4evtkf3vje6p::::res://Scenes/Projectiles/summon_effect.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav
-slime_green.tscn::PackedScene::5577615973094880573::1743203624::0::1::::<><>::uid://bmctyjn7krper::::res://Assets/Enemies/ENEMY_slime.png<>res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/Enemies/SlimeGreen/slime_green.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/States/State Control.gd<>uid://cyuinmnunmfx1::::res://Assets/Enemies/ENEMY_SKELETON.png<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/States/EnemyChase.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav
-slime_red.tscn::PackedScene::7995787319590449261::1743203624::0::1::::<><>::res://Scripts/Enemies/SlimeRed/slime_red.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://bmctyjn7krper::::res://Assets/Enemies/ENEMY_slime.png<>uid://dooyv6iwtkcqw::::res://Assets/Items/bombPlaceholder.png<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>res://Scripts/States/EnemyChase.gd<>res://Scripts/Enemies/SlimeRed/EnemyAttackRedSlime.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav
+::res://Scenes/Enemies/::1743814127
+arcane_archer.tscn::PackedScene::3081774444681482387::1743814127::0::1::::<><>::res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd<>res://Scripts/States/State Control.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://j3xverou5twt::::res://Assets/Enemies/ENEMY_archer.png<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd<>res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd<>uid://bcvjqylald7g8::::res://Scenes/Projectiles/arcane_arrow.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav<>uid://2abbl0ptiwav::::res://Assets/Sounds/Enemies/Archer/whoosh_weapon_knife_swing_04.wav
+flail_skeleton.tscn::PackedScene::6269307881465609721::1743814127::0::1::::<><>::res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/Enemies/FlailSkeleton/flail_skeleton.gd<>uid://cyuinmnunmfx1::::res://Assets/Enemies/ENEMY_SKELETON.png<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/States/EnemyAttack.gd<>res://Scripts/Enemies/FlailSkeleton/EnemyChaseSkeleton.gd<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://g3ysbqllg6et::::res://Assets/Sounds/Enemies/Skeleton/FS Concrete Soldier Crouch N02.wav<>uid://6qjeassam43e::::res://Assets/Sounds/Enemies/Skeleton/FS Concrete Soldier Crouch N05.wav<>uid://brkww44g4c71::::res://Assets/Sounds/Enemies/Skeleton/Leeks,Break,Bone,Crack,Body,Arm13.wav<>uid://cpqix0gqavlh5::::res://Assets/Sounds/Enemies/Skeleton/SWSH_Swing 3 Large 03_DDUMAIS_NONE.wav
+necromancer.tscn::PackedScene::5401952352395468874::1743814127::0::1::::<><>::res://Scripts/Enemies/Necromancer/necromancer.gd<>uid://k5puvnbpg420::::res://Assets/Enemies/ENEMY_NECROMANCER.png<>res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd<>res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd<>res://Scripts/States/EnemyRetreat.gd<>uid://5dnflp2x3nl4::::res://Scenes/Projectiles/magic_missile.tscn<>res://Scripts/Enemies/Necromancer/EnemySummon.gd<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn<>uid://4evtkf3vje6p::::res://Scenes/Projectiles/summon_effect.tscn<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav
+slime_green.tscn::PackedScene::5577615973094880573::1743814127::0::1::::<><>::uid://bmctyjn7krper::::res://Assets/Enemies/ENEMY_slime.png<>res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/Enemies/SlimeGreen/slime_green.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/States/State Control.gd<>uid://cyuinmnunmfx1::::res://Assets/Enemies/ENEMY_SKELETON.png<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/States/EnemyChase.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav
+slime_red.tscn::PackedScene::7995787319590449261::1743814127::0::1::::<><>::res://Scripts/Enemies/SlimeRed/slime_red.gd<>res://Assets/Effects/on_hit_flash.gdshader<>uid://bmctyjn7krper::::res://Assets/Enemies/ENEMY_slime.png<>uid://civoe3tpgge0d::::res://Assets/Items/BOMB_SPRITE.png<>res://Scripts/States/State Control.gd<>res://Scripts/States/EnemyIdle.gd<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>res://Scripts/States/EnemyChase.gd<>res://Scripts/Enemies/SlimeRed/EnemyAttackRedSlime.gd<>uid://bihw5plpyvxx6::::res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav<>uid://dmggj3bb1d1jy::::res://Assets/Sounds/Enemies/Slime/524952__magnuswaker__squelch-2.wav<>uid://clf1npumucsf3::::res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav
 the_sorceress.tscn::PackedScene::1208122248302856148::1743134677::0::1::::<><>::res://Scripts/Enemies/TheSorceress/the_sorceress.gd<>res://Scripts/States/State Control.gd<>uid://bsmans2qdxlc5::::res://Assets/Enemies/BOSS_SHADOW.png<>res://Assets/Effects/on_hit_flash.gdshader<>res://Scripts/Enemies/TheSorceress/Engage.gd<>res://Scripts/Hitboxes/Hurtbox.gd<>res://Scripts/Hitboxes/Hitbox.gd<>res://Scripts/Enemies/TheSorceress/Melee.gd<>res://Scripts/Enemies/TheSorceress/SlideInto.gd<>res://Scripts/Enemies/TheSorceress/Cast.gd<>res://Scripts/Enemies/TheSorceress/Summon.gd<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn<>uid://bj53m0le6fixn::::res://Scenes/Enemies/arcane_archer.tscn<>uid://4evtkf3vje6p::::res://Scenes/Projectiles/summon_effect.tscn<>uid://5dnflp2x3nl4::::res://Scenes/Projectiles/magic_missile.tscn<>res://Scripts/Enemies/TheSorceress/Curse.gd<>res://Scripts/Enemies/TheSorceress/Magic Missile.gd<>uid://c8882waks7p3i::::res://Scenes/Projectiles/curse_glyph.tscn<>res://Scripts/Enemies/TheSorceress/Force Current.gd<>uid://dl6hpi8ycnpdd::::res://Scenes/Enemies/slime_red.tscn<>uid://ci70mpdu1yk5g::::res://Scenes/Enemies/necromancer.tscn<>uid://cexkcx50jsodx::::res://Scenes/Projectiles/force_wave.tscn<>res://Scripts/Enemies/TheSorceress/Beam.gd<>res://Scripts/Enemies/TheSorceress/SlideAway.gd<>res://Scripts/Enemies/TheSorceress/Intervention.gd<>res://Scripts/Enemies/TheSorceress/Stars.gd<>uid://lr1c6ppfwvt5::::res://Scenes/Projectiles/intervention_light.tscn<>uid://b3shrwwetxpvd::::res://Assets/Sounds/chargeup.mp3<>uid://s0p7t5g4q00k::::res://Scenes/Projectiles/energy_star.tscn<>res://Scenes/Characters/Idle.gd<>uid://sa01ncok46o::::res://Assets/Sounds/ta-da.mp3
 ::res://Scenes/Hud/::1741150463
 heart.tscn::PackedScene::6202901311876060082::1741150299::0::1::::<><>::uid://cicrq067sfe37::::res://Assets/Hud/hearts.png<>res://Scripts/Hud/heart.gd
@@ -363,7 +374,7 @@ slot.gd::GDScript::-1::1719686507::0::1::::Slot<>Panel<>::
 slot.tscn::PackedScene::2082155597277258678::1741150365::0::1::::<><>::uid://cw30qc3fs3oar::::res://Assets/Items/placeHolderWeapon.png<>res://Scenes/Items/slot.gd
 ::res://Scenes/Levels/::1743134677
 Doungeon.tscn::PackedScene::2389297044790469612::1743134677::0::1::::<><>::uid://bddrcwkuo7k48::::res://Scenes/Characters/Character.tscn<>uid://b74j72sy4ihbx::::res://Scenes/Levels/Dungeon Parts/MultiRoom.tscn<>res://Scripts/Hud/MainScene.gd<>uid://bcqpocv0rfv4o::::res://Scenes/Levels/Objects/Door.tscn<>uid://oufsqmno882m::::res://Scenes/Levels/Dungeon Parts/HallWay.tscn<>uid://dqovgjukcslmp::::res://Scenes/Levels/Dungeon Parts/ChestRoomLeft.tscn<>uid://rvpiujtilw1o::::res://Scenes/Levels/Objects/chestNoKey.tscn<>uid://beu7po4d0rpog::::res://Scenes/Hud/ItemHud.tscn<>uid://u1ixxtopxv2p::::res://Scenes/Levels/Dungeon Parts/Starting Room.tscn<>uid://cs5nstle380af::::res://Scenes/Items/potion.tscn<>uid://clp3rxlbhwvv6::::res://Scenes/Enemies/slime_green.tscn<>uid://dthkg88xvlsf5::::res://Assets/Tilesets/BackGround.png<>uid://mijfb7acl1x1::::res://Scenes/Items/Key.tscn<>uid://cqbfd3ribv0bg::::res://Scenes/Items/coin.tscn<>uid://06fson1afemk::::res://Scenes/Levels/Objects/keyDoor.tscn<>uid://dl6hpi8ycnpdd::::res://Scenes/Enemies/slime_red.tscn<>uid://ci70mpdu1yk5g::::res://Scenes/Enemies/necromancer.tscn<>uid://bji7ka5w8l7k::::res://Scenes/Characters/blacksmith.tscn<>uid://bj53m0le6fixn::::res://Scenes/Enemies/arcane_archer.tscn<>uid://7i30u8mpwy4y::::res://Scenes/Hud/heart_bar.tscn<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn<>uid://1ybnqh3qmc78::::res://Scenes/Levels/Dungeon Parts/DoorPathCover.tscn<>uid://cmf7qxlp6g8rc::::res://Scenes/Characters/potion_seller.tscn<>uid://bps0k3jhyu0ia::::res://Scenes/Levels/Objects/NoOPEN.tscn<>uid://bqhgok2lgcg7o::::res://Assets/Sounds/Morgana Rides.mp3<>uid://cghx8ibvkewpx::::res://Scenes/Levels/Objects/chest.tscn<>uid://dgiujaj1xoyn7::::res://Scenes/Levels/Dungeon Parts/BOSSROOM.tscn
-::res://Scenes/Levels/Dungeon Parts/::1743203624
+::res://Scenes/Levels/Dungeon Parts/::1743814127
 BOSSROOM.tscn::PackedScene::7598140562056323994::1743134679::0::1::::<><>::uid://r7se2pkijaca::::res://Assets/Tilesets/TILESET_DUNGEON.png<>res://Scripts/Environment/BOSSROOM.gd<>uid://rhhukbmueh53::::res://Scenes/Enemies/the_sorceress.tscn<>uid://bps0k3jhyu0ia::::res://Scenes/Levels/Objects/NoOPEN.tscn
 ChestRoom.tscn::PackedScene::8312471113520170435::1741150568::0::1::::<><>::uid://coyng8st7lxvy::::res://Assets/Tilesets/Dungeon_Tileset.png<>uid://r7se2pkijaca::::res://Assets/Tilesets/TILESET_DUNGEON.png<>uid://bqbgrqlrxc8io::::res://Scenes/Levels/Dungeon Parts/TorchWall.tscn<>uid://1ybnqh3qmc78::::res://Scenes/Levels/Dungeon Parts/DoorPathCover.tscn
 ChestRoomLeft.tscn::PackedScene::8312471113520170435::1741151059::0::1::::<><>::uid://coyng8st7lxvy::::res://Assets/Tilesets/Dungeon_Tileset.png<>uid://cghx8ibvkewpx::::res://Scenes/Levels/Objects/chest.tscn
@@ -372,7 +383,7 @@ DoorPathCover.tscn::PackedScene::1874539785481088265::1741150568::0::1::::<><>::
 HallWay.tscn::PackedScene::1024267954789729966::1741150568::0::1::::<><>::uid://coyng8st7lxvy::::res://Assets/Tilesets/Dungeon_Tileset.png
 HallWayVert.tscn::PackedScene::5840278343735433269::1741150568::0::1::::<><>::uid://coyng8st7lxvy::::res://Assets/Tilesets/Dungeon_Tileset.png
 MultiRoom.tscn::PackedScene::4692935680384185573::1740770324::0::1::::<><>::uid://dfajj0rwmqcxr::::res://Assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png
-Starting Room.tscn::PackedScene::1457978741613553569::1743203624::0::1::::<><>::uid://7i30u8mpwy4y::::res://Scenes/Hud/heart_bar.tscn<>uid://r7se2pkijaca::::res://Assets/Tilesets/TILESET_DUNGEON.png<>res://Scripts/Hud/MainScene.gd<>uid://dfajj0rwmqcxr::::res://Assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png<>uid://beu7po4d0rpog::::res://Scenes/Hud/ItemHud.tscn<>uid://bcqpocv0rfv4o::::res://Scenes/Levels/Objects/Door.tscn<>uid://1ybnqh3qmc78::::res://Scenes/Levels/Dungeon Parts/DoorPathCover.tscn<>uid://bqbgrqlrxc8io::::res://Scenes/Levels/Dungeon Parts/TorchWall.tscn<>uid://bxbick14tkq7a::::res://Scenes/Levels/Objects/BossDoor.tscn<>uid://c5keinhto18dy::::res://Scenes/Characters/tutorial_npc.tscn<>uid://bddrcwkuo7k48::::res://Scenes/Characters/Character.tscn<>uid://clp3rxlbhwvv6::::res://Scenes/Enemies/slime_green.tscn<>uid://bj53m0le6fixn::::res://Scenes/Enemies/arcane_archer.tscn<>uid://dl6hpi8ycnpdd::::res://Scenes/Enemies/slime_red.tscn<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn
+Starting Room.tscn::PackedScene::1457978741613553569::1743814127::0::1::::<><>::uid://7i30u8mpwy4y::::res://Scenes/Hud/heart_bar.tscn<>uid://r7se2pkijaca::::res://Assets/Tilesets/TILESET_DUNGEON.png<>res://Scripts/Hud/MainScene.gd<>uid://dfajj0rwmqcxr::::res://Assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png<>uid://beu7po4d0rpog::::res://Scenes/Hud/ItemHud.tscn<>uid://bcqpocv0rfv4o::::res://Scenes/Levels/Objects/Door.tscn<>uid://1ybnqh3qmc78::::res://Scenes/Levels/Dungeon Parts/DoorPathCover.tscn<>uid://bqbgrqlrxc8io::::res://Scenes/Levels/Dungeon Parts/TorchWall.tscn<>uid://bxbick14tkq7a::::res://Scenes/Levels/Objects/BossDoor.tscn<>uid://c5keinhto18dy::::res://Scenes/Characters/tutorial_npc.tscn<>uid://bddrcwkuo7k48::::res://Scenes/Characters/Character.tscn<>uid://cvk5t5c7vvgv6::::res://Scenes/Enemies/flail_skeleton.tscn<>uid://bj53m0le6fixn::::res://Scenes/Enemies/arcane_archer.tscn
 torch.tscn::PackedScene::3139846378437360092::1741150530::0::1::::<><>::uid://dt8ip72cwtnnd::::res://Assets/Objects/TorchAnimation.png
 TorchWall.tscn::PackedScene::3511902078278366850::1741150542::0::1::::<><>::uid://cgq2pdlvvolfx::::res://Assets/Objects/WallTorchH.png
 ::res://Scenes/Levels/Objects/::1741561728
@@ -405,12 +416,12 @@ panel_2.tscn::PackedScene::7908610237633889625::1741150344::0::1::::<><>::uid://
 shop.tscn::PackedScene::4229637344988013317::1719686507::0::1::::<><>::
 shop_2.gd::GDScript::-1::1719686507::0::1::::<>CanvasLayer<>::
 shop_2.tscn::PackedScene::8884728061951967074::1740707559::0::1::::<><>::res://Scenes/Shop/shop_2.gd<>uid://bkruttwdv3hnk::::res://Scenes/Shop/panel.tscn<>uid://dkw8wjmcojh0d::::res://Scenes/Shop/panel_2.tscn
-::res://Scenes/Weapons/::1741561727
+::res://Scenes/Weapons/::1743814128
 bomb.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
-bomb.tscn::PackedScene::6549541188875554615::1741150875::0::1::::<><>::res://Scenes/Weapons/bomb.gd<>res://Scripts/Hitboxes/Hitbox.gd<>uid://civoe3tpgge0d::::res://Assets/Items/BOMB_SPRITE.png<>uid://cexni2s4d07wn::::res://Scenes/Weapons/explosion-6055.mp3
+bomb.tscn::PackedScene::6549541188875554615::1743814128::0::1::::<><>::res://Scenes/Weapons/bomb.gd<>res://Scripts/Hitboxes/Hitbox.gd<>uid://civoe3tpgge0d::::res://Assets/Items/BOMB_SPRITE.png<>uid://cexni2s4d07wn::::res://Scenes/Weapons/explosion-6055.mp3
 explosion-6055.mp3::AudioStreamMP3::5101882484798499729::1719686507::1741561727::1::::<><>::
 shield.tscn::PackedScene::1255167026476878051::1741150683::0::1::::<><>::res://Assets/Effects/on_hit_flash.gdshader<>uid://dg4xyqxl33fsj::::res://Assets/Items/shield.png<>res://Scripts/Player/shield.gd<>uid://b7dm0qarbxbig::::res://Assets/Sounds/Player/Shield/126491__ayavaron__key_drop-03-shuffle.wav
-Weapon.tscn::PackedScene::8401287341848010745::1741234371::0::1::::<><>::res://Scripts/Player/Weapon.gd<>uid://cpxo8yur1wbhq::::res://Assets/Items/WEAPONS.png<>res://Scripts/Hitboxes/Hitbox.gd<>uid://eutxxirj2smr::::res://Assets/Sounds/Player/Attack/sword-sound-2-36274.mp3<>uid://bsmrclffkkiwa::::res://Assets/Sounds/Player/Attack/724716__greyfeather__sword-slash-energy-wave.wav<>uid://bhmg81tdhc031::::res://Assets/Sounds/Player/Attack/766477__rtyrtyrtyrtyrtyrtyrtyrty__knife-slash-spike-trap-sharp-sound-1.mp3
+Weapon.tscn::PackedScene::8401287341848010745::1743814127::0::1::::<><>::res://Scripts/Player/Weapon.gd<>uid://cpxo8yur1wbhq::::res://Assets/Items/WEAPONS.png<>res://Scripts/Hitboxes/Hitbox.gd<>uid://eutxxirj2smr::::res://Assets/Sounds/Player/Attack/sword-sound-2-36274.mp3<>uid://mjhe2sm8irvx::::res://Assets/Sounds/Player/Attack/Organic_Whoosh_14.wav<>uid://bsmrclffkkiwa::::res://Assets/Sounds/Player/Attack/724716__greyfeather__sword-slash-energy-wave.wav
 ::res://Scenes/Weapons/Skeleton/::1741561728
 Attack.png::CompressedTexture2D::8079268407248976439::1719686507::1741561728::1::::<><>::
 Death.png::CompressedTexture2D::4057849101374534446::1719686507::1741561728::1::::<><>::
@@ -425,28 +436,28 @@ NPC_Dialog.gd::GDScript::-1::1743137949::0::1::::<>CanvasLayer<>::
 NPC_Dialog.tscn::PackedScene::2945830875293916981::1741150091::0::1::::<><>::res://Scripts/Dialogue/NPC_Dialog.gd<>uid://72cf32qqgdgy::::res://Assets/Hud/dialogue_box.png
 smithDialog1.txt::TextFile::-1::1719686507::0::1::::<><>::
 Tutorial.txt::TextFile::-1::1719686507::0::1::::<><>::
-::res://Scripts/Enemies/::1743138122
-BaseEnemy.gd::GDScript::-1::1743138122::0::1::::<>CharacterBody2D<>::
-::res://Scripts/Enemies/ArcaneArcher/::1743203534
+::res://Scripts/Enemies/::1743812826
+BaseEnemy.gd::GDScript::-1::1743812826::0::1::::<>CharacterBody2D<>::
+::res://Scripts/Enemies/ArcaneArcher/::1743813201
 arcane_archer.gd::GDScript::-1::1741237354::0::1::::<>CharacterBody2D<>::
 arcane_arrow.gd::GDScript::-1::1743150245::0::1::::Projectile<>Node2D<>::
-EnemyAttackArcaneArcher.gd::GDScript::-1::1743152784::0::1::::EnemyAttackArcaneArcher<>EnemyAttack<>::
-EnemyChaseArcaneArcher.gd::GDScript::-1::1743203534::0::1::::EnemyChaseArcaneArcher<>EnemyChase<>::
-::res://Scripts/Enemies/FlailSkeleton/::1743135132
+EnemyAttackArcaneArcher.gd::GDScript::-1::1743813201::0::1::::EnemyAttackArcaneArcher<>EnemyAttack<>::
+EnemyChaseArcaneArcher.gd::GDScript::-1::1743812574::0::1::::EnemyChaseArcaneArcher<>EnemyChase<>::
+::res://Scripts/Enemies/FlailSkeleton/::1743744624
 EnemyChaseSkeleton.gd::GDScript::-1::1743135132::0::1::::EnemyChaseSkeleton<>EnemyChase<>::
-flail_skeleton.gd::GDScript::-1::1741237354::0::1::::<>CharacterBody2D<>::
-::res://Scripts/Enemies/Necromancer/::1743135176
-EnemyAttackNecromancer.gd::GDScript::-1::1743130229::0::1::::EnemyAttackNecromancer<>EnemyAttack<>::
-EnemyChaseNecromancer.gd::GDScript::-1::1743135176::0::1::::EnemyChaseNecromancer<>EnemyChase<>::
+flail_skeleton.gd::GDScript::-1::1743744624::0::1::::<>CharacterBody2D<>::
+::res://Scripts/Enemies/Necromancer/::1743216064
+EnemyAttackNecromancer.gd::GDScript::-1::1743216064::0::1::::EnemyAttackNecromancer<>EnemyAttack<>::
+EnemyChaseNecromancer.gd::GDScript::-1::1743214743::0::1::::EnemyChaseNecromancer<>EnemyChase<>::
 EnemySummon.gd::GDScript::-1::1740706585::0::1::::<>State<>::
 magic_missile.gd::GDScript::-1::1719686507::0::1::::TrackingProjectile<>Node2D<>::
 necromancer.gd::GDScript::-1::1741250792::0::1::::<>CharacterBody2D<>::
 Summon Effect.gd::GDScript::-1::1719686507::0::1::::<>Sprite2D<>::
 ::res://Scripts/Enemies/SlimeGreen/::1743146913
 slime_green.gd::GDScript::-1::1741238241::0::1::::<>CharacterBody2D<>::
-::res://Scripts/Enemies/SlimeRed/::1743153415
+::res://Scripts/Enemies/SlimeRed/::1743748979
 EnemyAttackRedSlime.gd::GDScript::-1::1743148302::0::1::::EnemyAttackRedSlime<>EnemyAttack<>::
-slime_red.gd::GDScript::-1::1743153415::0::1::::<>CharacterBody2D<>::
+slime_red.gd::GDScript::-1::1743748979::0::1::::<>CharacterBody2D<>::
 ::res://Scripts/Enemies/TheSorceress/::1740706124
 Beam.gd::GDScript::-1::1719686507::0::1::::<>State<>::
 Cast.gd::GDScript::-1::1719686507::0::1::::<>State<>::
@@ -468,9 +479,9 @@ the_sorceress.gd::GDScript::-1::1719686507::0::1::::<>CharacterBody2D<>::
 ::res://Scripts/Environment/::1741150772
 BOSSROOM.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 Global.gd::GDScript::-1::1719686507::0::1::::<>Node<>::
-::res://Scripts/Hitboxes/::1743151132
-Hitbox.gd::GDScript::-1::1719686507::0::1::::Hitbox<>Area2D<>::
-Hurtbox.gd::GDScript::-1::1743151132::0::1::::Hurtbox<>Area2D<>::
+::res://Scripts/Hitboxes/::1743749220
+Hitbox.gd::GDScript::-1::1743739829::0::1::::Hitbox<>Area2D<>::
+Hurtbox.gd::GDScript::-1::1743749220::0::1::::Hurtbox<>Area2D<>::
 projectile_hitbox.gd::GDScript::-1::1719686507::0::1::::ProjectileHitbox<>Hitbox<>::
 ::res://Scripts/Hud/::1743148871
 heart.gd::GDScript::-1::1719686507::0::1::::<>Panel<>::
@@ -490,15 +501,15 @@ chestNoKey.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 coin.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 Door.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
 Key.gd::GDScript::-1::1719686507::0::1::::<>Node2D<>::
-::res://Scripts/Player/::1743149097
-Character.gd::GDScript::-1::1743149097::0::1::::Character<>CharacterBody2D<>::
+::res://Scripts/Player/::1743742595
+Character.gd::GDScript::-1::1743742595::0::1::::Character<>CharacterBody2D<>::
 shield.gd::GDScript::-1::1740817475::0::1::::Shield<>Sprite2D<>::
-Weapon.gd::GDScript::-1::1719686507::0::1::::Weapon<>Node2D<>::
-::res://Scripts/States/::1743146857
+Weapon.gd::GDScript::-1::1743738369::0::1::::Weapon<>Node2D<>::
+::res://Scripts/States/::1743749341
 EnemyAttack.gd::GDScript::-1::1743130654::0::1::::EnemyAttack<>State<>::
 EnemyChase.gd::GDScript::-1::1743146525::0::1::::EnemyChase<>State<>::
 EnemyIdle.gd::GDScript::-1::1743146257::0::1::::EnemyIdle<>State<>::
 EnemyRetreat.gd::GDScript::-1::1719686507::0::1::::EnemyRetreat<>State<>::
 EnemySummon.gd::GDScript::-1::1719686507::0::1::::EnemySummon<>State<>::
 State Control.gd::GDScript::-1::1743146857::0::1::::<>Node<>::
-State.gd::GDScript::-1::1719686507::0::1::::State<>Node<>::
+State.gd::GDScript::-1::1743749341::0::1::::State<>Node<>::

@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://cmf7qxlp6g8rc"]
 
 [ext_resource type="Texture2D" uid="uid://b1ts73o00mqe0" path="res://Assets/NPC/NPC_SHOPKEEPER.png" id="1_431h3"]
-[ext_resource type="Script" path="res://Scripts/NPC/potion_seller.gd" id="1_pxott"]
-[ext_resource type="Script" path="res://Scripts/Interaction/Interaction_area.gd" id="2_lnmde"]
+[ext_resource type="Script" uid="uid://cod6h7cv2f2ur" path="res://Scripts/NPC/potion_seller.gd" id="1_pxott"]
+[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://Scripts/Interaction/Interaction_area.gd" id="2_lnmde"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://Scripts/Dialogue/NPC_Dialog.tscn" id="4_lbb0m"]
 [ext_resource type="PackedScene" uid="uid://dyt3f5dy5h3es" path="res://Scenes/Shop/shop_2.tscn" id="5_47u7r"]
 
