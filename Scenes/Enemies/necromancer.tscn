@@ -24,7 +24,7 @@ shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
 radius = 7.0
-height = 20.0
+height = 24.0
 
 [sub_resource type="Animation" id="Animation_6pa2e"]
 resource_name = "Attack"
@@ -251,8 +251,8 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to1xr"]
-radius = 14.0
-height = 40.0
+radius = 16.0
+height = 48.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_jyny8"]
 random_pitch = 1.2
@@ -273,6 +273,7 @@ streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
 [node name="Necromancer" type="CharacterBody2D" groups=["Enemies"]]
+scale = Vector2(0.75, 0.75)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
@@ -281,15 +282,14 @@ HP = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_f7sk2")
-position = Vector2(0, -11.365)
-scale = Vector2(0.75, 0.75)
+position = Vector2(0, -15)
 texture = ExtResource("2_0u5aw")
 hframes = 17
 vframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(0, -10)
+position = Vector2(0, -12)
 shape = SubResource("CapsuleShape2D_pdttr")
 
 [node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
@@ -305,7 +305,7 @@ script = ExtResource("6_eko0r")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-attempt_attack_range = 200
+attempt_attack_range = 150
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("7_woxk7")
@@ -317,25 +317,21 @@ enemy = NodePath("../..")
 wait_time = 1.5
 one_shot = true
 
-[node name="EnemySummon" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "aim", "monster1_pos", "monster2_pos", "monster3_pos")]
+[node name="EnemySummon" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("9_vb21g")
 enemy = NodePath("../..")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
-aim = NodePath("../../AimRaycast")
-monster1_pos = NodePath("../../SummonRaycast1")
-monster2_pos = NodePath("../../SummonRaycast2")
-monster3_pos = NodePath("../../SummonRaycast3")
 
 [node name="summon_cooldown" type="Timer" parent="State Control/EnemySummon"]
-wait_time = 10.0
+wait_time = 5.0
 one_shot = true
 
-[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent")]
 script = ExtResource("8_7y2c8")
 enemy = NodePath("../..")
-speed = 4000
-retreat_duration = 3
+navigation_agent = NodePath("../../NavigationAgent2D")
+retreat_duration = 1.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -345,27 +341,16 @@ libraries = {
 [node name="AimRaycast" type="RayCast2D" parent="."]
 target_position = Vector2(300, 0)
 
-[node name="SummonRaycast1" type="RayCast2D" parent="."]
-target_position = Vector2(75, 0)
-
-[node name="SummonRaycast2" type="RayCast2D" parent="."]
-rotation = 0.785398
-target_position = Vector2(50, 0)
-
-[node name="SummonRaycast3" type="RayCast2D" parent="."]
-rotation = -0.785398
-target_position = Vector2(50, 0)
-
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 256
 collision_mask = 32
 script = ExtResource("13_f46sl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -10)
+position = Vector2(0, -12)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("CapsuleShape2D_to1xr")
-debug_color = Color(0, 1, 0, 0.0901961)
+debug_color = Color(0, 1, 0, 0.419608)
 
 [node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_jyny8")

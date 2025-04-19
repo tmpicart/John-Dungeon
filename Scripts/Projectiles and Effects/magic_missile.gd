@@ -2,14 +2,14 @@ extends Node2D
 
 @export var speed := 85
 @export var damage: int = 1
+@export var leniency_threshold = 25
+@export var track_resume_delay = .5
+@export var turn_speed = 3
 
 var reflected = false
 var passed = false
-var leniency_threshold = 15
 var direction: Vector2
 var player: CharacterBody2D
-var track_resume_delay = .25
-var turn_speed = 3
 
 func _ready():
 	player = get_tree().get_first_node_in_group("Player")
@@ -66,5 +66,5 @@ func reflect():
 
 func _on_collider_body_entered(body: Node2D) -> void:
 	# If it's the player and the player is not blocking, or it's another object, destroy the missile
-	if body != player or (body == player and not player.blocking):
+	if body != player or (body == player and not player.combat.blocking):
 		queue_free()

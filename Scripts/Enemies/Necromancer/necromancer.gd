@@ -9,10 +9,9 @@ func summon():
 	attacking = true
 	$AnimationPlayer.play("Summon")
 	$summon_sfx.play() # Uses attack_sfx for summoning sounds
-	await wait_for_animation()
+	await wait_for_animation("Summon")
 	attacking = false
 
 func take_damage(num):
 	super.take_damage(num)
-	await wait_for_animation()
 	retreat = true

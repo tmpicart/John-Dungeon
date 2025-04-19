@@ -9,21 +9,21 @@ func _ready():
 	Global.player = player
 	
 	# Set the initial values for the health bar and update it
-	health_bar.set_max_health(player.max_hp)
-	health_bar.update(player.hp)
+	health_bar.set_max_health(player.combat.max_hp)
+	health_bar.update(player.combat.hp)
 	
 	# Connect signals for health changes
-	player.max_hp_changed.connect(health_bar.set_max_health)
-	player.hp_changed.connect(health_bar.update)
+	player.combat.max_hp_changed.connect(health_bar.set_max_health)
+	player.combat.hp_changed.connect(health_bar.update)
 	
 	# Update item bar with initial values
-	item_bar.update_bombs(player.bombs)
-	item_bar.update_keys(player.keys)
-	item_bar.update_potions(player.potions)
-	item_bar.update_coins(player.coins)
+	item_bar.update_bombs(player.inventory.bombs)
+	item_bar.update_keys(player.inventory.keys)
+	item_bar.update_potions(player.inventory.potions)
+	item_bar.update_coins(player.inventory.coins)
 	
 	# Connect signals for item changes
-	player.bombs_changed.connect(item_bar.update_bombs)
-	player.keys_changed.connect(item_bar.update_keys)
-	player.potions_changed.connect(item_bar.update_potions)
-	player.coins_changed.connect(item_bar.update_coins)
+	player.inventory.bombs_changed.connect(item_bar.update_bombs)
+	player.inventory.keys_changed.connect(item_bar.update_keys)
+	player.inventory.potions_changed.connect(item_bar.update_potions)
+	player.inventory.coins_changed.connect(item_bar.update_coins)

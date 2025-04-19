@@ -10,7 +10,6 @@ func Physics_Update(delta: float):
 
 	var to_player = player.global_position - enemy.global_position
 	var distance = to_player.length()
-	var direction = to_player.normalized()
 
 	# ✅ Retreat override
 	if enemy.retreat and not enemy.is_hit:

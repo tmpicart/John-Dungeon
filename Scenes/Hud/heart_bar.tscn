@@ -6,5 +6,5 @@
 top_level = true
 offset_right = 89.0
 offset_bottom = 8.0
-theme_override_constants/separation = 1
+theme_override_constants/separation = 2
 script = ExtResource("1_mklmm")

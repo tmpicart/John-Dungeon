@@ -12,11 +12,11 @@ shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gq3fx"]
 radius = 2.66667
-height = 16.0
+height = 10.6667
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
 radius = 5.33333
-height = 34.6667
+height = 21.3333
 
 [sub_resource type="Animation" id="Animation_rsxjp"]
 resource_name = "Track"
@@ -65,7 +65,7 @@ collision_layer = 0
 collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Collider"]
-position = Vector2(2.66667, 0)
+position = Vector2(5.33333, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_gq3fx")
 
@@ -76,7 +76,7 @@ collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visibility_layer = 2
-position = Vector2(3.857, 0)
+position = Vector2(10.6667, 2.42532e-12)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_r4ntl")
 debug_color = Color(0.933354, 0, 0, 0.419608)
@@ -87,11 +87,9 @@ libraries = {
 }
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
-position = Vector2(0, -4.76837e-07)
+position = Vector2(6.66667, -1.19209e-07)
 scale = Vector2(0.347656, 0.291667)
 color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_ua7vb")
 
 [connection signal="body_entered" from="Collider" to="." method="_on_collider_body_entered"]
-[connection signal="area_entered" from="Hitbox" to="." method="_on_arcane_arrow_area_entered"]
-[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

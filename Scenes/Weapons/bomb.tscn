@@ -1,7 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0kv8smv4doo2"]
+[gd_scene load_steps=8 format=3 uid="uid://c0kv8smv4doo2"]
 
 [ext_resource type="Script" uid="uid://cun5afkhd2k80" path="res://Scenes/Weapons/bomb.gd" id="1_vx7us"]
-[ext_resource type="Script" uid="uid://bj3btdgx6w336" path="res://Scripts/Hitboxes/Hitbox.gd" id="2_dvpj8"]
 [ext_resource type="Texture2D" uid="uid://civoe3tpgge0d" path="res://Assets/Items/BOMB_SPRITE.png" id="2_ncnnx"]
 [ext_resource type="AudioStream" uid="uid://cexni2s4d07wn" path="res://Scenes/Weapons/explosion-6055.mp3" id="4_rmrnv"]
 
@@ -74,8 +73,9 @@ libraries = {
 }
 
 [node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 160
+collision_mask = 320
 monitoring = false
-script = ExtResource("2_dvpj8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 scale = Vector2(1.165, 1.165)
