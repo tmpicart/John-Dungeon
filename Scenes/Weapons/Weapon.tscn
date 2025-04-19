@@ -19,7 +19,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.166667, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [-0.785398, 0.785398, 0.0]
+"values": [-1.5708, 1.5708, 0.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -54,7 +54,7 @@ stream_2/stream = ExtResource("5_ycqkl")
 
 [node name="Weapon" type="Node2D"]
 show_behind_parent = true
-rotation = -0.785398
+rotation = -1.5708
 scale = Vector2(2, 2.039)
 script = ExtResource("1_bqjge")
 

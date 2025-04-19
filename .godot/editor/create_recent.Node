@@ -1,9 +1,10 @@
-NavigationAgent2D
+Camera2D
 CollisionShape2D
-Area2D
-CharacterBody2D
 Node2D
 Node
+NavigationAgent2D
+Area2D
+CharacterBody2D
 TileMapLayer
 Timer
 AudioStreamPlayer

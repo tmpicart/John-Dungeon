@@ -19,8 +19,8 @@ shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nokm8"]
-radius = 5.51724
-height = 11.0345
+radius = 7.88175
+height = 15.7635
 
 [sub_resource type="Animation" id="Animation_devur"]
 resource_name = "Death"
@@ -291,12 +291,12 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wso5k"]
-radius = 4.0
-height = 10.0
+radius = 3.0
+height = 7.14286
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to14j"]
-radius = 4.0
-height = 10.0
+radius = 4.14079
+height = 10.352
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_70uj3"]
 random_pitch = 1.2
@@ -317,6 +317,7 @@ streams_count = 1
 stream_0/stream = ExtResource("10_5m1q3")
 
 [node name="Slime_Green" type="CharacterBody2D" groups=["Enemies"]]
+scale = Vector2(0.7, 0.7)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
@@ -325,15 +326,14 @@ HP = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_oclns")
-position = Vector2(0, -5.345)
-scale = Vector2(0.67, 0.67)
+position = Vector2(0, -8)
 texture = ExtResource("1_75lyw")
 hframes = 2
 vframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(9.53674e-07, -4)
+position = Vector2(4.54747e-13, -5.71429)
 scale = Vector2(0.725, 0.725)
 shape = SubResource("CapsuleShape2D_nokm8")
 
@@ -362,8 +362,9 @@ collision_layer = 128
 collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(0, -4)
+position = Vector2(1.90735e-06, -5.71429)
 rotation = 1.5708
+scale = Vector2(2, 2)
 shape = SubResource("CapsuleShape2D_wso5k")
 debug_color = Color(0.999972, 0.184834, 0.214931, 0.545098)
 
@@ -375,8 +376,9 @@ collision_mask = 32
 script = ExtResource("9_ijt3p")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(0, -4)
+position = Vector2(1.41529e-12, -5.71429)
 rotation = 1.5708
+scale = Vector2(1.38, 1.38)
 shape = SubResource("CapsuleShape2D_to14j")
 debug_color = Color(0, 0.6, 0, 0.419608)
 

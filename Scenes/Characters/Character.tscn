@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bddrcwkuo7k48"]
+[gd_scene load_steps=40 format=3 uid="uid://bddrcwkuo7k48"]
 
 [ext_resource type="Script" uid="uid://ya0vjowkvkgc" path="res://Scripts/Player/Character.gd" id="1_pcl0v"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_mrv5d"]
@@ -7,14 +7,23 @@
 [ext_resource type="PackedScene" uid="uid://r5aogxe6cokx" path="res://Scenes/Weapons/shield.tscn" id="5_yrdbc"]
 [ext_resource type="Script" uid="uid://cq63flqq6qh13" path="res://Scripts/Hurtboxes/PlayerHurtbox.gd" id="6_vkrg6"]
 [ext_resource type="AudioStream" uid="uid://knnnqipbcoxk" path="res://Assets/Sounds/Player/Movement/Whoosh,Organic,Styrofoam,Plank,Airy,Smooth,Texture,1.wav" id="7_6yhys"]
+[ext_resource type="Script" uid="uid://bpd55rnaue6ej" path="res://Scripts/Player/player_inventory.gd" id="7_8qfbe"]
 [ext_resource type="AudioStream" uid="uid://db4hyly4pqm7o" path="res://Assets/Sounds/Player/ouch.mp3" id="9_efh8l"]
 [ext_resource type="AudioStream" uid="uid://lidpusv14cod" path="res://Assets/Sounds/Player/Grunt_Pain_Male_BB_10_SCREAM LIBRARY_BRFX-004.wav" id="9_t3wk8"]
 [ext_resource type="AudioStream" uid="uid://b28k0d573exg7" path="res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3" id="11_wwn7j"]
+[ext_resource type="Script" uid="uid://dcvpwra25tgk5" path="res://Scripts/Player/player_movement.gd" id="12_2sem6"]
+[ext_resource type="Script" uid="uid://3gg6yug5rv0q" path="res://Scripts/Player/player_combat.gd" id="13_60mpi"]
+[ext_resource type="Script" uid="uid://qbrd2jx5rhwl" path="res://Scripts/Player/player_animation.gd" id="14_7ujsu"]
+[ext_resource type="Script" uid="uid://dy831e1gd1wpo" path="res://Scripts/Player/camera_2d.gd" id="15_8qfbe"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dqhrg"]
 shader = ExtResource("2_mrv5d")
-shader_parameter/flash_color = Color(0.933326, 7.94157e-06, 5.77569e-07, 1)
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7qqmo"]
+radius = 14.0
+height = 46.6667
 
 [sub_resource type="Animation" id="Animation_mhlbg"]
 resource_name = "Death"
@@ -188,57 +197,9 @@ tracks/0/keys = {
 "update": 0,
 "values": [1.0, 0.5, 0.0]
 }
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hurtbox/CollisionShape2D:disabled")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.733333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("CollisionShape2D2:disabled")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.733333),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
 
 [sub_resource type="Animation" id="Animation_vkrg6"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Hurtbox/CollisionShape2D:disabled")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CollisionShape2D2:disabled")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
 
 [sub_resource type="Animation" id="Animation_5gvdc"]
 resource_name = "Right"
@@ -360,10 +321,6 @@ _data = {
 &"Up_Move": SubResource("Animation_kd73c")
 }
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7qqmo"]
-radius = 14.0
-height = 46.6667
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_crbhn"]
 radius = 15.0
 height = 46.6667
@@ -408,33 +365,47 @@ hframes = 40
 vframes = 4
 frame = 137
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_vyssx")
-}
-
-[node name="OnHitPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_vyssx")
-}
-
-[node name="Weapon" parent="." instance=ExtResource("3_dru47")]
-position = Vector2(4.76837e-06, -15)
-rotation = 0.0
-
-[node name="Shield" parent="." instance=ExtResource("5_yrdbc")]
-position = Vector2(6.67572e-06, -16.6667)
-scale = Vector2(2, 2)
-
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 show_behind_parent = true
 position = Vector2(6.35783e-06, -16.6667)
 shape = SubResource("CapsuleShape2D_7qqmo")
 debug_color = Color(0.345241, 0.556973, 0.740921, 0.42)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(4.76838e-06, -25)
-zoom = Vector2(6, 6)
+[node name="PlayerCombat" type="Node2D" parent="."]
+script = ExtResource("13_60mpi")
+
+[node name="Weapon" parent="PlayerCombat" instance=ExtResource("3_dru47")]
+position = Vector2(4.76837e-06, -15)
+rotation = 0.0
+
+[node name="Shield" parent="PlayerCombat" instance=ExtResource("5_yrdbc")]
+position = Vector2(6.35783e-06, -16.6667)
+scale = Vector2(2, 2)
+
+[node name="OnHitPlayer" type="AnimationPlayer" parent="PlayerCombat"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_vyssx")
+}
+
+[node name="PlayerMovement" type="Node2D" parent="."]
+script = ExtResource("12_2sem6")
+
+[node name="Dash Cooldown" type="Timer" parent="PlayerMovement"]
+wait_time = 0.25
+one_shot = true
+
+[node name="PlayerInventory" type="Node2D" parent="."]
+script = ExtResource("7_8qfbe")
+
+[node name="PlayerAnimation" type="Node2D" parent="."]
+script = ExtResource("14_7ujsu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerAnimation"]
+root_node = NodePath("../..")
+libraries = {
+&"": SubResource("AnimationLibrary_vyssx")
+}
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 64
@@ -442,7 +413,7 @@ collision_mask = 128
 script = ExtResource("6_vkrg6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(6.35783e-06, -16.6667)
+position = Vector2(7.62939e-06, -16.6667)
 shape = SubResource("CapsuleShape2D_crbhn")
 debug_color = Color(1, 0, 0, 0.419608)
 
@@ -462,7 +433,14 @@ pitch_scale = 0.95
 stream = SubResource("AudioStreamRandomizer_liijn")
 pitch_scale = 1.3
 
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(6, 6)
+position_smoothing_enabled = true
+position_smoothing_speed = 15.0
+script = ExtResource("15_8qfbe")
+
 [node name="Label" type="Label" parent="."]
+visible = false
 modulate = Color(0.811765, 0.184314, 0, 1)
 z_index = 50
 offset_left = -346.667
@@ -478,8 +456,4 @@ Press Esc to return to Title Screen!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Dash Cooldown" type="Timer" parent="."]
-wait_time = 0.25
-one_shot = true
-
-[connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
+[connection signal="timeout" from="PlayerMovement/Dash Cooldown" to="PlayerMovement" method="_on_dash_cooldown_timeout"]

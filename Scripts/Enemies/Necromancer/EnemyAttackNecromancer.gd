@@ -10,14 +10,13 @@ func Enter():
 	# Common attack behavior from base class
 	if can_attack:
 		await enemy.attack()
-		spawn_projectiles()
 		can_attack = false
 		$attack_cooldown.start()
 	
 	ChangeState.emit(self, "EnemyChase")
 
 func spawn_projectiles():
-	if projectile and not enemy.is_hit and not enemy.is_dead:
+	if projectile and not enemy.is_dead:
 		var offsets = [Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)]
 		for offset in offsets:
 			var proj = projectile.instantiate()
@@ -28,3 +27,7 @@ func spawn_projectiles():
 
 func _on_attack_cooldown_timeout() -> void:
 	can_attack = true
+
+func _on_animation_player_animation_finished(anim_name: StringName) -> void:
+	if anim_name == "Attack":
+		spawn_projectiles()
