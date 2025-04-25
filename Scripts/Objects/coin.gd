@@ -1,10 +1,19 @@
 extends Node2D
 
-var player: CharacterBody2D	
+var picked_up := false
 
 func _on_interaction_area_body_entered(body):
-	player = get_tree().get_first_node_in_group("Player")
+	var player = Global.player
 	if body == player:
-		player.addCoin(1)
+		$coin_sfx.play()
+		$AnimatedSprite2D.hide()
+
+		$InteractionArea/CollisionShape2D.set_deferred("disabled", true)  # Prevent duplicate pickups
+
+		player.inventory.add_coin(1)
+		await $coin_sfx.finished
 		queue_free()
-	
+
+
+func _ready():
+	$AnimatedSprite2D.play("default")

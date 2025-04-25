@@ -10,6 +10,7 @@ signal max_hp_changed(max_hp: int)
 @onready var reflect_sfx: AudioStreamPlayer = $"../reflect_sfx"
 @onready var ouch_sfx: AudioStreamPlayer = $"../ouch_sfx"
 @onready var animation = $"../PlayerAnimation"
+@onready var player = get_parent()
 
 # Combat state
 var damage: int = 0
@@ -40,13 +41,15 @@ func _ready():
 func attack():
 	if is_dead or disabled:
 		return
-	weapon.attack()
-
+	weapon.enable_hitbox()
+	await animation.play_attack()
+	weapon.disable_hitbox()
+	
 func block():
 	if blocking or is_dead or disabled:
 		return
 	blocking = true
-	await shield.block()
+	await animation.play_block()
 	blocking = false
 
 func parry():
@@ -61,6 +64,9 @@ func take_damage(dmg: int):
 	is_hit = true
 	ouch_sfx.play()
 
+	player.set_collision_layer_value(1, false)
+	player.set_collision_mask_value(2, false)
+
 	hp -= dmg
 	hp_changed.emit(hp)
 	
@@ -70,6 +76,9 @@ func take_damage(dmg: int):
 	else:
 		camera.frame_freeze(dmg*2)  # Call frame freeze on Camera2D
 		kill()
+	
+	player.set_collision_layer_value(1, true)
+	player.set_collision_mask_value(2, true)
 	
 	is_hit = false	
 	

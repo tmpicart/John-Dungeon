@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://drxv8fgohuj1r"]
+[gd_scene load_steps=11 format=3 uid="uid://drxv8fgohuj1r"]
 
 [ext_resource type="Script" uid="uid://bjuyo1kg8pdb8" path="res://Scripts/Player/Weapon.gd" id="1_bqjge"]
 [ext_resource type="Texture2D" uid="uid://cpxo8yur1wbhq" path="res://Assets/Items/WEAPONS.png" id="2_fx64o"]
@@ -6,42 +6,42 @@
 [ext_resource type="AudioStream" uid="uid://mjhe2sm8irvx" path="res://Assets/Sounds/Player/Attack/Organic_Whoosh_14.wav" id="5_wulm2"]
 [ext_resource type="AudioStream" uid="uid://bsmrclffkkiwa" path="res://Assets/Sounds/Player/Attack/724716__greyfeather__sword-slash-energy-wave.wav" id="5_ycqkl"]
 
+[sub_resource type="Animation" id="Animation_ku3nf"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Hitbox/CollisionShape2D:disabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
 [sub_resource type="Animation" id="Animation_8hnm3"]
 resource_name = "Swing"
 length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("..:rotation")
+tracks/0/path = NodePath("Hitbox/CollisionShape2D:disabled")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.166667, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [-1.5708, 1.5708, 0.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Hitbox/CollisionShape2D:disabled")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.0333333, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true, false, true]
+"values": [false, true]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_meh8p"]
 _data = {
+&"RESET": SubResource("Animation_ku3nf"),
 &"Swing": SubResource("Animation_8hnm3")
 }
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1akml"]
-radius = 4.00003
-height = 18.6667
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_0xu8s"]
 playback_mode = 2
@@ -52,38 +52,39 @@ stream_0/stream = ExtResource("5_wulm2")
 stream_1/stream = ExtResource("4_p3bgi")
 stream_2/stream = ExtResource("5_ycqkl")
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1akml"]
+radius = 4.00003
+height = 18.6667
+
 [node name="Weapon" type="Node2D"]
-show_behind_parent = true
-rotation = -1.5708
-scale = Vector2(2, 2.039)
+z_as_relative = false
+y_sort_enabled = true
+scale = Vector2(2, 2)
 script = ExtResource("1_bqjge")
 
-[node name="Node2D" type="Node2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-15, 7)
 scale = Vector2(1.00239, 1)
-
-[node name="Sprite2D" type="Sprite2D" parent="Node2D"]
-position = Vector2(-3.99046, -14.7131)
-rotation = 1.5708
 texture = ExtResource("2_fx64o")
 offset = Vector2(15, -15)
 hframes = 8
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Node2D"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_meh8p")
 }
 
-[node name="Hitbox" type="Area2D" parent="Node2D"]
-collision_layer = 32
-collision_mask = 256
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/Hitbox"]
-position = Vector2(10.9738, 0.490436)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_1akml")
-disabled = true
-debug_color = Color(0.891461, 0.399691, 0.56023, 0.42)
-
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_0xu8s")
 volume_db = -6.0
+
+[node name="Hitbox" type="Area2D" parent="."]
+scale = Vector2(1.00239, 1)
+collision_layer = 32
+collision_mask = 256
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -8)
+shape = SubResource("CapsuleShape2D_1akml")
+disabled = true
+debug_color = Color(0.891461, 0.399691, 0.56023, 0.42)

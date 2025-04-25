@@ -1,8 +1,8 @@
 extends Camera2D
 
-@export var shake_duration_default := 0.2
-@export var shake_strength_default := 5.0
-@export var shake_interval_default := 0.001 
+@export var shake_duration_default := 0.25
+@export var shake_strength_default := 4.5
+@export var shake_interval_default := 0.005 
 @export var freeze_scale_default := 0.5
 
 var shaking := false

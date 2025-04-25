@@ -389,6 +389,7 @@ streams_count = 1
 stream_0/stream = ExtResource("13_ngujd")
 
 [node name="Flail_Skeleton" type="CharacterBody2D" groups=["Enemies"]]
+y_sort_enabled = true
 position = Vector2(0, -5.96046e-08)
 scale = Vector2(0.85, 0.85)
 collision_layer = 2

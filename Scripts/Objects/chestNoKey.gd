@@ -1,7 +1,6 @@
 extends Node2D
 
 @onready var interaction_area: InteractionArea = $InteractionArea
-@onready var animation = $AnimationPlayer
 @export var Path: PackedScene = null
 
 func _ready():
@@ -15,6 +14,5 @@ func _drop_key():
 	
 func _on_interact():
 		get_node("InteractionArea/CollisionShape2D").disabled = true
-		animation.play("Open")
+		$Sprite2D.frame = 2
 		_drop_key()
-

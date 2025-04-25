@@ -1,38 +1,26 @@
 extends CharacterBody2D
 
+# --- State Machine Controller ---
+@onready var state_machine = $"State Control"
+
+# --- Modular Subsystems ---
 @onready var movement = $PlayerMovement
 @onready var combat = $PlayerCombat
 @onready var inventory = $PlayerInventory
 @onready var animation = $PlayerAnimation
 
-var is_dead := false
-var talking := false
-
-func _physics_process(delta):
-	if not is_dead:
-		movement.move(delta)
-		animation.update_animation(movement.velocity)
+# --- Optional HUD or Death Indicator ---
+@onready var death_label = $Label
 
 func _input(event):
-	if is_dead:
-		if event.is_action_pressed("quit"):
-			get_tree().change_scene_to_file("res://Scenes/Hud/MainMenu.tscn")
-		return
+	if state_machine.current_state.has_method("handle_input"):
+		state_machine.current_state.handle_input(event)
 
-	if event.is_action_pressed("attack"):
-		combat.attack()
-	if event.is_action_pressed("block"):
-		combat.block()
-	if event.is_action_pressed("potion"):
-		inventory.use_potion()
-	if event.is_action_pressed("bomb"):
-		inventory.use_bomb()
-	if event.is_action_pressed("dash"):
-		movement.dash()
+func _physics_process(delta):
+	state_machine._physics_process(delta)
 
-# Called by PlayerHealth on death
+func _process(delta):
+	state_machine._process(delta)
+
 func on_player_death():
-	is_dead = true
-	movement.set_disabled(true)
-	combat.set_disabled(true)
-	$Label.show()
+	state_machine.state_change(state_machine.current_state, "DeadState")

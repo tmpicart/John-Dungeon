@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bj53m0le6fixn"]
+[gd_scene load_steps=28 format=3 uid="uid://bj53m0le6fixn"]
 
 [ext_resource type="Script" uid="uid://buv3isgiyuqcm" path="res://Scripts/Enemies/ArcaneArcher/arcane_archer.gd" id="1_sqpd4"]
 [ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="3_dk7ir"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://blh07mgm8ix5j" path="res://Scripts/Enemies/ArcaneArcher/EnemyChaseArcaneArcher.gd" id="5_uw5cu"]
 [ext_resource type="Script" uid="uid://ceme8hxwc2vr" path="res://Scripts/Enemies/ArcaneArcher/EnemyAttackArcaneArcher.gd" id="6_qgvvr"]
 [ext_resource type="PackedScene" uid="uid://bcvjqylald7g8" path="res://Scenes/Projectiles/arcane_arrow.tscn" id="7_0t3rh"]
+[ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://Scripts/States/EnemyRetreat.gd" id="9_4wgc7"]
 [ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="9_k7gki"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="11_fwn7j"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="11_gng2b"]
@@ -21,8 +22,8 @@ shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
-radius = 9.0
-height = 22.8571
+radius = 7.14286
+height = 20.0001
 
 [sub_resource type="Animation" id="Animation_cheg3"]
 resource_name = "Attack"
@@ -195,7 +196,7 @@ vframes = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(-4.03897e-28, -11.4286)
+position = Vector2(-1.42857, -11.4286)
 shape = SubResource("CapsuleShape2D_pdttr")
 
 [node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
@@ -209,9 +210,11 @@ enemy = NodePath("../..")
 [node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
 script = ExtResource("5_uw5cu")
 rayCast = NodePath("../../RayCast2D")
+retreat_range = 75
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-attempt_attack_range = 100
+speed = 2500
+attempt_attack_range = 150
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("6_qgvvr")
@@ -223,14 +226,22 @@ enemy = NodePath("../..")
 wait_time = 0.25
 one_shot = true
 
+[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent", "rayCast")]
+script = ExtResource("9_4wgc7")
+enemy = NodePath("../..")
+navigation_agent = NodePath("../../NavigationAgent2D")
+speed = 3000
+rayCast = NodePath("../../RayCast2D")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_yixv0")
 }
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
-position = Vector2(0, -10.46)
+position = Vector2(0, -10.5)
 target_position = Vector2(300, 0)
+collision_mask = 7
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 256
@@ -238,7 +249,7 @@ collision_mask = 32
 script = ExtResource("9_k7gki")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(-1.35525e-20, -11.4286)
+position = Vector2(-1.42857, -11.4286)
 shape = SubResource("CapsuleShape2D_to1xr")
 debug_color = Color(0, 1, 0, 0.0901961)
 

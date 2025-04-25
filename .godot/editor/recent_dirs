@@ -1,6 +1,8 @@
+res://Scripts/Enemies/Necromancer
+res://Scripts/States
+res://Scenes/Interaction
 res://Scripts/Player
 res://Assets/Items
-res://Scripts/States
 res://Scripts/Enemies/SlimeGreen
 res://Scripts/Enemies
 res://Assets

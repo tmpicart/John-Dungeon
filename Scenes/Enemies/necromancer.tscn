@@ -7,11 +7,11 @@
 [ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://Scripts/States/EnemyIdle.gd" id="5_l3tat"]
 [ext_resource type="Script" uid="uid://bsvmvi373paec" path="res://Scripts/Enemies/Necromancer/EnemyChaseNecromancer.gd" id="6_eko0r"]
 [ext_resource type="Script" uid="uid://ck5gaaab0fvfa" path="res://Scripts/Enemies/Necromancer/EnemyAttackNecromancer.gd" id="7_woxk7"]
-[ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://Scripts/States/EnemyRetreat.gd" id="8_7y2c8"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://Scenes/Projectiles/magic_missile.tscn" id="8_ctycn"]
 [ext_resource type="Script" uid="uid://dcc0go2d02ckp" path="res://Scripts/Projectiles and Effects/EnemySummon.gd" id="9_vb21g"]
 [ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://Scenes/Enemies/flail_skeleton.tscn" id="10_eo0t0"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://Scenes/Projectiles/summon_effect.tscn" id="11_eupuc"]
+[ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://Scripts/States/EnemyRetreat.gd" id="12_f46sl"]
 [ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://Scripts/Hurtboxes/Hurtbox.gd" id="13_f46sl"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://Assets/Sounds/Enemies/478271__joao_janz__8-bit-explosion-1_4.wav" id="14_1t88p"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://Assets/Sounds/Enemies/Slime/353250__zuzek06__slimejump.wav" id="15_0uktk"]
@@ -273,6 +273,7 @@ streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
 [node name="Necromancer" type="CharacterBody2D" groups=["Enemies"]]
+y_sort_enabled = true
 scale = Vector2(0.75, 0.75)
 collision_layer = 2
 collision_mask = 7
@@ -305,7 +306,8 @@ script = ExtResource("6_eko0r")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-attempt_attack_range = 150
+chase_drop_distance = 300
+attempt_attack_range = 200
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("7_woxk7")
@@ -327,11 +329,14 @@ summon_effect = ExtResource("11_eupuc")
 wait_time = 5.0
 one_shot = true
 
-[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent")]
-script = ExtResource("8_7y2c8")
+[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent", "rayCast")]
+script = ExtResource("12_f46sl")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-retreat_duration = 1.0
+speed = 6000
+retreat_distance = 125
+wall_avoid_distance = 50
+rayCast = NodePath("../../AimRaycast")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -340,6 +345,7 @@ libraries = {
 
 [node name="AimRaycast" type="RayCast2D" parent="."]
 target_position = Vector2(300, 0)
+collision_mask = 7
 
 [node name="Hurtbox" type="Area2D" parent="."]
 collision_layer = 256
