@@ -27,4 +27,3 @@ func _on_interact():
 		await get_tree().create_timer(Global.time_in_seconds).timeout
 		label.hide()
 		
-

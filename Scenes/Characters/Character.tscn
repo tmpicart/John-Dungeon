@@ -1,15 +1,21 @@
-[gd_scene load_steps=40 format=3 uid="uid://bddrcwkuo7k48"]
+[gd_scene load_steps=55 format=3 uid="uid://bddrcwkuo7k48"]
 
 [ext_resource type="Script" uid="uid://ya0vjowkvkgc" path="res://Scripts/Player/Character.gd" id="1_pcl0v"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_mrv5d"]
 [ext_resource type="PackedScene" uid="uid://drxv8fgohuj1r" path="res://Scenes/Weapons/Weapon.tscn" id="3_dru47"]
 [ext_resource type="Texture2D" uid="uid://1h4rtwaxgf8v" path="res://Assets/Player/PLAYER_blade.png" id="3_lddmy"]
+[ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://Scripts/States/State Control.gd" id="4_xutsd"]
+[ext_resource type="Script" uid="uid://d3ccaovlb2ueg" path="res://Scripts/States/PlayerMove.gd" id="5_oimsc"]
 [ext_resource type="PackedScene" uid="uid://r5aogxe6cokx" path="res://Scenes/Weapons/shield.tscn" id="5_yrdbc"]
+[ext_resource type="Script" uid="uid://cy7madtetjonu" path="res://Scripts/States/PlayerAttack.gd" id="6_v24in"]
 [ext_resource type="Script" uid="uid://cq63flqq6qh13" path="res://Scripts/Hurtboxes/PlayerHurtbox.gd" id="6_vkrg6"]
 [ext_resource type="AudioStream" uid="uid://knnnqipbcoxk" path="res://Assets/Sounds/Player/Movement/Whoosh,Organic,Styrofoam,Plank,Airy,Smooth,Texture,1.wav" id="7_6yhys"]
 [ext_resource type="Script" uid="uid://bpd55rnaue6ej" path="res://Scripts/Player/player_inventory.gd" id="7_8qfbe"]
+[ext_resource type="Script" uid="uid://ekgci52lvxc8" path="res://Scripts/States/PlayerDash.gd" id="8_tu8cl"]
+[ext_resource type="Script" uid="uid://bv8230rmh47ur" path="res://Scripts/States/PlayerBlock.gd" id="9_abdyn"]
 [ext_resource type="AudioStream" uid="uid://db4hyly4pqm7o" path="res://Assets/Sounds/Player/ouch.mp3" id="9_efh8l"]
 [ext_resource type="AudioStream" uid="uid://lidpusv14cod" path="res://Assets/Sounds/Player/Grunt_Pain_Male_BB_10_SCREAM LIBRARY_BRFX-004.wav" id="9_t3wk8"]
+[ext_resource type="Script" uid="uid://d3adtfiecklpq" path="res://Scripts/States/PlayerDead.gd" id="10_uxyn6"]
 [ext_resource type="AudioStream" uid="uid://b28k0d573exg7" path="res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3" id="11_wwn7j"]
 [ext_resource type="Script" uid="uid://dcvpwra25tgk5" path="res://Scripts/Player/player_movement.gd" id="12_2sem6"]
 [ext_resource type="Script" uid="uid://3gg6yug5rv0q" path="res://Scripts/Player/player_combat.gd" id="13_60mpi"]
@@ -22,8 +28,8 @@ shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_7qqmo"]
-radius = 14.0
-height = 46.6667
+radius = 13.3333
+height = 26.6667
 
 [sub_resource type="Animation" id="Animation_mhlbg"]
 resource_name = "Death"
@@ -99,6 +105,73 @@ tracks/0/keys = {
 "values": [0]
 }
 
+[sub_resource type="Animation" id="Animation_xutsd"]
+resource_name = "Down_Attack"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [9, 10, 11, 12]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Weapon:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.00270439, 0.100603, 0.19688, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-9.99999, -16.6667), Vector2(-6.66666, -3.33333), Vector2(6.497, 1.005), Vector2(20, -3.33333)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat/Weapon:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.00270439, 0.100603, 0.19688, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [-1.02974, -2.47837, -3.14159, -3.93572]
+}
+
+[sub_resource type="Animation" id="Animation_abdyn"]
+resource_name = "Down_Block"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Shield:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(6.66667, -6.66666)]
+}
+
 [sub_resource type="Animation" id="Animation_uhcgd"]
 resource_name = "Down_Dash"
 length = 0.35
@@ -113,6 +186,23 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [13, 14, 15, 16]
+}
+
+[sub_resource type="Animation" id="Animation_tu8cl"]
+resource_name = "Down_Idle"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
 }
 
 [sub_resource type="Animation" id="Animation_hjs10"]
@@ -132,10 +222,48 @@ tracks/0/keys = {
 "values": [0, 1, 2, 3, 4, 5, 6, 7]
 }
 
-[sub_resource type="Animation" id="Animation_qbhi2"]
-resource_name = "Left"
-length = 0.1
-loop_mode = 1
+[sub_resource type="Animation" id="Animation_8qfbe"]
+resource_name = "Left_Attack"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [89, 90, 91, 92]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Weapon:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.301269),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-10, -20), Vector2(-16.6667, -13.3333), Vector2(-23.3333, -10), Vector2(-16.6667, -3.33333)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat/Weapon:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.301269),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [0.724312, -1.36136, -1.5708, -2.12057]
+}
+
+[sub_resource type="Animation" id="Animation_uxyn6"]
+resource_name = "Left_Block"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -146,7 +274,19 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [80]
+"values": [91]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Shield:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.000540879),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(-26.6667, -10)]
 }
 
 [sub_resource type="Animation" id="Animation_s5x24"]
@@ -163,6 +303,23 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [93, 94, 95, 96]
+}
+
+[sub_resource type="Animation" id="Animation_qbhi2"]
+resource_name = "Left_Idle"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [80]
 }
 
 [sub_resource type="Animation" id="Animation_gj5oh"]
@@ -200,11 +357,6 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_vkrg6"]
 length = 0.001
-
-[sub_resource type="Animation" id="Animation_5gvdc"]
-resource_name = "Right"
-length = 0.1
-loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -215,7 +367,110 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [40]
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Weapon:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-13.3333, 3.17891e-06)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat/Weapon:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-6.28319]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PlayerCombat/Shield:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(6.67572e-06, -50)]
+}
+
+[sub_resource type="Animation" id="Animation_oimsc"]
+resource_name = "Right_Attack"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [49, 50, 51, 52]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Weapon:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.301269),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(10, -20), Vector2(16.667, -13.333), Vector2(23.333, -10), Vector2(16.667, -3.333)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat/Weapon:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.301269),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [-0.724312, 1.36136, 1.5708, 2.12058]
+}
+
+[sub_resource type="Animation" id="Animation_pdssf"]
+resource_name = "Right_Block"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [51]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Shield:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.000540879),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(26.6667, -10)]
 }
 
 [sub_resource type="Animation" id="Animation_totl6"]
@@ -232,6 +487,23 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [53, 54, 55, 56]
+}
+
+[sub_resource type="Animation" id="Animation_5gvdc"]
+resource_name = "Right_Idle"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [40]
 }
 
 [sub_resource type="Animation" id="Animation_gfwco"]
@@ -251,10 +523,48 @@ tracks/0/keys = {
 "values": [40, 41, 42, 43, 44, 45, 46, 47]
 }
 
-[sub_resource type="Animation" id="Animation_vhl7o"]
-resource_name = "Up"
-length = 0.1
-loop_mode = 1
+[sub_resource type="Animation" id="Animation_v24in"]
+resource_name = "Up_Attack"
+length = 0.35
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [129, 130, 131, 132]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Weapon:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.100063, 0.199043, 0.300188),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(6.66667, -23.3333), Vector2(10, -30), Vector2(5.72205e-06, -33.3333), Vector2(-16.6667, -26.6667)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerCombat/Weapon:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.00162264, 0.100063, 0.199043, 0.300188),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [1.1973, 0.968658, 0.0, -0.680678]
+}
+
+[sub_resource type="Animation" id="Animation_fm4eu"]
+resource_name = "Up_Block"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -265,7 +575,19 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [120]
+"values": [131]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PlayerCombat/Shield:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Vector2(-6.66666, -36.6667)]
 }
 
 [sub_resource type="Animation" id="Animation_qbimq"]
@@ -282,6 +604,23 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [133, 134, 135, 136]
+}
+
+[sub_resource type="Animation" id="Animation_vhl7o"]
+resource_name = "Up_Idle"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CharSprite:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [120]
 }
 
 [sub_resource type="Animation" id="Animation_kd73c"]
@@ -306,24 +645,33 @@ _data = {
 &"Death": SubResource("Animation_mhlbg"),
 &"Death_Roll": SubResource("Animation_vkye4"),
 &"Down": SubResource("Animation_4fjer"),
+&"Down_Attack": SubResource("Animation_xutsd"),
+&"Down_Block": SubResource("Animation_abdyn"),
 &"Down_Dash": SubResource("Animation_uhcgd"),
+&"Down_Idle": SubResource("Animation_tu8cl"),
 &"Down_Move": SubResource("Animation_hjs10"),
-&"Left": SubResource("Animation_qbhi2"),
+&"Left_Attack": SubResource("Animation_8qfbe"),
+&"Left_Block": SubResource("Animation_uxyn6"),
 &"Left_Dash": SubResource("Animation_s5x24"),
+&"Left_Idle": SubResource("Animation_qbhi2"),
 &"Left_Move": SubResource("Animation_gj5oh"),
 &"OnHit": SubResource("Animation_ct02w"),
 &"RESET": SubResource("Animation_vkrg6"),
-&"Right": SubResource("Animation_5gvdc"),
+&"Right_Attack": SubResource("Animation_oimsc"),
+&"Right_Block": SubResource("Animation_pdssf"),
 &"Right_Dash": SubResource("Animation_totl6"),
+&"Right_Idle": SubResource("Animation_5gvdc"),
 &"Right_Move": SubResource("Animation_gfwco"),
-&"Up": SubResource("Animation_vhl7o"),
+&"Up_Attack": SubResource("Animation_v24in"),
+&"Up_Block": SubResource("Animation_fm4eu"),
 &"Up_Dash": SubResource("Animation_qbimq"),
+&"Up_Idle": SubResource("Animation_vhl7o"),
 &"Up_Move": SubResource("Animation_kd73c")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_crbhn"]
-radius = 15.0
-height = 46.6667
+radius = 13.3333
+height = 26.6667
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_aeaj6"]
 random_pitch = 1.1
@@ -351,9 +699,11 @@ stream_1/stream = ExtResource("9_efh8l")
 stream_1/weight = 0.1
 
 [node name="Character" type="CharacterBody2D" groups=["Player"]]
+z_index = 3
+y_sort_enabled = true
 position = Vector2(-1.90735e-06, -9.53674e-07)
 scale = Vector2(0.3, 0.3)
-collision_mask = 7
+collision_mask = 31
 script = ExtResource("1_pcl0v")
 
 [node name="CharSprite" type="Sprite2D" parent="."]
@@ -363,24 +713,42 @@ scale = Vector2(2.10417, 2.10417)
 texture = ExtResource("3_lddmy")
 hframes = 40
 vframes = 4
-frame = 137
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(6.35783e-06, -16.6667)
+position = Vector2(7.62939e-06, -6.66666)
 shape = SubResource("CapsuleShape2D_7qqmo")
 debug_color = Color(0.345241, 0.556973, 0.740921, 0.42)
+
+[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_xutsd")
+initial_state = NodePath("MoveState")
+
+[node name="MoveState" type="Node" parent="State Control"]
+script = ExtResource("5_oimsc")
+
+[node name="AttackState" type="Node" parent="State Control"]
+script = ExtResource("6_v24in")
+
+[node name="BlockState" type="Node" parent="State Control"]
+script = ExtResource("9_abdyn")
+
+[node name="DashState" type="Node" parent="State Control"]
+script = ExtResource("8_tu8cl")
+
+[node name="DeadState" type="Node" parent="State Control"]
+script = ExtResource("10_uxyn6")
 
 [node name="PlayerCombat" type="Node2D" parent="."]
 script = ExtResource("13_60mpi")
 
 [node name="Weapon" parent="PlayerCombat" instance=ExtResource("3_dru47")]
-position = Vector2(4.76837e-06, -15)
-rotation = 0.0
+visible = false
+position = Vector2(-13.3333, 3.17891e-06)
+rotation = -6.28319
 
 [node name="Shield" parent="PlayerCombat" instance=ExtResource("5_yrdbc")]
-position = Vector2(6.35783e-06, -16.6667)
-scale = Vector2(2, 2)
+position = Vector2(6.67572e-06, -50)
 
 [node name="OnHitPlayer" type="AnimationPlayer" parent="PlayerCombat"]
 root_node = NodePath("../..")
@@ -408,12 +776,13 @@ libraries = {
 }
 
 [node name="Hurtbox" type="Area2D" parent="."]
+position = Vector2(6.35783e-06, 3.17891e-06)
 collision_layer = 64
 collision_mask = 128
 script = ExtResource("6_vkrg6")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
-position = Vector2(7.62939e-06, -16.6667)
+position = Vector2(0, -6.66667)
 shape = SubResource("CapsuleShape2D_crbhn")
 debug_color = Color(1, 0, 0, 0.419608)
 
@@ -435,6 +804,7 @@ pitch_scale = 1.3
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(6, 6)
+process_callback = 0
 position_smoothing_enabled = true
 position_smoothing_speed = 15.0
 script = ExtResource("15_8qfbe")
@@ -443,11 +813,15 @@ script = ExtResource("15_8qfbe")
 visible = false
 modulate = Color(0.811765, 0.184314, 0, 1)
 z_index = 50
-offset_left = -346.667
-offset_top = -200.0
-offset_right = 346.333
-offset_bottom = -81.0
-theme_override_colors/font_color = Color(1, 0, 0, 1)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = -136.667
+offset_right = 441.0
+offset_bottom = -17.6667
+grow_horizontal = 2
+scale = Vector2(0.73, 0.73)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 42

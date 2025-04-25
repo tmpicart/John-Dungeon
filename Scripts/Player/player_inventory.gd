@@ -24,6 +24,13 @@ func use_bomb():
 		var bomb = bomb_scene.instantiate()
 		get_tree().current_scene.add_child(bomb)
 		bomb.global_position = get_parent().global_position
-		bomb.explode()
 		bombs -= 1
 		bombs_changed.emit(bombs)
+
+func add_key():
+	keys += 1
+	keys_changed.emit(keys)
+	
+func add_coin(coin_amount):
+	coins += coin_amount
+	coins_changed.emit(coins)

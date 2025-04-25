@@ -32,13 +32,11 @@ func openShop():
 	$ColorRect.visible = true
 	$GridContainer.visible = true
 	$RichTextLabel.visible = true
-	player.talking = true
 	
 func closeShop():
 	$ColorRect.visible = false
 	$GridContainer.visible = false
 	$RichTextLabel.visible = false
-	player.talking = false
 	
 func buyitem1():
 	if player.coins >= cost1:

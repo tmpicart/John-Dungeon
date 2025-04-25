@@ -11,7 +11,7 @@ func _on_collider_body_entered(body: Node2D) -> void:
 	if body is CollisionObject2D:
 		var body_layer = body.collision_layer
 		var is_player = (body_layer & (1 << 0)) != 0
-		if is_player and body.has_method("block") and body.blocking:
+		if is_player and body.combat.blocking:
 			return
 	
 	queue_free()

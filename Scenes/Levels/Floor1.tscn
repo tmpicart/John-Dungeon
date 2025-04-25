@@ -1,12 +1,14 @@
-[gd_scene load_steps=25 format=4 uid="uid://cej70yygite64"]
+[gd_scene load_steps=27 format=4 uid="uid://cej70yygite64"]
 
 [ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/Tilesets/TILESET_DUNGEON.png" id="1_egfvc"]
 [ext_resource type="Script" uid="uid://fc4ub6qla4bf" path="res://Scripts/Hud/MainScene.gd" id="1_vnypl"]
 [ext_resource type="PackedScene" uid="uid://7i30u8mpwy4y" path="res://Scenes/Hud/heart_bar.tscn" id="2_442nl"]
 [ext_resource type="PackedScene" uid="uid://beu7po4d0rpog" path="res://Scenes/Hud/ItemHud.tscn" id="3_75m3c"]
 [ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://Scenes/Characters/Character.tscn" id="4_vnypl"]
-[ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Enemies/necromancer.tscn" id="7_i8g4k"]
-[ext_resource type="PackedScene" uid="uid://clp3rxlbhwvv6" path="res://Scenes/Enemies/slime_green.tscn" id="7_vnypl"]
+[ext_resource type="PackedScene" uid="uid://rvpiujtilw1o" path="res://Scenes/Levels/Objects/chestNoKey.tscn" id="7_vnypl"]
+[ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://Scenes/Items/Key.tscn" id="8_i8g4k"]
+[ext_resource type="PackedScene" uid="uid://cqbfd3ribv0bg" path="res://Scenes/Items/coin.tscn" id="8_xat2l"]
+[ext_resource type="PackedScene" uid="uid://bji7ka5w8l7k" path="res://Scenes/Characters/blacksmith.tscn" id="9_xat2l"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egfvc"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -300,6 +302,7 @@ custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_j7myk")
 
 [node name="Floor1" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_vnypl")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -338,11 +341,21 @@ metadata/_edit_use_anchors_ = true
 [node name="Character" parent="." instance=ExtResource("4_vnypl")]
 position = Vector2(172, 223)
 
-[node name="Slime_Green" parent="." instance=ExtResource("7_vnypl")]
-position = Vector2(150, 219)
+[node name="chest2" parent="." instance=ExtResource("7_vnypl")]
+position = Vector2(242, 219)
+Path = ExtResource("8_i8g4k")
 
-[node name="Slime_Green2" parent="." instance=ExtResource("7_vnypl")]
-position = Vector2(204, 213)
+[node name="Key" parent="." instance=ExtResource("8_i8g4k")]
+position = Vector2(108, 232)
 
-[node name="Necromancer" parent="." instance=ExtResource("7_i8g4k")]
-position = Vector2(176, 183)
+[node name="Coin" parent="." instance=ExtResource("8_xat2l")]
+position = Vector2(132, 194)
+
+[node name="Coin2" parent="." instance=ExtResource("8_xat2l")]
+position = Vector2(179, 187)
+
+[node name="Coin3" parent="." instance=ExtResource("8_xat2l")]
+position = Vector2(154, 172)
+
+[node name="Blacksmith" parent="." instance=ExtResource("9_xat2l")]
+position = Vector2(77, 196)
