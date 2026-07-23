@@ -1,13 +1,13 @@
 extends Node2D
 class_name Shield
 
+@onready var reflect_sfx: AudioStreamPlayer = $reflect_sfx
 @onready var blockplayer = $BlockPlayer
 @onready var sound = $block_sfx
 @onready var cooldown_timer = $CooldownTimer
 @onready var sprite = $Sprite2D
 
 var Direction = Global.Direction
-
 var can_block: bool = true
 var enabled: bool = true:
 	set(value):
@@ -47,14 +47,16 @@ func block() -> void:
 	# Play block sound and animation
 	sound.play()
 	blockplayer.play("Block")
-
-	blockplayer.play("Block")
 	await blockplayer.animation_finished
-
-	# Start cooldown and disable blocking until cooldown is done
+	
 	can_block = false
 	cooldown_timer.start()
 
+func parry():
+	reflect_sfx.play()
+	blockplayer.stop()
+	blockplayer.play("Extend")
+	
 # Cooldown reset when cooldown timer finishes
 func _on_cooldown_timer_timeout() -> void:
 	can_block = true

@@ -20,8 +20,8 @@ func _on_area_entered(area: Area2D) -> void:
 	#print("Facing: ", shield_dir, " | Incoming: ", hit_direction)
 
 	
-	if player.combat.blocking and abs(angle_between) <= 90:  # 90° cone in front
-		player.combat.parry()
+	if player.combat.blocking and abs(angle_between) <= 90:  
+		player.combat.shield.parry()
 		if hitbox.get_owner().has_method("reflect"):
 			#print("player reflected")
 			hitbox.owner.reflect()

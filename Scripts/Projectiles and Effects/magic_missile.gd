@@ -37,7 +37,6 @@ func _physics_process(delta):
 	$AnimationPlayer.play("Track")
 
 func reflect():
-	print("REFLECTING")
 	reflected = true
 	
 	var hitbox = $Hitbox

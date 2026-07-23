@@ -7,9 +7,9 @@ signal max_hp_changed(max_hp: int)
 # Combat-related nodes
 @onready var weapon: Node = $Weapon
 @onready var shield: Node = $Shield
-@onready var reflect_sfx: AudioStreamPlayer = $"../reflect_sfx"
 @onready var ouch_sfx: AudioStreamPlayer = $"../ouch_sfx"
 @onready var animation = $"../PlayerAnimation"
+@onready var hurtbox = $"../Hurtbox"
 @onready var player = get_parent()
 
 # Combat state
@@ -49,12 +49,10 @@ func block():
 	if blocking or is_dead or disabled:
 		return
 	blocking = true
+	hurtbox.scale = Vector2(1.5, 1.5)
 	await animation.play_block()
+	hurtbox.scale = Vector2(1, 1)
 	blocking = false
-
-func parry():
-	if not disabled:
-		reflect_sfx.play()
 
 # --- Health / Damage ---
 func take_damage(dmg: int):
@@ -91,8 +89,6 @@ func heal(amount: int):
 # --- Death ---
 func kill():
 	is_dead = true
-	weapon.hide()
-	shield.hide()
 	animation.play_death()
 	get_parent().on_player_death()
 

@@ -1,19 +1,9 @@
-extends State
-class_name EnemyChase
+extends EnemyChase
+class_name EnemyChaseFlailSkeleton
 
-@export var enemy: CharacterBody2D
-@export var navigation_agent: NavigationAgent2D
-@export var speed := 2000
-@export var chase_drop_distance := 200
-@export var attempt_attack_range := 15
-@export var path_update_interval := 0.5
-
-var player: CharacterBody2D
-var time_since_last_path := 0.0
-
-func Enter():
-	player = get_tree().get_first_node_in_group("Player")
-	navigation_agent.target_position = player.global_position
+# Internal variables to define the attack ranges
+var attempt_attack_range_x: float = attempt_attack_range
+var attempt_attack_range_y: float = attempt_attack_range / 3.0
 
 func Physics_Update(delta: float):
 	if not navigation_agent or not player:
@@ -26,9 +16,9 @@ func Physics_Update(delta: float):
 	if distance > chase_drop_distance:
 		ChangeState.emit(self, "EnemyIdle")
 		return
-	
-	# Transition to Attack if in range
-	if distance <= attempt_attack_range:
+
+	# Use derived x and y attack ranges
+	if abs(to_player.x) <= attempt_attack_range_x and abs(to_player.y) <= attempt_attack_range_y:
 		ChangeState.emit(self, "EnemyAttack")
 		return
 

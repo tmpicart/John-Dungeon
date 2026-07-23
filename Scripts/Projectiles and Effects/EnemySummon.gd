@@ -5,12 +5,14 @@ class_name EnemySummonNecromancer
 @export var summoned_creature: PackedScene = null
 @export var summon_effect: PackedScene = null
 
+@export var summon_radius: int = 5  # In tiles
+@export var min_summons: int = 2
+@export var max_summons: int = 5
+
 var tilemap_layer: TileMapLayer
 var can_summon := true
 var positions := []
 const DEG_TO_RAD = PI / 180
-
-@export var summon_radius: int = 5  # In tiles
 
 func _ready():
 	tilemap_layer = find_tilemap_node()
@@ -26,15 +28,13 @@ func Enter():
 	ChangeState.emit(self, "EnemyChase")
 
 func spawn_enemies():
-	positions = _get_valid_summon_positions(3, tilemap_layer)
-	
-	# Ensure we handle the case where fewer than 3 positions are found
+	var summon_count = randi_range(min_summons, max_summons)
+	positions = _get_valid_summon_positions(summon_count, tilemap_layer)
+
 	var number_of_positions = positions.size()
-	
-	if number_of_positions < 3:
+	if number_of_positions < summon_count:
 		print("Warning: Found only ", number_of_positions, " valid summon positions.")
-	
-	# Ensure we use all available positions even if fewer than requested
+
 	for position in positions:
 		if position != Vector2.INF:
 			var effect = summon_effect.instantiate()
@@ -44,7 +44,6 @@ func spawn_enemies():
 			var skeleton = summoned_creature.instantiate()
 			get_tree().current_scene.add_child(skeleton)
 			skeleton.global_position = position
-
 
 func _get_valid_summon_positions(max_count: int, tilemap: TileMapLayer) -> Array:
 	var all_valid_positions = []
@@ -59,20 +58,15 @@ func _get_valid_summon_positions(max_count: int, tilemap: TileMapLayer) -> Array
 		if tile_data == null:
 			continue
 
-		# Check for custom summonable flag
 		var is_summonable = tile_data.get_custom_data("is_summonable")
 		if not is_summonable:
 			continue
 
 		var cell_world_pos: Vector2 = tilemap.map_to_local(cell)
-
 		if summoner_pos.distance_squared_to(cell_world_pos) <= summon_radius_sq:
 			all_valid_positions.append(cell_world_pos)
 
-	# Shuffle the list to make selection random
 	all_valid_positions.shuffle()
-
-	# Return only the number of positions we want
 	return all_valid_positions.slice(0, min(max_count, all_valid_positions.size()))
 
 func find_tilemap_node() -> TileMapLayer:
@@ -80,7 +74,6 @@ func find_tilemap_node() -> TileMapLayer:
 	for child in parent.get_children():
 		if child is TileMapLayer:
 			return child
-
 	return null
 
 func _on_summon_cooldown_timeout():

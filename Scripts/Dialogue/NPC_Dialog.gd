@@ -25,7 +25,6 @@ func talk():
 		if page >= len(dialogue):
 			spoke = true
 			$NinePatchRect.visible = false
-			player.talking = false
 			return
 		$NinePatchRect/text.text = dialogue[page]
 	else:
@@ -33,7 +32,6 @@ func talk():
 		active = true
 		$NinePatchRect.visible = true
 		$NinePatchRect/text.text = dialogue[page]
-		player.talking = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
