@@ -3,7 +3,7 @@ extends "res://Scripts/Enemies/BaseEnemy.gd"
 var retreat = false
 
 func summon():
-	if attacking or is_dead:
+	if attacking or is_dead or is_hit or stunned:
 		return
 
 	attacking = true

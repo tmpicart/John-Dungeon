@@ -11,11 +11,13 @@ signal keys_changed
 @export var bombs: int = 3
 @export var potions: int = 3
 @export var keys: int = 0
+
 @onready var bomb_scene = preload("res://Scenes/Weapons/bomb.tscn")
+@onready var combat = $"../PlayerCombat"
 
 func use_potion():
-	if potions > 0:
-		$"../PlayerCombat".heal(1)
+	if potions > 0 and combat.hp != combat.max_hp:
+		combat.heal(3)
 		potions -= 1
 		potions_changed.emit(potions)
 

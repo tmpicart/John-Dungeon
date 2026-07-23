@@ -9,4 +9,3 @@ func _ready():
 func _on_interact():
 		pass
 		
-

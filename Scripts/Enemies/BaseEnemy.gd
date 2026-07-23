@@ -86,6 +86,7 @@ func kill():
 		return
 
 	is_dead = true
+	
 	if animation_player.has_animation("Death"):
 		animation_player.play("Death")
 	if death_sfx:
@@ -106,10 +107,13 @@ func attack():
 	attacking = false
 
 func wait_for_animation(anim_name: String) -> void:
-	if animation_player.current_animation != anim_name:
-		return
+	# Wait until the animation starts
+	while animation_player.current_animation != anim_name:
+		await get_tree().process_frame
 
 	while true:
-		var finished_anim = await animation_player.animation_finished
-		if finished_anim == anim_name or is_dead or is_hit:
+		await get_tree().process_frame
+
+		# Exit if animation finished or was interrupted
+		if animation_player.current_animation != anim_name:
 			break

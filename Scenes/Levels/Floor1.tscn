@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://cej70yygite64"]
+[gd_scene load_steps=28 format=4 uid="uid://cej70yygite64"]
 
 [ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/Tilesets/TILESET_DUNGEON.png" id="1_egfvc"]
 [ext_resource type="Script" uid="uid://fc4ub6qla4bf" path="res://Scripts/Hud/MainScene.gd" id="1_vnypl"]
@@ -8,7 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://rvpiujtilw1o" path="res://Scenes/Levels/Objects/chestNoKey.tscn" id="7_vnypl"]
 [ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://Scenes/Items/Key.tscn" id="8_i8g4k"]
 [ext_resource type="PackedScene" uid="uid://cqbfd3ribv0bg" path="res://Scenes/Items/coin.tscn" id="8_xat2l"]
-[ext_resource type="PackedScene" uid="uid://bji7ka5w8l7k" path="res://Scenes/Characters/blacksmith.tscn" id="9_xat2l"]
+[ext_resource type="PackedScene" uid="uid://ci70mpdu1yk5g" path="res://Scenes/Enemies/necromancer.tscn" id="10_4vbtv"]
+[ext_resource type="PackedScene" uid="uid://clp3rxlbhwvv6" path="res://Scenes/Enemies/slime_green.tscn" id="10_6cjtb"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egfvc"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -339,7 +340,7 @@ alignment = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Character" parent="." instance=ExtResource("4_vnypl")]
-position = Vector2(172, 223)
+position = Vector2(173, 146)
 
 [node name="chest2" parent="." instance=ExtResource("7_vnypl")]
 position = Vector2(242, 219)
@@ -357,5 +358,8 @@ position = Vector2(179, 187)
 [node name="Coin3" parent="." instance=ExtResource("8_xat2l")]
 position = Vector2(154, 172)
 
-[node name="Blacksmith" parent="." instance=ExtResource("9_xat2l")]
-position = Vector2(77, 196)
+[node name="Slime_Green" parent="." instance=ExtResource("10_6cjtb")]
+position = Vector2(120, 112)
+
+[node name="Necromancer" parent="." instance=ExtResource("10_4vbtv")]
+position = Vector2(268, 158)
