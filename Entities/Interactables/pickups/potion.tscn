@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://cs5nstle380af"]
 
 [ext_resource type="Script" uid="uid://c88asbrurfajm" path="res://Entities/Interactables/pickups/potion.gd" id="1_d5if6"]
-[ext_resource type="Texture2D" uid="uid://dqedk2fisvka1" path="res://Assets/Items/Potion.png" id="1_e5bpn"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Systems/Interaction/Interaction_area.tscn" id="3_dk3c5"]
+[ext_resource type="Texture2D" uid="uid://dqedk2fisvka1" path="res://Assets/items/potion.png" id="1_e5bpn"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Systems/Interaction/interaction_area.tscn" id="3_dk3c5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rdqgk"]
 radius = 21.095

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bcvjqylald7g8"]
 
-[ext_resource type="Texture2D" uid="uid://ckwt2gmgc4jli" path="res://Assets/Items/arcane_arrow.png" id="1_22rqq"]
-[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="2_fhy1d"]
+[ext_resource type="Texture2D" uid="uid://ckwt2gmgc4jli" path="res://Assets/items/arcane_arrow.png" id="1_22rqq"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/effects/on_hit_flash.gdshader" id="2_fhy1d"]
 [ext_resource type="Script" uid="uid://diqaxripf11j5" path="res://Entities/Projectiles/arcane_arrow.gd" id="2_xg6i5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oxt4s"]

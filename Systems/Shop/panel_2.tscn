@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dkw8wjmcojh0d"]
 
-[ext_resource type="Texture2D" uid="uid://brum2txhf4ce4" path="res://Assets/Items/can.png" id="1_xkbks"]
+[ext_resource type="Texture2D" uid="uid://brum2txhf4ce4" path="res://Assets/items/can.png" id="1_xkbks"]
 
 [node name="Panel2" type="Panel"]
 
