@@ -4,17 +4,17 @@
 
 ## Architecture Map
 
-### Player (`Entities/Player/character.tscn`)
+### Player (`entities/player/character.tscn`)
 Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a state machine.
 - `PlayerMovement` — acceleration/friction movement, dash with cooldown timer
 - `PlayerCombat` — HP, attack/block execution, damage intake; signals `hp_changed`, `max_hp_changed`
 - `PlayerInventory` — coins/bombs/potions/keys with `*_changed` signals
 - `PlayerAnimation` — 4-direction mouse-facing animation routing, equipment layering (weapon/shield foreground vs background)
-- `State Control` — generic state machine (`Systems/StateCore/state.gd`, `state_control.gd`): states emit `ChangeState(state, "TargetName")`; transitions resolve by node name
+- `State Control` — generic state machine (`systems/state_core/state.gd`, `state_control.gd`): states emit `ChangeState(state, "TargetName")`; transitions resolve by node name
 
 ### Enemies
-- `Entities/Enemies/base_enemy.gd` — CharacterBody2D base: HP/damage, `take_damage`/`stun`/`kill`/`attack` with animation-await helpers, audio hooks
-- Reusable states: `Entities/Enemies/states/enemy_idle|chase|attack|retreat.gd` (NavigationAgent2D pathfinding); bundles hold scene + scripts + states together
+- `entities/enemies/base_enemy.gd` — CharacterBody2D base: HP/damage, `take_damage`/`stun`/`kill`/`attack` with animation-await helpers, audio hooks
+- Reusable states: `entities/enemies/states/enemy_idle|chase|attack|retreat.gd` (NavigationAgent2D pathfinding); bundles hold scene + scripts + states together
 - Per-enemy behavior via override states (e.g. `EnemyChaseNecromancer`, `EnemyAttackFlailSkeleton`) wired in each enemy scene
 - Target: all combatants — including bosses — run on this framework
 
@@ -26,7 +26,7 @@ Autoload `InteractionManager` (registry + prompt label) and `InteractionArea` (`
 - `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage
 
 ### HUD
-Signal-driven: `MainScene.gd` wires player subsystem signals to `heart_bar` and `ItemHud`; no polling.
+Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and `item_hud`; no polling.
 
 ### Dialogue & Shop
 - `npc_dialog` paginates lines from text files; NPC scenes embed dialog + shop child nodes and configure costs/items in `_ready`
@@ -35,7 +35,7 @@ Signal-driven: `MainScene.gd` wires player subsystem signals to `heart_bar` and 
 ## Adopted Conventions
 | Area | Convention |
 |---|---|
-| File names | `snake_case` everywhere (`.gd`, `.tscn`, assets); no spaces in file names going forward |
+| File & folder names | `snake_case` everywhere per the Godot project-organization docs (exported PCKs are case-sensitive); no spaces; node names stay PascalCase |
 | Class names | `PascalCase` via `class_name` |
 | Identifiers | `snake_case` variables/functions; signals as events (`hp_changed`, `*_changed`) |
 | Node names | PascalCase; node names referenced by state-machine string transitions must stay stable across renames |
@@ -43,7 +43,7 @@ Signal-driven: `MainScene.gd` wires player subsystem signals to `heart_bar` and 
 | Scene edits | `.tscn`/`.tres` are text and may be edited surgically (see `.clinerules/godot-collaboration.md`) |
 | New enemy | Extend `BaseEnemy.gd`; reuse base states; add override states only for unique behavior; wire nav agent + audio in the scene |
 | New interactable | `Node2D` + `InteractionArea`; assign the `interact` Callable in `_ready`; keep effects data-driven where possible |
-| Folder structure | **Hybrid** — feature bundles under `Entities/` (Player, Enemies, Boss, NPCs, Projectiles, Interactables: scene + scripts + states together); type-based `Systems/` (StateCore, Interaction, Dialogue, Shop), `UI/`, `Levels/` (incl. `room_blocks/`), `Assets/`; the `Global` autoload lives in `Systems/Global/` |
+| Folder structure | **Hybrid** — all folders snake_case (Godot docs): feature bundles under `entities/` (player, enemies, boss, npcs, projectiles, interactables — scene + scripts + states together); type-based `systems/` (state_core, interaction, dialogue, shop), `ui/`, `levels/` (incl. `room_blocks/`), `assets/` (vendored art packs — documented basic-assets exception to `addons/`); the `Global` autoload lives in `systems/global/` |
 | State transitions | Typed references — states export direct `State` references assigned in the Inspector and validated in `_ready()`; no string-matched node names (target: R-20; string transitions remain until migrated) |
 | Enemy state customization | Shared states + exported configuration + hook methods; subclass copy-paste overrides are not used for new enemies (target: R-23) |
 | Animation coupling | Signal-driven flow (`animation_finished`, Call Method Tracks for hit windows/sfx); polling waits are superseded (target: R-22) |
