@@ -9,7 +9,6 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 ## Phase R0 — Hygiene (no dependencies; quick wins)
 | ID | Task | Notes |
 |---|---|---|
-| R-01 | Dead-file purge | Empty `Scripts/Dialogue/tutorial`; extension-less `walk1–4` audio; orphan `Scripts/States/EnemySummon.gd`; orphan `EnemyRetreatNecromancer.gd`; orphans `shopGuy.*`, `Scenes/Shop/shop.tscn`, `blacksmith_remastered.tscn`; extract-or-remove `Scenes/Weapons/Monsters_Creatures_Fantasy.zip` |
 | R-02 | Debug-spam removal | `print()` calls (Hurtbox, chest, boss states, summon); empty `_process` stubs |
 | R-03 | MainMenu fix | `_onready()` → `_ready()`; use the scene's correctly-pathed title textures; rename the "John Duoungeon GUy" node |
 
