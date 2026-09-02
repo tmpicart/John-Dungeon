@@ -8,7 +8,6 @@ var player: CharacterBody2D
 var direction
 
 func Enter():
-	print("SlideInto")
 	player = get_tree().get_first_node_in_group("Player")
 	enemy.is_glide = true
 	direction = player.global_position - enemy.global_position

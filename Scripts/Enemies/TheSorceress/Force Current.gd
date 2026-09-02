@@ -7,7 +7,6 @@ extends State
 @export var phase2_rounds = 7
 
 func Enter():
-	print("Force Current")
 	enemy.velocity = Vector2.ZERO
 	await enemy.cast()
 	if enemy.phase2:

@@ -59,7 +59,3 @@ func _input(event):
 			buyitem1()
 		if event.is_action_pressed("buy2"):
 			buyitem2()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass

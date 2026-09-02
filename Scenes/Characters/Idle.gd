@@ -5,5 +5,4 @@ extends State
 
 func activate():
 	Global.door.show()
-	print(Global.door)
 	ChangeState.emit(self, "Engage")

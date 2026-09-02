@@ -8,12 +8,10 @@ extends State
 var player: CharacterBody2D
 
 func Enter():
-	print("Melee")
 	player = get_tree().get_first_node_in_group("Player")
 	
 func Physics_Update(delta:float):
 	var direction = player.global_position - enemy.global_position 
-	#print(direction)
 	if direction.length() > attempt_attack_range:
 		enemy.velocity = direction * speed
 	else:

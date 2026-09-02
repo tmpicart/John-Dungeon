@@ -19,9 +19,7 @@ func _on_interact():
 			var item = Path.instantiate()
 			owner.add_child(item)
 			item.global_position = self.global_position + Vector2(0, 15)
-		print(Global.Keys)
 		Global.player.useKey()
-		print(Global.Keys)
 	else:
 		label.show()
 		await get_tree().create_timer(Global.time_in_seconds).timeout

@@ -19,10 +19,8 @@ func destroy():
 
 func _on_body_entered(body):
 	if body == player:
-		#print("ENTERED")
 		player.acceleration /= acceleration_division_factor
 
 func _on_body_exited(body):
 	if body == player:
-		#print("ENTERED")
 		player.acceleration = restored_acceleration

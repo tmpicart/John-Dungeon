@@ -19,7 +19,6 @@ func Enter():
 		if enemy is CharacterBody2D:
 			beamCast.add_exception(enemy)
 	
-	print("Beam")
 	enemy.velocity = Vector2.ZERO
 	charge.play()
 	await Global.time_in_seconds

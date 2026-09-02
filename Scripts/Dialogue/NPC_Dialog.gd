@@ -32,7 +32,3 @@ func talk():
 		active = true
 		$NinePatchRect.visible = true
 		$NinePatchRect/text.text = dialogue[page]
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	pass
