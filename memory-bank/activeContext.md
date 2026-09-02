@@ -3,18 +3,17 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-Setup complete. Awaiting refactor planning (step three).
+Planning complete: architecture decisions (D1–D9) adopted; refactor plan and development plan authored.
 
 ## In Flight
-- None. Setup commits have landed on `master` (local, unpushed).
+- None. Plans and rules are committed on `master` (local, unpushed).
 
 ## Next Up
-1. Refactor task list (step three): define and order migration tasks from `migrationMap.md`.
-2. Resolve pending decision: target folder structure (type vs feature vs hybrid) — blocks the reorganization phase.
-3. First refactor pass: player-facing API consolidation (shop/NPC rewiring onto `PlayerInventory` / `PlayerCombat`).
+1. Phase R0 (hygiene): dead-file purge, debug-spam removal, MainMenu fix — no design dependencies, editor-verifiable.
+2. Phase R1: hybrid folder migration — user drives moves in the Godot editor; agent updates references and docs.
 
 ## Open Decisions
-- Folder structure convention (see `systemPatterns.md` → Pending Decisions).
+- None. Resolved decisions live in `systemPatterns.md` and `refactorPlan.md`.
 
 ## Working Agreements (quick recall)
 - Commits: agent drafts → user approves → agent commits. Never push unless told.
