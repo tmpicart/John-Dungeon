@@ -6,11 +6,6 @@
 ## Adopted Decisions (summary — details in `systemPatterns.md`)
 Hybrid folder structure · typed state transitions · shared states + config exports + hooks · signal-driven animation · mouse-driven `ShopData` shop · JSON dialogue + `PlayerProgress` on player · handcrafted-first, procgen-ready · boss 1:1 migration (redesign in `devPlan.md`) · opportunistic feel fixes only.
 
-## Phase R1 — Structure & naming (blocks file work in R2–R4)
-| ID | Task | Notes |
-|---|---|---|
-| R-11 | snake_case sweep | Remove spaces in file names; PascalCase scripts → snake_case; rename `Levels/Doungeon.tscn`; `.uid` sidecars move with files; all references updated and verified |
-
 ## Phase R2 — Combat & AI framework
 | ID | Task | Notes |
 |---|---|---|

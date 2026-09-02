@@ -4,17 +4,17 @@
 
 ## Architecture Map
 
-### Player (`Entities/Player/Character.tscn`)
+### Player (`Entities/Player/character.tscn`)
 Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a state machine.
 - `PlayerMovement` — acceleration/friction movement, dash with cooldown timer
 - `PlayerCombat` — HP, attack/block execution, damage intake; signals `hp_changed`, `max_hp_changed`
 - `PlayerInventory` — coins/bombs/potions/keys with `*_changed` signals
 - `PlayerAnimation` — 4-direction mouse-facing animation routing, equipment layering (weapon/shield foreground vs background)
-- `State Control` — generic state machine (`Systems/StateCore/State.gd`, `State Control.gd`): states emit `ChangeState(state, "TargetName")`; transitions resolve by node name
+- `State Control` — generic state machine (`Systems/StateCore/state.gd`, `state_control.gd`): states emit `ChangeState(state, "TargetName")`; transitions resolve by node name
 
 ### Enemies
-- `Entities/Enemies/BaseEnemy.gd` — CharacterBody2D base: HP/damage, `take_damage`/`stun`/`kill`/`attack` with animation-await helpers, audio hooks
-- Reusable states: `Entities/Enemies/states/EnemyIdle|Chase|Attack|Retreat.gd` (NavigationAgent2D pathfinding); bundles hold scene + scripts + states together
+- `Entities/Enemies/base_enemy.gd` — CharacterBody2D base: HP/damage, `take_damage`/`stun`/`kill`/`attack` with animation-await helpers, audio hooks
+- Reusable states: `Entities/Enemies/states/enemy_idle|chase|attack|retreat.gd` (NavigationAgent2D pathfinding); bundles hold scene + scripts + states together
 - Per-enemy behavior via override states (e.g. `EnemyChaseNecromancer`, `EnemyAttackFlailSkeleton`) wired in each enemy scene
 - Target: all combatants — including bosses — run on this framework
 
@@ -29,7 +29,7 @@ Autoload `InteractionManager` (registry + prompt label) and `InteractionArea` (`
 Signal-driven: `MainScene.gd` wires player subsystem signals to `heart_bar` and `ItemHud`; no polling.
 
 ### Dialogue & Shop
-- `NPC_Dialog` paginates lines from text files; NPC scenes embed dialog + shop child nodes and configure costs/items in `_ready`
+- `npc_dialog` paginates lines from text files; NPC scenes embed dialog + shop child nodes and configure costs/items in `_ready`
 - Shop UI is CanvasLayer-based; item effects currently route through NPC scripts (pending rewiring onto the inventory API — see `migrationMap.md`)
 
 ## Adopted Conventions
