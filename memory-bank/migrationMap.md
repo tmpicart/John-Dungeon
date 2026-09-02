@@ -27,18 +27,14 @@
 
 ## Duplicates & Relocations (consolidate during reorganization)
 - `Door.gd` exists in `Scripts/Objects/` and `Scenes/Levels/Objects/` → one canonical door script with key/boss-key variants parameterized
-- Shop scenes `shop.tscn`, `panel.tscn`, `panel_2.tscn` vs active `shop_2.tscn` → single shop scene
-- `blacksmith.tscn` vs `blacksmith_remastered.tscn` → one NPC scene
-- Stray media in code folders: `Scenes/Items/KEY.png`, `Scenes/Levels/Objects/BOSS_DOOR.png` + `image.png`, mp3 files under `Scenes/` → `Assets/`
-- `Scenes/Weapons/Monsters_Creatures_Fantasy.zip` → extract to `Assets/` or remove from the repository
-- Extension-less `walk1`–`walk4` files under `Assets/Sounds/Player*/` → remove
-- Empty `Scripts/Dialogue/tutorial` file → remove or fill
+- Shop scene consolidation: `panel.tscn` / `panel_2.tscn` are the live cards of active `shop_2.tscn`; legacy `shop.tscn` already removed → retire in the R-32 rework
+- Stray media in code folders: `Scenes/Items/KEY.png`, `Scenes/Levels/Objects/BOSS_DOOR.png` + `image.png`, mp3 files under `Scenes/` → `Assets/` (keyDoor already points at the Assets copy of `image.png`; the Scenes copy is unreferenced)
 - `Scripts/Dialogue/NPC_Dialog.tscn` (a scene under Scripts/) → relocate with the dialogue system
-- `Scripts/States/EnemySummon.gd` is an orphan duplicate — the real summon state is `Scripts/Projectiles and Effects/EnemySummon.gd` (a state misplaced among projectiles) → delete the orphan, relocate the real one into the necromancer bundle (R-01 / R-10)
-- `Scripts/Enemies/Necromancer/EnemyRetreatNecromancer.gd` is orphaned (scene wires the generic `EnemyRetreat`) → delete (R-01)
-- Confirmed orphans (zero references): `Scenes/Characters/shopGuy.gd` + `shopGuy.tscn`, `Scenes/Shop/shop.tscn` (the active shop is `shop_2.tscn`; `panel.tscn` / `panel_2.tscn` are its live cards), `Scenes/Characters/blacksmith_remastered.tscn` → delete (R-01)
+- The real summon state `Scripts/Projectiles and Effects/EnemySummon.gd` (a state misplaced among projectiles) → relocate into the necromancer bundle (R-10)
+- Tileset double-vendored: `Assets/Tilesets/Dungeon_Tileset.png` ≡ `Assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png` — byte-identical, distinct uids; rooms split across both copies (ChestRoomLeft/Right, HallWay, HallWayVert → Tilesets; MultiRoom, Starting Room, torch.tscn → pack copy) → repoint to one copy, delete the other (R-10)
+- Door sound double-vendored: `Assets/Sounds/dorm-door-opening-6038.mp3` ≡ `Scenes/Levels/Objects/dorm-door-opening-6038.mp3` (keyDoor.tscn → Assets copy; BossDoor.tscn → Scenes copy) → repoint BossDoor, delete the stray (R-10)
 - `Scenes/Characters/EnemyStun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
-- Naming sweep: spaces in file names (`State Control.gd`, `Summon Effect.gd`, `Force Current.gd`, `Magic Missile.gd`), `Doungeon.tscn` spelling — rename via the Godot editor once the folder structure is decided
+- Naming sweep: spaces in file names (`State Control.gd`, `Summon Effect.gd`, `Force Current.gd`, `Magic Missile.gd`, vendored pack art like `Flying eye/`, `Take Hit.png`, `All Characters.png`), `Doungeon.tscn` spelling — rename via the Godot editor once the folder structure is decided
 
 ## Framework Debt (targeted by `refactorPlan.md`)
 | Issue | Task |
