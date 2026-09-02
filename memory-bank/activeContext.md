@@ -3,25 +3,24 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-R0 hygiene in progress: R-01 (dead-file purge) + asset vendoring committed; R-02 / R-03 remain in the phase.
+R0 hygiene complete (R-01/R-02/R-03 committed). Next: Phase R1 structure work.
 
 ## In Flight
-- Runtime verification of the R-01 changeset in the editor still outstanding (shop NPCs, necromancer summon, walk sounds).
+- One combined runtime verification in the editor, covering R-01 + R-02 + R-03: shop NPCs, necromancer summon, walk sounds, chest open + bomb throw (console must be clean), boss fight incl. summons, menu title randomize over two launches, Play/Quit.
+- `Scenes/Hud/MainMenu.tscn` was text-edited (node renamed `TitleCard`) — confirm it renders in the editor.
 
-## Recently Completed (this session)
-- `c81d780` chore(cleanup): remove dead files (R-01) — 31 files, 408 deletions
-- `41c572f` chore(assets): add monster/enemy sprite packs — 75 files
-- Downloaded "2D Pixel Dungeon Asset Pack v2.0" confirmed byte-identical to the vendored pack — do not re-attempt.
+## Recently Completed
+- `1fef410` fix(menu): repair MainMenu startup (R-03) — `_ready()` + random title from `Assets/Hud/`, node → `TitleCard`
+- `8aab1a4` chore(cleanup): drop debug spam and stubs (R-02) — 25 files, +13/−60
 
 ## Next Up
-1. R-02 debug-spam removal (Hurtbox, chest, boss states, summon; empty `_process` stubs)
-2. R-03 MainMenu fix (`_onready()` → `_ready()`, title textures, node rename)
-3. Phase R1 structure work (R-10/R-11) — now carries two new dedup entries in `migrationMap.md` (double-vendored tileset + door sound)
+1. R-10 adopt hybrid tree (editor-driven moves; carries the two dedup entries in `migrationMap.md`: double-vendored tileset + door sound)
+2. R-11 snake_case sweep (incl. `Doungeon.tscn` rename)
 
 ## Open Decisions
 - None.
 
 ## Working Agreements (quick recall)
-- Commits: agent drafts → user approves → agent commits. Never push unless told.
+- Commits: agent drafts → user approves once → agent commits code, updates the memory bank, and commits it (`docs(memory):`) automatically. Never push unless told.
 - Scene text edits are allowed but surgical; editor-made scene changes are expected and never reverted silently.
 - New code follows `systemPatterns.md`; superseded patterns live in `migrationMap.md` only.
