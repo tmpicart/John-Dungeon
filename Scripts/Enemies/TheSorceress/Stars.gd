@@ -8,7 +8,6 @@ extends State
 var player: Node2D
 
 func Enter():
-	print("Stars")
 	if enemy.phase2:
 		enemy.velocity = Vector2.ZERO
 		player = get_tree().get_first_node_in_group("Player")

@@ -6,7 +6,6 @@ func _ready():
 	randomize()
 
 func Enter():
-	print("ENGAGE MODE")
 	
 	if enemy.HP <= enemy.transition_hp and not enemy.phase2:
 			ChangeState.emit(self, "Intervention")

@@ -6,7 +6,6 @@ extends State
 var player : CharacterBody2D
 
 func Enter():
-	print("Curse")
 	enemy.velocity = Vector2.ZERO
 	await enemy.cast()
 	if curse_glyph:

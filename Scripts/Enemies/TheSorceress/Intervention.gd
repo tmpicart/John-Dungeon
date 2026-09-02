@@ -7,7 +7,6 @@ extends State
 @export var duration = 3
 
 func Enter():
-	print("Intervention")
 	enemy.velocity = Vector2.ZERO
 	enemy.is_glide = true
 	if glyph:

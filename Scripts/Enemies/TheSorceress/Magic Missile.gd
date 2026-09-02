@@ -6,7 +6,6 @@ extends State
 @export var delay_between_rounds = 2
 
 func Enter():
-	print("Magic Missile")
 	enemy.velocity = Vector2.ZERO
 	var rounds = 1
 	if enemy.phase2:

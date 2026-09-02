@@ -17,7 +17,7 @@ const DEG_TO_RAD = PI / 180
 func _ready():
 	tilemap_layer = find_tilemap_node()
 	if tilemap_layer == null:
-		print("Error: TileMapLayer not found in the scene!")
+		push_error("TileMapLayer not found in the scene!")
 
 func Enter():
 	if can_summon and not enemy.is_dead:
@@ -33,7 +33,7 @@ func spawn_enemies():
 
 	var number_of_positions = positions.size()
 	if number_of_positions < summon_count:
-		print("Warning: Found only ", number_of_positions, " valid summon positions.")
+		push_warning("Found only %d valid summon positions." % number_of_positions)
 
 	for position in positions:
 		if position != Vector2.INF:

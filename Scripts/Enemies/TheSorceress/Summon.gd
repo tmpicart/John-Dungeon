@@ -10,7 +10,6 @@ extends State
 @onready var tilemap_parent = get_tree().current_scene
 
 func Enter():
-	print("Summon")
 	enemy.velocity = Vector2.ZERO
 	await enemy.big_cast()
 	if enemy.phase2 == false:
@@ -39,9 +38,6 @@ func detect_tilemap() -> TileMap:
 				var tile_size = tilemap.tile_set.tile_size  # Access the tile size from the TileSet
 				var used_rect = tilemap.get_used_rect()
 				
-				print(child)
-				print(tilemap)
-				
 				for x in range(used_rect.position.x, used_rect.position.x + used_rect.size.x):
 					for y in range(used_rect.position.y, used_rect.position.y + used_rect.size.y):
 						var cell_pos = Vector2i(x, y)
@@ -65,9 +61,6 @@ func find_empty_cells(tilemap: TileMap) -> Array:
 		if !collision_cells.has(cell):
 			empty_cells.append(cell)
 	
-	print(all_cells.size())
-	print(collision_cells.size())
-	print(empty_cells.size())
 	return empty_cells
 
 func summon_enemies(amount: int, enemy_scene: PackedScene):
@@ -101,6 +94,5 @@ func summon_enemy_at_position(position: Vector2, enemy_scene: PackedScene):
 		get_tree().current_scene.add_child(enemy_instance)
 		enemy_instance.global_position = position
 			
-		print("Enemy summoned at position: ", position)
 	else:
-		print("Failed to instantiate enemy")
+		push_error("Failed to instantiate enemy")
