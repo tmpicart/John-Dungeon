@@ -6,13 +6,13 @@
 - Godot **4.7.2 stable** (win64), Forward Plus renderer, GDScript
 - Editor path (VS Code setting): `c:\Users\Silent\Documents\Code\Godot_v4.7.2-stable_win64.exe`
 - Display: 1920×1080, `canvas_items` stretch mode, nearest texture filter (pixel art)
-- Main scene chain: `UI/main_menu.tscn` → `Levels/floor_1.tscn` (remaster test level)
+- Main scene chain: `ui/main_menu.tscn` → `levels/floor_1.tscn` (remaster test level)
 
 ## Autoloads
 | Name | Path | Role |
 |---|---|---|
-| `Global` | `Systems/Global/global.gd` | player/door references, `Direction` enum, `hasBossKey` flag |
-| `InteractionManager` | `Systems/Interaction/interaction_manager.tscn` | interaction registry + "[F] to …" prompt label |
+| `Global` | `systems/global/global.gd` | player/door references, `Direction` enum, `hasBossKey` flag |
+| `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + "[F] to …" prompt label |
 
 ## Physics Layers
 | # | Name | # | Name |

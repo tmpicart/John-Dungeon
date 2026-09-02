@@ -5,28 +5,28 @@
 ## API Migration Table
 | Legacy (superseded) | Target | Seen in |
 |---|---|---|
-| `player.coins` / `spendCoin(n)` | `player.inventory.coins` + a spend method on inventory | `Systems/Shop/shop_2.gd` |
-| `player.keys` / `useKey()` | `player.inventory.keys` + inventory consumption method | `Entities/Interactables/doors/key_door.gd`, `Entities/Interactables/chests/chest.gd` |
-| `player.bombs` / `addPotion()` | `player.inventory.bombs` / potions API | `Entities/NPCs/blacksmith.gd`, `Entities/NPCs/potion_seller.gd`, `Entities/Interactables/pickups/potion.gd` |
-| `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `Entities/NPCs/blacksmith.gd` |
-| `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `Entities/NPCs/potion_seller.gd` |
+| `player.coins` / `spendCoin(n)` | `player.inventory.coins` + a spend method on inventory | `systems/Shop/shop_2.gd` |
+| `player.keys` / `useKey()` | `player.inventory.keys` + inventory consumption method | `entities/Interactables/doors/key_door.gd`, `entities/Interactables/chests/chest.gd` |
+| `player.bombs` / `addPotion()` | `player.inventory.bombs` / potions API | `entities/NPCs/blacksmith.gd`, `entities/NPCs/potion_seller.gd`, `entities/Interactables/pickups/potion.gd` |
+| `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `entities/NPCs/blacksmith.gd` |
+| `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `entities/NPCs/potion_seller.gd` |
 | `Global.time_in_seconds` | Not defined anywhere — replace with a typed constant or timer helper | door, key_door, boss_key_door, chest, boss_key, `beam.gd` (boss) |
-| `connect("signal", method)` string form | `signal.connect(callable)` | `Entities/Enemies/hurtbox.gd` |
-| `player.acceleration` | `player.movement.acceleration` | `Entities/Projectiles/curse_glyph.gd` (boss) |
-| `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `Entities/Projectiles/force_wave.gd` (boss) |
+| `connect("signal", method)` string form | `signal.connect(callable)` | `entities/Enemies/hurtbox.gd` |
+| `player.acceleration` | `player.movement.acceleration` | `entities/Projectiles/curse_glyph.gd` (boss) |
+| `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `entities/Projectiles/force_wave.gd` (boss) |
 
 ## Entities Awaiting Rewiring
 | Entity | Note | Target |
 |---|---|---|
-| `Systems/Shop/shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
-| `Entities/NPCs/blacksmith.gd`, `Entities/NPCs/potion_seller.gd` | Superseded player API (stale asset literals corrected in R-11) | Inventory/combat API |
-| The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb misplaced `idle.gd` (now beside her in `Entities/Boss/TheSorceress/`) |
-| Legacy inventory UI (`UI/inventory.gd`, `UI/slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
+| `systems/Shop/shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
+| `entities/NPCs/blacksmith.gd`, `entities/NPCs/potion_seller.gd` | Superseded player API (stale asset literals corrected in R-11) | Inventory/combat API |
+| The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb misplaced `idle.gd` (now beside her in `entities/Boss/TheSorceress/`) |
+| Legacy inventory UI (`ui/inventory.gd`, `ui/slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
 
 ## Duplicates & Relocations (consolidate during reorganization)
-- `Door.gd` duplicate: live script at `Entities/Interactables/doors/door.gd` (used by `door.tscn`, `door_2.tscn`); unreferenced legacy copy at `Entities/Interactables/door.gd` → one canonical door script with key/boss-key variants parameterized (R-31)
-- Shop scene consolidation: `Systems/Shop/panel.tscn` / `panel_2.tscn` are the live cards of active `Systems/Shop/shop_2.tscn` → retire in the R-32 rework
-- `Entities/Enemies/enemy_stun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
+- `Door.gd` duplicate: live script at `entities/Interactables/doors/door.gd` (used by `door.tscn`, `door_2.tscn`); unreferenced legacy copy at `entities/Interactables/door.gd` → one canonical door script with key/boss-key variants parameterized (R-31)
+- Shop scene consolidation: `systems/Shop/panel.tscn` / `panel_2.tscn` are the live cards of active `systems/Shop/shop_2.tscn` → retire in the R-32 rework
+- `entities/Enemies/enemy_stun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
 
 ## Framework Debt (targeted by `refactorPlan.md`)
 | Issue | Task |
@@ -37,6 +37,7 @@
 | Polling `wait_for_animation` lock-in guards | R-22 |
 | Double-delta enemy velocities (framerate-dependent) | R-22 |
 | Copy-paste enemy state override classes | R-23 |
+| camelCase/PascalCase identifiers inside scripts (`rayCast`, `textFile`, `Physics_Update`, `ChangeState`) — normalize to snake_case / past-tense signals per the GDScript style guide | R-20 / R-22 / R-23 / R-32 / R-33 |
 | InteractionManager per-frame sort + uncached player lookup | R-30 |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |

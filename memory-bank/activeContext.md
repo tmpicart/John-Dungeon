@@ -3,13 +3,16 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-R1 structure complete (R-10 `983dbfc`, R-11 `67d4588`). Next: R-20 state core rebuild (opens Phase R2).
+R1 structure complete (R-10 `983dbfc`, R-11 `67d4588`, R-12 `cc1df32`). Next: R-20 state core rebuild (opens Phase R2).
+
+## Conventions
+Godot official docs adopted as naming authority (R-12): folders + files snake_case, node names + `class_name` PascalCase, identifiers snake_case with past-tense signals. Vendored art lives in `assets/` (documented basic-assets exception to `addons/`). Script identifier normalization rides R-20/R-22/R-23/R-32/R-33 (`migrationMap.md`).
 
 ## In Flight
-- First editor open after R-11 rescans the FileSystem dock (one-time); transient "invalid UID" warnings self-heal as the uid cache rebuilds. Then run the smoke pass: menu → Floor1 → combat/shop/doors/chests → boss (also covers pending R-01…R-03 verification). The 4 Sorceress hitbox load errors are known, documented debt — `migrationMap.md` (R-24), not a regression.
+- Smoke run passed in the user's editor session post-R-12 (no regressions reported) — R-11 + R-12 editor-verified; R1 fully closed. The 4 Sorceress hitbox load errors remain known debt (R-24).
 
 ## Recently Completed
-- `67d4588` refactor(naming): snake_case sweep (R-11) — 744 paths renamed, 543 references rewritten, all verification gates green.
+- `cc1df32` refactor(structure): snake_case all game folders (R-12) — 22 folders, ~850 paths, 355 reference files, gates green, headless run silent.
 
 ## Next Up
 1. R-20 state core rebuild — typed transitions (`@export var next_state: State` validated in `_ready()`), attack/block-from-idle input filter, states receive owner refs instead of `Global.player`, `Global` null-cache hardening, velocity-decay normalization (Attack/Block).
