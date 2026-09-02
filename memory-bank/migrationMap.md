@@ -11,7 +11,6 @@
 | `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `blacksmith.gd` |
 | `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `potion_seller.gd` |
 | `Global.time_in_seconds` | Not defined anywhere — replace with a typed constant or timer helper | Door, keyDoor, bosskeyDoor, chest, bossKey, `Beam.gd` (boss) |
-| `Global.Keys` | `player.inventory.keys` | `chest.gd` debug prints |
 | `connect("signal", method)` string form | `signal.connect(callable)` | `Hurtbox.gd` |
 | `player.acceleration` | `player.movement.acceleration` | `curse_glyph.gd` (boss) |
 | `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `force_wave.gd` (boss) |
@@ -21,7 +20,6 @@
 |---|---|---|
 | `shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
 | `blacksmith.gd`, `potion_seller.gd` | Superseded player API; asset paths point to relocated files (`Assets/bombPlaceholder.png` → `Assets/Items/…`, `Assets/plus.png` → `Assets/Hud/…`) | Inventory/combat API + corrected paths |
-| `MainMenu.gd` | `_onready()` is not a Godot callback; title textures point to `Assets/Title*.png` (actual: `Assets/Hud/`) | `_ready()` + corrected paths |
 | The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb `Scenes/Characters/Idle.gd` (its activate state, currently misplaced) |
 | Legacy inventory UI (`Scenes/Items/inventory.gd`, `slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
 

@@ -8,7 +8,8 @@
    - `BREAKING CHANGE:` footer when applicable
    - types: `feat`, `fix`, `refactor`, `docs`, `chore`, `style`, `perf`, `test`, `assets`
 3. **Present the drafted message and stop. Do not commit until the user approves.**
-4. After approval: commit, then update the memory bank (see `memory-bank.md`).
+4. After approval, in one uninterrupted sequence with no second approval: commit the code work, update the memory bank (see `memory-bank.md`), then commit those updates as a `docs(memory):` commit.
+   - Exception: convention changes in `systemPatterns.md` / `techContext.md` that are inseparable from the code introducing them ride in that code commit.
 5. **Never push to the remote unless explicitly instructed.**
 
 ## Staging discipline
