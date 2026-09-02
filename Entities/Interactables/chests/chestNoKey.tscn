@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://rvpiujtilw1o"]
+
+[ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://Entities/Interactables/chests/chestNoKey.gd" id="1_5bdnu"]
+[ext_resource type="Texture2D" uid="uid://bs30ohxi52fd2" path="res://Assets/Objects/CHEST.png" id="2_x4dhw"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Systems/Interaction/Interaction_area.tscn" id="3_wswgy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sh3du"]
+size = Vector2(120, 120)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uvggd"]
+radius = 230.868
+
+[node name="chest" type="Node2D"]
+scale = Vector2(0.06, 0.06)
+script = ExtResource("1_5bdnu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(10, 10)
+texture = ExtResource("2_x4dhw")
+hframes = 3
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-9.53674e-06, -9.53674e-06)
+shape = SubResource("RectangleShape2D_sh3du")
+
+[node name="InteractionArea" parent="." instance=ExtResource("3_wswgy")]
+collision_layer = 16
+collision_mask = 1
+action_name = "Open"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("CircleShape2D_uvggd")
