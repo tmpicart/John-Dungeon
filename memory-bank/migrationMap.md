@@ -5,34 +5,29 @@
 ## API Migration Table
 | Legacy (superseded) | Target | Seen in |
 |---|---|---|
-| `player.coins` / `spendCoin(n)` | `player.inventory.coins` + a spend method on inventory | `shop_2.gd` |
-| `player.keys` / `useKey()` | `player.inventory.keys` + inventory consumption method | `keyDoor.gd`, `chest.gd` |
-| `player.bombs` / `addPotion()` | `player.inventory.bombs` / potions API | `blacksmith.gd`, `potion_seller.gd`, `potion.gd` |
-| `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `blacksmith.gd` |
-| `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `potion_seller.gd` |
+| `player.coins` / `spendCoin(n)` | `player.inventory.coins` + a spend method on inventory | `Systems/Shop/shop_2.gd` |
+| `player.keys` / `useKey()` | `player.inventory.keys` + inventory consumption method | `Entities/Interactables/doors/keyDoor.gd`, `Entities/Interactables/chests/chest.gd` |
+| `player.bombs` / `addPotion()` | `player.inventory.bombs` / potions API | `Entities/NPCs/blacksmith.gd`, `Entities/NPCs/potion_seller.gd`, `Entities/Interactables/pickups/potion.gd` |
+| `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `Entities/NPCs/blacksmith.gd` |
+| `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `Entities/NPCs/potion_seller.gd` |
 | `Global.time_in_seconds` | Not defined anywhere — replace with a typed constant or timer helper | Door, keyDoor, bosskeyDoor, chest, bossKey, `Beam.gd` (boss) |
-| `connect("signal", method)` string form | `signal.connect(callable)` | `Hurtbox.gd` |
-| `player.acceleration` | `player.movement.acceleration` | `curse_glyph.gd` (boss) |
-| `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `force_wave.gd` (boss) |
+| `connect("signal", method)` string form | `signal.connect(callable)` | `Entities/Enemies/Hurtbox.gd` |
+| `player.acceleration` | `player.movement.acceleration` | `Entities/Projectiles/curse_glyph.gd` (boss) |
+| `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `Entities/Projectiles/force_wave.gd` (boss) |
 
 ## Entities Awaiting Rewiring
 | Entity | Note | Target |
 |---|---|---|
-| `shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
-| `blacksmith.gd`, `potion_seller.gd` | Superseded player API; asset paths point to relocated files (`Assets/bombPlaceholder.png` → `Assets/Items/…`, `Assets/plus.png` → `Assets/Hud/…`) | Inventory/combat API + corrected paths |
-| The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb `Scenes/Characters/Idle.gd` (its activate state, currently misplaced) |
-| Legacy inventory UI (`Scenes/Items/inventory.gd`, `slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
+| `Systems/Shop/shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
+| `Entities/NPCs/blacksmith.gd`, `Entities/NPCs/potion_seller.gd` | Superseded player API; asset paths point to relocated files (`Assets/bombPlaceholder.png` → `Assets/Items/…`, `Assets/plus.png` → `Assets/Hud/…`) | Inventory/combat API + corrected paths |
+| The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb misplaced `Idle.gd` (now beside her in `Entities/Boss/TheSorceress/`) |
+| Legacy inventory UI (`UI/inventory.gd`, `UI/slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
 
 ## Duplicates & Relocations (consolidate during reorganization)
-- `Door.gd` exists in `Scripts/Objects/` and `Scenes/Levels/Objects/` → one canonical door script with key/boss-key variants parameterized
-- Shop scene consolidation: `panel.tscn` / `panel_2.tscn` are the live cards of active `shop_2.tscn`; legacy `shop.tscn` already removed → retire in the R-32 rework
-- Stray media in code folders: `Scenes/Items/KEY.png`, `Scenes/Levels/Objects/BOSS_DOOR.png` + `image.png`, mp3 files under `Scenes/` → `Assets/` (keyDoor already points at the Assets copy of `image.png`; the Scenes copy is unreferenced)
-- `Scripts/Dialogue/NPC_Dialog.tscn` (a scene under Scripts/) → relocate with the dialogue system
-- The real summon state `Scripts/Projectiles and Effects/EnemySummon.gd` (a state misplaced among projectiles) → relocate into the necromancer bundle (R-10)
-- Tileset double-vendored: `Assets/Tilesets/Dungeon_Tileset.png` ≡ `Assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png` — byte-identical, distinct uids; rooms split across both copies (ChestRoomLeft/Right, HallWay, HallWayVert → Tilesets; MultiRoom, Starting Room, torch.tscn → pack copy) → repoint to one copy, delete the other (R-10)
-- Door sound double-vendored: `Assets/Sounds/dorm-door-opening-6038.mp3` ≡ `Scenes/Levels/Objects/dorm-door-opening-6038.mp3` (keyDoor.tscn → Assets copy; BossDoor.tscn → Scenes copy) → repoint BossDoor, delete the stray (R-10)
-- `Scenes/Characters/EnemyStun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
-- Naming sweep: spaces in file names (`State Control.gd`, `Summon Effect.gd`, `Force Current.gd`, `Magic Missile.gd`, vendored pack art like `Flying eye/`, `Take Hit.png`, `All Characters.png`), `Doungeon.tscn` spelling — rename via the Godot editor once the folder structure is decided
+- `Door.gd` duplicate: live script at `Entities/Interactables/doors/Door.gd` (used by `Door.tscn`, `Door2.tscn`); unreferenced legacy copy at `Entities/Interactables/Door.gd` → one canonical door script with key/boss-key variants parameterized (R-31)
+- Shop scene consolidation: `Systems/Shop/panel.tscn` / `panel_2.tscn` are the live cards of active `Systems/Shop/shop_2.tscn` → retire in the R-32 rework
+- `Entities/Enemies/EnemyStun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
+- Naming sweep: spaces in file names (`Systems/StateCore/State Control.gd`, `Entities/Projectiles/Summon Effect.gd`, `Entities/Boss/TheSorceress/Force Current.gd`, `Entities/Boss/TheSorceress/Magic Missile.gd`, vendored pack art like `Flying eye/`, `Take Hit.png`, `All Characters.png`), `Levels/Doungeon.tscn` spelling — `.uid` sidecars travel along; all references updated and verified (R-11)
 
 ## Framework Debt (targeted by `refactorPlan.md`)
 | Issue | Task |
@@ -58,3 +53,4 @@
 | Boss `Summon.gd` scans legacy `TileMap` per summon + debug prints | R-24 |
 | No player input freeze during dialogue/shop modals | R-32 / R-33 |
 | File/class mismatch `EnemyAttackFlailSkeleton.gd` ↔ `EnemyChaseFlailSkeleton` | R-11 |
+| Sorceress-unique projectile hitbox nodes (`energy_star`, `force_wave`, `intervention_light`, boss melee hitbox in `the_sorceress.tscn`) | Legacy `Hitbox.gd`/`projectile_hitbox.gd` deleted 2025-04; nodes load scriptless — physics layers carry hitbox duty now; repaired when the Sorceress migrates | R-24 |

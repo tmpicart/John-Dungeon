@@ -11,8 +11,9 @@ The user works directly in the Godot editor; the agent works through code and th
 - Manual scene changes by the user take precedence over agent-side assumptions; re-read scenes before editing if the user reports recent editor work.
 
 ## Renames & moves
-- Prefer file renames/moves inside the Godot editor (auto-updates references and uid remaps).
-- If done via terminal/filesystem: update every reference (scenes, scripts, autoloads, `project.godot`) and move each `.uid` sidecar together with its file. Flag renames of nodes that state machines reference by name (see `systemPatterns.md` trade-offs).
+- Terminal moves/renames are normal practice: `git mv` the file, move its `.uid`/`.import` sidecar with it, then rewrite every reference (scenes, scripts, autoloads, `project.godot`) and verify with a grep sweep. Stage the reference rewrites together with the moves.
+- The Godot editor's FileSystem dock performs the same rewrites automatically — either route is fine.
+- Flag renames of nodes that state machines reference by name (see `systemPatterns.md` trade-offs).
 
 ## Verification loop
 - After script or scene changes, the user runs the project in the editor; treat their runtime feedback as the test result. There is no headless test suite — never claim runtime verification without it.
