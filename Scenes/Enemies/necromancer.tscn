@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://ci70mpdu1yk5g"]
+[gd_scene format=3 uid="uid://ci70mpdu1yk5g"]
 
 [ext_resource type="Script" uid="uid://dgxbx852w1ogj" path="res://Scripts/Enemies/Necromancer/necromancer.gd" id="1_pwncg"]
 [ext_resource type="Texture2D" uid="uid://k5puvnbpg420" path="res://Assets/Enemies/ENEMY_NECROMANCER.png" id="2_0u5aw"]
@@ -273,7 +273,7 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
-[node name="Necromancer" type="CharacterBody2D" groups=["Enemies"]]
+[node name="Necromancer" type="CharacterBody2D" unique_id=862063401 groups=["Enemies"]]
 y_sort_enabled = true
 scale = Vector2(0.75, 0.75)
 collision_layer = 2
@@ -282,7 +282,7 @@ motion_mode = 1
 script = ExtResource("1_pwncg")
 HP = 5
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1514341465]
 material = SubResource("ShaderMaterial_f7sk2")
 position = Vector2(0, -15)
 texture = ExtResource("2_0u5aw")
@@ -290,20 +290,20 @@ hframes = 17
 vframes = 2
 frame = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1702155895]
 show_behind_parent = true
 position = Vector2(0, -12)
 shape = SubResource("CapsuleShape2D_pdttr")
 
-[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+[node name="State Control" type="Node" parent="." unique_id=1746836453 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("4_f2shu")
 initial_state = NodePath("EnemyIdle")
 
-[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyIdle" type="Node" parent="State Control" unique_id=654133669 node_paths=PackedStringArray("enemy")]
 script = ExtResource("5_l3tat")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
+[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
 script = ExtResource("6_eko0r")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
@@ -311,27 +311,27 @@ navigation_agent = NodePath("../../NavigationAgent2D")
 chase_drop_distance = 300
 attempt_attack_range = 200
 
-[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("rayCast", "enemy")]
+[node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("rayCast", "enemy")]
 script = ExtResource("7_woxk7")
 projectile = ExtResource("8_ctycn")
 rayCast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 
-[node name="attack_cooldown" type="Timer" parent="State Control/EnemyAttack"]
+[node name="attack_cooldown" type="Timer" parent="State Control/EnemyAttack" unique_id=1477868263]
 wait_time = 2.0
 one_shot = true
 
-[node name="EnemySummon" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("enemy")]
 script = ExtResource("9_vb21g")
 enemy = NodePath("../..")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 
-[node name="summon_cooldown" type="Timer" parent="State Control/EnemySummon"]
+[node name="summon_cooldown" type="Timer" parent="State Control/EnemySummon" unique_id=632023049]
 wait_time = 10.0
 one_shot = true
 
-[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent", "rayCast")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("enemy", "navigation_agent", "rayCast")]
 script = ExtResource("12_f46sl")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
@@ -340,45 +340,42 @@ retreat_distance = 125
 wall_avoid_distance = 50
 rayCast = NodePath("../../AimRaycast")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_yixv0")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1493848902]
+libraries/ = SubResource("AnimationLibrary_yixv0")
 
-[node name="AimRaycast" type="RayCast2D" parent="."]
+[node name="AimRaycast" type="RayCast2D" parent="." unique_id=1980064671]
 target_position = Vector2(300, 0)
 collision_mask = 7
 
-[node name="Hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=2019809483]
 collision_layer = 256
 collision_mask = 32
 script = ExtResource("13_f46sl")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=136007756]
 position = Vector2(0, -12)
 scale = Vector2(0.5, 0.5)
 shape = SubResource("CapsuleShape2D_to1xr")
 debug_color = Color(0, 1, 0, 0.419608)
 
-[node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="death_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1009836459]
 stream = SubResource("AudioStreamRandomizer_jyny8")
 volume_db = 6.0
 
-[node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="walk_sfx" type="AudioStreamPlayer2D" parent="." unique_id=490794349]
 position = Vector2(0, -2)
 stream = SubResource("AudioStreamRandomizer_m1200")
 volume_db = -10.0
 
-[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="." unique_id=620185060]
 stream = SubResource("AudioStreamRandomizer_nfh73")
 volume_db = -5.0
 
-[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="." unique_id=123235599]
 
-[node name="summon_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="summon_sfx" type="AudioStreamPlayer2D" parent="." unique_id=331029290]
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-debug_enabled = true
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1509397695]
 
 [connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
 [connection signal="timeout" from="State Control/EnemySummon/summon_cooldown" to="State Control/EnemySummon" method="_on_summon_cooldown_timeout"]
