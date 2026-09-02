@@ -15,7 +15,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_44hk2")
 
-[node name="John Duoungeon GUy" type="Sprite2D" parent="."]
+[node name="TitleCard" type="Sprite2D" parent="."]
 position = Vector2(996, 364)
 scale = Vector2(0.775238, 0.716)
 texture = ExtResource("2_aet3l")
