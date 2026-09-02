@@ -19,7 +19,7 @@ func handle_input(event: InputEvent):
 		Global.player.inventory.use_potion()
 		
 	if event.is_action_pressed("quit"):
-		get_tree().change_scene_to_file("res://UI/MainMenu.tscn")
+		get_tree().change_scene_to_file("res://UI/main_menu.tscn")
 
 # Called every physics frame (movement is handled here)
 func Physics_Update(delta: float):

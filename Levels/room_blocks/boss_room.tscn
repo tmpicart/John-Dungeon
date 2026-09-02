@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://dgiujaj1xoyn7"]
 
-[ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/Tilesets/TILESET_DUNGEON.png" id="1_gp13s"]
-[ext_resource type="Script" uid="uid://5coqm14khml8" path="res://Levels/room_blocks/BOSSROOM.gd" id="1_vks44"]
+[ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://Assets/tilesets/tileset_dungeon.png" id="1_gp13s"]
+[ext_resource type="Script" uid="uid://5coqm14khml8" path="res://Levels/room_blocks/boss_room.gd" id="1_vks44"]
 [ext_resource type="PackedScene" uid="uid://rhhukbmueh53" path="res://Entities/Boss/TheSorceress/the_sorceress.tscn" id="2_h5iji"]
-[ext_resource type="PackedScene" uid="uid://bps0k3jhyu0ia" path="res://Entities/Interactables/doors/NoOPEN.tscn" id="4_tgjfn"]
+[ext_resource type="PackedScene" uid="uid://bps0k3jhyu0ia" path="res://Entities/Interactables/doors/no_open.tscn" id="4_tgjfn"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_amkkw"]
 texture = ExtResource("1_gp13s")

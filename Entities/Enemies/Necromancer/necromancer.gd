@@ -1,4 +1,4 @@
-extends "res://Entities/Enemies/BaseEnemy.gd"
+extends "res://Entities/Enemies/base_enemy.gd"
 
 var retreat = false
 

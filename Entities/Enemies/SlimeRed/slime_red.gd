@@ -1,4 +1,4 @@
-extends "res://Entities/Enemies/BaseEnemy.gd"
+extends "res://Entities/Enemies/base_enemy.gd"
 
 func _physics_process(_delta):
 	if is_dead or is_hit:

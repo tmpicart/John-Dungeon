@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://drxv8fgohuj1r"]
 
-[ext_resource type="Script" uid="uid://bjuyo1kg8pdb8" path="res://Entities/Player/Weapon.gd" id="1_bqjge"]
-[ext_resource type="Texture2D" uid="uid://cpxo8yur1wbhq" path="res://Assets/Items/WEAPONS.png" id="2_fx64o"]
-[ext_resource type="AudioStream" uid="uid://eutxxirj2smr" path="res://Assets/Sounds/Player/Attack/sword-sound-2-36274.mp3" id="4_p3bgi"]
-[ext_resource type="AudioStream" uid="uid://mjhe2sm8irvx" path="res://Assets/Sounds/Player/Attack/Organic_Whoosh_14.wav" id="5_wulm2"]
-[ext_resource type="AudioStream" uid="uid://bsmrclffkkiwa" path="res://Assets/Sounds/Player/Attack/724716__greyfeather__sword-slash-energy-wave.wav" id="5_ycqkl"]
+[ext_resource type="Script" uid="uid://bjuyo1kg8pdb8" path="res://Entities/Player/weapon.gd" id="1_bqjge"]
+[ext_resource type="Texture2D" uid="uid://cpxo8yur1wbhq" path="res://Assets/items/weapons.png" id="2_fx64o"]
+[ext_resource type="AudioStream" uid="uid://eutxxirj2smr" path="res://Assets/sounds/player/attack/sword_sound_2_36274.mp3" id="4_p3bgi"]
+[ext_resource type="AudioStream" uid="uid://mjhe2sm8irvx" path="res://Assets/sounds/player/attack/organic_whoosh_14.wav" id="5_wulm2"]
+[ext_resource type="AudioStream" uid="uid://bsmrclffkkiwa" path="res://Assets/sounds/player/attack/724716_greyfeather_sword_slash_energy_wave.wav" id="5_ycqkl"]
 
 [sub_resource type="Animation" id="Animation_ku3nf"]
 length = 0.001

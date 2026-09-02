@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://belnckp0vvtv"]
 
-[ext_resource type="Texture2D" uid="uid://coyng8st7lxvy" path="res://Assets/Tilesets/Dungeon_Tileset.png" id="1_vctgl"]
+[ext_resource type="Texture2D" uid="uid://coyng8st7lxvy" path="res://Assets/tilesets/dungeon_tileset.png" id="1_vctgl"]
 [ext_resource type="PackedScene" uid="uid://cghx8ibvkewpx" path="res://Entities/Interactables/chests/chest.tscn" id="2_iis2l"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yst0j"]

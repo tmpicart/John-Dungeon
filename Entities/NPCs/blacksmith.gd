@@ -6,13 +6,13 @@ extends Node2D
 
 func _ready():
 	interaction_area.interact = Callable(self, "_on_interact")
-	get_node("NPC Dialog").textFile = "res://Systems/Dialogue/smithDialog1.txt"
+	get_node("NPC Dialog").textFile = "res://Systems/Dialogue/smith_dialog_1.txt"
 	get_node("Shop2").cost1 = 1
 	get_node("Shop2").cost2 = 5
 	get_node("Shop2").item1 = "Bomb"
 	get_node("Shop2").item2 = "Sword lvl+"
-	get_node("Shop2").imgfile = "res://Assets/bombPlaceholder.png"
-	get_node("Shop2").imgfile2 = "res://Assets/WEAPONS.png"
+	get_node("Shop2").imgfile = "res://Assets/items/bomb_placeholder.png"
+	get_node("Shop2").imgfile2 = "res://Assets/items/weapons.png"
 	get_node("Shop2").max1 = 4
 	
 func items1():

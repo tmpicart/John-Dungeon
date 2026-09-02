@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bps0k3jhyu0ia"]
 
-[ext_resource type="Texture2D" uid="uid://cj8vn420xqnre" path="res://Assets/Objects/Eli Door Open.png" id="2_juqpu"]
+[ext_resource type="Texture2D" uid="uid://cj8vn420xqnre" path="res://Assets/objects/eli_door_open.png" id="2_juqpu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nodh8"]
 size = Vector2(20, 15)

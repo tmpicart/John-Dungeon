@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://c8882waks7p3i"]
 
 [ext_resource type="Script" uid="uid://cv1b1q7froo8i" path="res://Entities/Projectiles/curse_glyph.gd" id="1_7fpou"]
-[ext_resource type="Texture2D" uid="uid://b3srp2bju2ax8" path="res://Assets/Effects/Retro Impact Effect Pack 3 B.png" id="2_xfxdw"]
+[ext_resource type="Texture2D" uid="uid://b3srp2bju2ax8" path="res://Assets/effects/retro_impact_effect_pack_3_b.png" id="2_xfxdw"]
 
 [sub_resource type="Animation" id="Animation_dg72q"]
 resource_name = "Play"

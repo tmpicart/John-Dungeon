@@ -1,10 +1,10 @@
 [gd_scene load_steps=14 format=3 uid="uid://r5aogxe6cokx"]
 
-[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/Effects/on_hit_flash.gdshader" id="1_cwkhn"]
-[ext_resource type="Texture2D" uid="uid://dg4xyqxl33fsj" path="res://Assets/Items/shield.png" id="2_tc453"]
+[ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://Assets/effects/on_hit_flash.gdshader" id="1_cwkhn"]
+[ext_resource type="Texture2D" uid="uid://dg4xyqxl33fsj" path="res://Assets/items/shield.png" id="2_tc453"]
 [ext_resource type="Script" uid="uid://d2jgjiyvi5h7b" path="res://Entities/Player/shield.gd" id="3_mxq6r"]
-[ext_resource type="AudioStream" uid="uid://b7dm0qarbxbig" path="res://Assets/Sounds/Player/Shield/126491__ayavaron__key_drop-03-shuffle.wav" id="4_u7x5c"]
-[ext_resource type="AudioStream" uid="uid://b28k0d573exg7" path="res://Assets/Sounds/Player/Shield/334302__sojan__coinflic6.mp3" id="5_7e203"]
+[ext_resource type="AudioStream" uid="uid://b7dm0qarbxbig" path="res://Assets/sounds/player/shield/126491_ayavaron_key_drop_03_shuffle.wav" id="4_u7x5c"]
+[ext_resource type="AudioStream" uid="uid://b28k0d573exg7" path="res://Assets/sounds/player/shield/334302__sojan__coinflic6.mp3" id="5_7e203"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_267t3"]
 shader = ExtResource("1_cwkhn")

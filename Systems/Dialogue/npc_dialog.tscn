@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bh78n0fysivyr"]
 
-[ext_resource type="Script" uid="uid://1r8tupv0qxni" path="res://Systems/Dialogue/NPC_Dialog.gd" id="1_nqmqu"]
-[ext_resource type="Texture2D" uid="uid://72cf32qqgdgy" path="res://Assets/Hud/dialogue_box.png" id="2_0vsf6"]
+[ext_resource type="Script" uid="uid://1r8tupv0qxni" path="res://Systems/Dialogue/npc_dialog.gd" id="1_nqmqu"]
+[ext_resource type="Texture2D" uid="uid://72cf32qqgdgy" path="res://Assets/hud/dialogue_box.png" id="2_0vsf6"]
 
 [node name="NPC Dialog" type="CanvasLayer"]
 script = ExtResource("1_nqmqu")

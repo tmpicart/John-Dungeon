@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bqbgrqlrxc8io"]
 
-[ext_resource type="Texture2D" uid="uid://cgq2pdlvvolfx" path="res://Assets/Objects/WallTorchH.png" id="1_s7llp"]
+[ext_resource type="Texture2D" uid="uid://cgq2pdlvvolfx" path="res://Assets/objects/wall_torch_h.png" id="1_s7llp"]
 
 [sub_resource type="Animation" id="Animation_b87c4"]
 resource_name = "Idle"

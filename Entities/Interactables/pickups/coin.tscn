@@ -1,14 +1,14 @@
 [gd_scene load_steps=13 format=3 uid="uid://cqbfd3ribv0bg"]
 
 [ext_resource type="Script" uid="uid://ctb6md8echaht" path="res://Entities/Interactables/pickups/coin.gd" id="1_80edu"]
-[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://Systems/Interaction/Interaction_area.gd" id="2_tgf2n"]
-[ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_1.png" id="3_cbks3"]
-[ext_resource type="Texture2D" uid="uid://cq260knfg0d18" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_2.png" id="4_qgs5s"]
-[ext_resource type="Texture2D" uid="uid://cqd1dn42cg8xi" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_3.png" id="5_h0fnp"]
-[ext_resource type="Texture2D" uid="uid://cewg4bp1sbkto" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/coin/coin_4.png" id="6_lai3r"]
-[ext_resource type="AudioStream" uid="uid://cn6gltcoplg0p" path="res://Assets/Sounds/Coin/Pickup_Coin.wav" id="7_iorls"]
-[ext_resource type="AudioStream" uid="uid://d3wq5qfgqpy8i" path="res://Assets/Sounds/Coin/Pickup_Coin2.wav" id="8_s3you"]
-[ext_resource type="AudioStream" uid="uid://dkaxwguon50nr" path="res://Assets/Sounds/Coin/Pickup_Coin3.wav" id="9_s1y4p"]
+[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://Systems/Interaction/interaction_area.gd" id="2_tgf2n"]
+[ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://Assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_1.png" id="3_cbks3"]
+[ext_resource type="Texture2D" uid="uid://cq260knfg0d18" path="res://Assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_2.png" id="4_qgs5s"]
+[ext_resource type="Texture2D" uid="uid://cqd1dn42cg8xi" path="res://Assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_3.png" id="5_h0fnp"]
+[ext_resource type="Texture2D" uid="uid://cewg4bp1sbkto" path="res://Assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_4.png" id="6_lai3r"]
+[ext_resource type="AudioStream" uid="uid://cn6gltcoplg0p" path="res://Assets/sounds/coin/pickup_coin.wav" id="7_iorls"]
+[ext_resource type="AudioStream" uid="uid://d3wq5qfgqpy8i" path="res://Assets/sounds/coin/pickup_coin_2.wav" id="8_s3you"]
+[ext_resource type="AudioStream" uid="uid://dkaxwguon50nr" path="res://Assets/sounds/coin/pickup_coin_3.wav" id="9_s1y4p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0vsgq"]
 radius = 5.0

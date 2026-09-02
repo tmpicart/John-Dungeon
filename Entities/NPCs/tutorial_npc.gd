@@ -5,7 +5,7 @@ extends Node2D
 
 func _ready():
 	interaction_area.interact = Callable(self, "_on_interact")
-	get_node("NPC Dialog").textFile = "res://Systems/Dialogue/Tutorial.txt"
+	get_node("NPC Dialog").textFile = "res://Systems/Dialogue/tutorial.txt"
 	
 func _on_interact():
 	get_node("NPC Dialog").talk()

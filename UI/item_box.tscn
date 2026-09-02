@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bgfv24qsybs1e"]
 
-[ext_resource type="Texture2D" uid="uid://dhcuo8omhfujn" path="res://Assets/2D Pixel Dungeon Asset Pack/items and trap_animation/flasks/flasks_1_1.png" id="1_aj6wm"]
+[ext_resource type="Texture2D" uid="uid://dhcuo8omhfujn" path="res://Assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/flasks/flasks_1_1.png" id="1_aj6wm"]
 
 [node name="Panel" type="Panel"]
 custom_minimum_size = Vector2(40, 16)

@@ -1,9 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://bxbick14tkq7a"]
+[gd_scene load_steps=10 format=3 uid="uid://06fson1afemk"]
 
-[ext_resource type="Script" uid="uid://g4dr0wb8d3yr" path="res://Entities/Interactables/doors/bosskeyDoor.gd" id="1_4kna6"]
-[ext_resource type="Texture2D" uid="uid://bp2uakrp73hja" path="res://Assets/Objects/BOSS_DOOR.png" id="2_8b1q1"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Systems/Interaction/Interaction_area.tscn" id="3_825ch"]
-[ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://Assets/Sounds/dorm-door-opening-6038.mp3" id="4_qbe6s"]
+[ext_resource type="Script" uid="uid://b841tyqchsknk" path="res://Entities/Interactables/doors/key_door.gd" id="1_jb23n"]
+[ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://Assets/objects/image.png" id="2_34n7f"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://Systems/Interaction/interaction_area.tscn" id="3_eki16"]
+[ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://Assets/sounds/dorm_door_opening_6038.mp3" id="4_5ta5b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xqm0d"]
 size = Vector2(20, 45)
@@ -73,24 +73,24 @@ _data = {
 }
 
 [node name="KeyDoor" type="Node2D"]
-script = ExtResource("1_4kna6")
+script = ExtResource("1_jb23n")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1, -1)
-texture = ExtResource("2_8b1q1")
+texture = ExtResource("2_34n7f")
 hframes = 3
+vframes = 4
 
 [node name="Label" type="Label" parent="."]
-offset_left = 29.0
-offset_top = 35.0
-offset_right = 223.0
-offset_bottom = 58.0
-rotation = -3.14159
+offset_left = -29.0
+offset_top = -19.0
+offset_right = 161.0
+offset_bottom = 4.0
 scale = Vector2(0.3, 0.3)
 text = "You Need a Key To Open!"
 horizontal_alignment = 1
 
-[node name="InteractionArea" parent="." instance=ExtResource("3_825ch")]
+[node name="InteractionArea" parent="." instance=ExtResource("3_eki16")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 position = Vector2(-1, -2.5)
@@ -109,4 +109,4 @@ libraries = {
 }
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_qbe6s")
+stream = ExtResource("4_5ta5b")
