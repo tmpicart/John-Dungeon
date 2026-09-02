@@ -1,0 +1,45 @@
+# Refactor Plan — Restructure & Migration
+
+> **Purpose:** The ordered migration task list: restructure the project and move all systems onto the adopted architecture while preserving game feel. Feel improvements are allowed only where the code is already being touched; features go to `devPlan.md`.
+> **Lifecycle:** Tasks are deleted on completion (noted in `progress.md`); keep this file under ~80 lines. Rules: `.clinerules/log-hygiene.md`.
+
+## Adopted Decisions (summary — details in `systemPatterns.md`)
+Hybrid folder structure · typed state transitions · shared states + config exports + hooks · signal-driven animation · mouse-driven `ShopData` shop · JSON dialogue + `PlayerProgress` on player · handcrafted-first, procgen-ready · boss 1:1 migration (redesign in `devPlan.md`) · opportunistic feel fixes only.
+
+## Phase R0 — Hygiene (no dependencies; quick wins)
+| ID | Task | Notes |
+|---|---|---|
+| R-01 | Dead-file purge | Empty `Scripts/Dialogue/tutorial`; extension-less `walk1–4` audio; orphan `Scripts/States/EnemySummon.gd`; orphan `EnemyRetreatNecromancer.gd`; orphans `shopGuy.*`, `Scenes/Shop/shop.tscn`, `blacksmith_remastered.tscn`; extract-or-remove `Scenes/Weapons/Monsters_Creatures_Fantasy.zip` |
+| R-02 | Debug-spam removal | `print()` calls (Hurtbox, chest, boss states, summon); empty `_process` stubs |
+| R-03 | MainMenu fix | `_onready()` → `_ready()`; use the scene's correctly-pathed title textures; rename the "John Duoungeon GUy" node |
+
+## Phase R1 — Structure & naming (blocks file work in R2–R4)
+| ID | Task | Notes |
+|---|---|---|
+| R-10 | Adopt hybrid tree | Editor-driven moves (uid-safe): stray media → `Assets/`, `NPC_Dialog.tscn` → `Systems/Dialogue/`, real summon state → necromancer bundle; scenes and scripts stop mixing folders |
+| R-11 | snake_case sweep | Remove spaces in file names; PascalCase scripts → snake_case; rename `Doungeon.tscn`; `.uid` sidecars move with files; all references updated and verified |
+
+## Phase R2 — Combat & AI framework
+| ID | Task | Notes |
+|---|---|---|
+| R-20 | State core rebuild | Typed transitions (`@export var next_state: State`, validated in `_ready()`); fix attack/block-from-idle input filter; states receive owner refs instead of `Global.player`; `Global` null-cache hardened; normalize per-tick velocity decay (Attack/Block) |
+| R-21 | Player subsystem API | `spend_coins` / `consume_key` / `add_potion` on `PlayerInventory`; weapon upgrade exposed via combat; public API documented; shrink-safe heart bar |
+| R-22 | Enemy anim/logic separation | Signal-driven, interruption-safe flow (hit/stun/death cancel attacks); fix double-delta velocities; standardize attack cooldowns in base; knockback-ready damage signature; red-slime pounce fix; `time_scale` restore guard; `arcane_arrow` screen-exit cleanup; unify parry-stun into the interrupt flow |
+| R-23 | Enemy state configuration | Ranges/speeds/cooldowns become exports; behavior hooks replace copy-paste override states |
+| R-24 | Boss migration (1:1) | Sorceress onto `BaseEnemy` + shared state core; absorb misplaced `Idle.gd`; phase-2 as reusable layer; fight design preserved (redesign → `devPlan.md`); boss projectile fixes (per-frame timers, delta units, `Stars` `_ready()` hack, `Beam` cleanup, `Summon` scan) |
+
+## Phase R3 — Interaction & UI systems (after R2)
+| ID | Task | Notes |
+|---|---|---|
+| R-30 | Interactable framework | `Interactable` base (prompt, enabled, one-shot feedback); InteractionManager: cached player, no per-frame sort; consolidate `pickup`/`Interact` inputs |
+| R-31 | Unified doors | One door scene/script with `lock_type` (none/key/boss_key) and defined timings; retire the 3 door scripts + duplicate `Door.gd` |
+| R-32 | Shop rework | Mouse cards (hover + click), N items via `ShopData` resource, purchases through `PlayerInventory`; close on Esc/walk-away; retire legacy shop scenes; freeze player input while open |
+| R-33 | Dialogue system | JSON dialogue (pages, stage transitions); `PlayerProgress` on player (flags + per-NPC stages); correct stale Tutorial text (Tab → Shift); freeze player input during dialogue |
+
+## Phase R4 — World & content (after R2–R3)
+| ID | Task | Notes |
+|---|---|---|
+| R-40 | Room-block standard | `TileMapLayer`-only, shared navigation, door anchors, spawn markers, HUD at level root (remove per-room HUD) |
+| R-41 | Floor1 parity rebuild | Reassemble original content from standardized blocks: enemies, NPCs, shop, key/boss-key progression |
+| R-42 | Boss room encounter flow | Trigger, lock/unlock, victory handling; remove `Global.door` flag coupling |
+| R-43 | Procgen-ready foundations | Room metadata (exits, difficulty) + spawn markers only; generation itself is `devPlan.md` D-6 |

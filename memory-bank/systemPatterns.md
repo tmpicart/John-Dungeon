@@ -43,10 +43,10 @@ Signal-driven: `MainScene.gd` wires player subsystem signals to `heart_bar` and 
 | Scene edits | `.tscn`/`.tres` are text and may be edited surgically (see `.clinerules/godot-collaboration.md`) |
 | New enemy | Extend `BaseEnemy.gd`; reuse base states; add override states only for unique behavior; wire nav agent + audio in the scene |
 | New interactable | `Node2D` + `InteractionArea`; assign the `interact` Callable in `_ready`; keep effects data-driven where possible |
+| Folder structure | **Hybrid** — feature bundles under `Entities/` (Player, Enemies, Boss, NPCs, Projectiles, Interactables: scene + scripts + states together); type-based `Systems/` (StateCore, Interaction, Dialogue, Shop), `UI/`, `Levels/` (incl. `room_blocks/`), `Assets/`; the `Global` autoload lives in `Systems/Global/` |
+| State transitions | Typed references — states export direct `State` references assigned in the Inspector and validated in `_ready()`; no string-matched node names (target: R-20; string transitions remain until migrated) |
+| Enemy state customization | Shared states + exported configuration + hook methods; subclass copy-paste overrides are not used for new enemies (target: R-23) |
+| Animation coupling | Signal-driven flow (`animation_finished`, Call Method Tracks for hit windows/sfx); polling waits are superseded (target: R-22) |
 
 ## Known Trade-offs (accepted for now)
-- State transitions use string node names ("MoveState") — stable but rename-sensitive; a name-safe transition API is a possible later improvement.
-- "Player" group lookups coexist with `Global.player`; the target access path is `Global.player`.
-
-## Pending Decisions
-- **Project folder structure:** type-based (`Scripts/`, `Scenes/`, `Assets/`) vs feature-based (entity bundles) vs hybrid — must be decided before the file reorganization phase.
+- "Player" group lookups coexist with `Global.player`; the target access path is `Global.player` (R-20).

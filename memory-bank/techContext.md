@@ -28,7 +28,7 @@ Render layers 1–2: Player, Enemies.
 ## Input Map
 `right/left/up/down` (WASD) · `attack` (LMB) · `block` (RMB) · `dash` (Space) · `pickup` (E) · `Interact` (F) · `bomb` (Q) · `potion` (Shift) · `quit` (Esc)
 
-> Note: `pickup` (E) and `Interact` (F) coexist — consolidate during the interaction refactor.
+> Note: `pickup` (E) is currently unwired — reserved for future use, do not remove. Binding consolidation (with `Interact`) happens during the interaction refactor (R-30).
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`
