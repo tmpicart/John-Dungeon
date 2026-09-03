@@ -29,3 +29,4 @@
 - 2026-09-02 | refactor | R-11 snake_case sweep: 744 paths renamed (29 asset folders, ~140 assets, 78 scripts/scenes + .uid sidecars, dialogue txt), 2 file/class mismatches fixed, 543 path refs rewritten; all 5 verification gates green (67d4588).
 - 2026-09-02 | refactor | R-12 folder snake_case: 22 game folders incl. `Assets`→`assets` lowercased per Godot docs; ~850 paths + 355 reference files rewritten; gates green + silent headless run (cc1df32).
 - 2026-09-03 | refactor | R-20 state core rebuild: typed+validated transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, idle-state deletion, Sorceress Idle.enemy wiring; 41 files (ba5246a).
+- 2026-09-03 | fix | Player movement feel: rates rescaled for the single tick (accel 1000 / friction 800 / decay 800), dash normalized to fixed `dash_speed` 200; user-verified (80a8cbe).
