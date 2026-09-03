@@ -9,9 +9,6 @@ enum Direction {
 
 var has_boss_key := false
 
-var _player: Node
-var _door: Node
-
 ## Service-locator access. Re-resolves from the group when the cached reference
 ## is missing or freed (the autoload ready() runs before the main scene loads).
 var player: Node:
@@ -29,3 +26,6 @@ var door: Node:
 		return _door
 	set(value):
 		_door = value
+
+var _player: Node
+var _door: Node

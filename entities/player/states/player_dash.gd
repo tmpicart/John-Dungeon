@@ -8,8 +8,8 @@ func _ready() -> void:
 	player = actor
 
 func enter() -> void:
-	
-	await player.movement.dash() 
+
+	await player.movement.dash()
 	transition_to(next_state)
 
 func physics_update(delta: float) -> void:
