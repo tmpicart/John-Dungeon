@@ -10,7 +10,6 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 | ID | Task | Notes |
 |---|---|---|
 | R-20 | State core rebuild | Typed transitions (`@export var next_state: State`, validated in `_ready()`); fix attack/block-from-idle input filter; states receive owner refs instead of `Global.player`; `Global` null-cache hardened; normalize per-tick velocity decay (Attack/Block) |
-| R-21 | Player subsystem API | `spend_coins` / `consume_key` / `add_potion` on `PlayerInventory`; weapon upgrade exposed via combat; public API documented; shrink-safe heart bar |
 | R-22 | Enemy anim/logic separation | Signal-driven, interruption-safe flow (hit/stun/death cancel attacks); fix double-delta velocities; standardize attack cooldowns in base; knockback-ready damage signature; red-slime pounce fix; `time_scale` restore guard; `arcane_arrow` screen-exit cleanup; unify parry-stun into the interrupt flow |
 | R-23 | Enemy state configuration | Ranges/speeds/cooldowns become exports; behavior hooks replace copy-paste override states |
 | R-24 | Boss migration (1:1) | Sorceress onto `BaseEnemy` + shared state core; absorb misplaced `Idle.gd`; phase-2 as reusable layer; fight design preserved (redesign → `devPlan.md`); boss projectile fixes (per-frame timers, delta units, `Stars` `_ready()` hack, `Beam` cleanup, `Summon` scan); repair her 4 scriptless hitbox nodes (stale legacy `Hitbox.gd`/`projectile_hitbox.gd` — physics layers carry hitboxes now) |

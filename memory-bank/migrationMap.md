@@ -5,12 +5,7 @@
 ## API Migration Table
 | Legacy (superseded) | Target | Seen in |
 |---|---|---|
-| `player.coins` / `spendCoin(n)` | `player.inventory.coins` + a spend method on inventory | `systems/Shop/shop_2.gd` |
-| `player.keys` / `useKey()` | `player.inventory.keys` + inventory consumption method | `entities/Interactables/doors/key_door.gd`, `entities/Interactables/chests/chest.gd` |
-| `player.bombs` / `addPotion()` | `player.inventory.bombs` / potions API | `entities/NPCs/blacksmith.gd`, `entities/NPCs/potion_seller.gd`, `entities/Interactables/pickups/potion.gd` |
-| `player.upgradeWeapon()` | `weapon.upgrade()` via `PlayerCombat` | `entities/NPCs/blacksmith.gd` |
-| `player.set_maxHP(n)` / `player.maxHP` | `player.combat.max_hp` setter (signal already wired) | `entities/NPCs/potion_seller.gd` |
-| `Global.time_in_seconds` | Not defined anywhere — replace with a typed constant or timer helper | door, key_door, boss_key_door, chest, boss_key, `beam.gd` (boss) |
+| `Global.time_in_seconds` | Replace with local timing constants | `entities/boss/the_sorceress/beam.gd` (R-24), unreferenced duplicate `entities/interactables/door.gd` (R-31) |
 | `connect("signal", method)` string form | `signal.connect(callable)` | `entities/Enemies/hurtbox.gd` |
 | `player.acceleration` | `player.movement.acceleration` | `entities/Projectiles/curse_glyph.gd` (boss) |
 | `player.blocking` / `player.take_damage(n)` | `player.combat.blocking` / `player.combat.take_damage(n)` | `entities/Projectiles/force_wave.gd` (boss) |
@@ -18,13 +13,13 @@
 ## Entities Awaiting Rewiring
 | Entity | Note | Target |
 |---|---|---|
-| `systems/Shop/shop_2.gd` | Listens for undefined input actions `buy1`/`buy2`; superseded player API | Defined input actions or an interaction-driven purchase flow |
-| `entities/NPCs/blacksmith.gd`, `entities/NPCs/potion_seller.gd` | Superseded player API (stale asset literals corrected in R-11) | Inventory/combat API |
+| `systems/shop/shop_2.gd` | Purchases rewired onto the inventory API (R-21); `buy1`/`buy2` keys are a temporary bridge | Mouse-card `ShopData` shop retires the script (R-32) |
 | The Sorceress | Standalone pre-framework boss; does not extend `BaseEnemy` | Migrate onto the enemy framework + reusable states; absorb misplaced `idle.gd` (now beside her in `entities/Boss/TheSorceress/`) |
 | Legacy inventory UI (`ui/inventory.gd`, `ui/slot.gd`) | Superseded by `PlayerInventory`; contains indexing bugs | Retire or redesign on the new inventory service |
 
 ## Duplicates & Relocations (consolidate during reorganization)
 - `Door.gd` duplicate: live script at `entities/Interactables/doors/door.gd` (used by `door.tscn`, `door_2.tscn`); unreferenced legacy copy at `entities/Interactables/door.gd` → one canonical door script with key/boss-key variants parameterized (R-31)
+- `entities/interactables/chests/chest.gd` is referenced by no scene — both chest scenes run `chest_no_key.gd`; rewired onto the inventory API in R-21 regardless; retire or make canonical in the chest consolidation (R-31)
 - Shop scene consolidation: `systems/Shop/panel.tscn` / `panel_2.tscn` are the live cards of active `systems/Shop/shop_2.tscn` → retire in the R-32 rework
 - `entities/Enemies/enemy_stun.gd` is unwired — but the parry-stun mechanic is live via `BaseEnemy.stun()` called from `PlayerHurtbox` → keep the file; unify into the interrupt flow (R-22)
 
@@ -35,7 +30,7 @@
 | Polling `wait_for_animation` lock-in guards | R-22 |
 | Double-delta enemy velocities (framerate-dependent) | R-22 |
 | Copy-paste enemy state override classes | R-23 |
-| camelCase/PascalCase identifiers inside scripts (`rayCast`, `textFile`, and remaining per-script findings) — normalize to snake_case / past-tense signals per the GDScript style guide (state-core identifiers `Physics_Update`/`ChangeState` done in R-20) | R-22 / R-23 / R-32 / R-33 |
+| camelCase/PascalCase identifiers (`rayCast`, `textFile`, `openShop`/`closeShop`, chest `Path`/`Inv`) plus class-definitions-order and blank-line-whitespace findings in surgically-touched scripts — normalize to snake_case per the GDScript style guide (state-core identifiers `Physics_Update`/`ChangeState` done in R-20; gdlint re-baselined at 48 findings after R-21) | R-22 / R-23 / R-32 / R-33 |
 | InteractionManager per-frame sort + uncached player lookup | R-30 |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |
