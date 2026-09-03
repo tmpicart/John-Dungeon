@@ -1,5 +1,7 @@
 extends Node2D
 
+const MESSAGE_TIME := 1.0
+
 @onready var interaction_area: InteractionArea = $InteractionArea
 @onready var key = $Key
 @onready var message = $Label
@@ -15,9 +17,7 @@ func _ready():
 func _on_interact():
 	Global.has_boss_key = true
 	sprite.hide()
-	await Global.time_in_seconds
+	await get_tree().create_timer(MESSAGE_TIME).timeout
 	message.show()
-	await Global.time_in_seconds
+	await get_tree().create_timer(MESSAGE_TIME).timeout
 	inter.queue_free()
-	
-	

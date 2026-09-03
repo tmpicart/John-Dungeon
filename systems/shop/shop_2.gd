@@ -39,19 +39,13 @@ func closeShop():
 	$RichTextLabel.visible = false
 	
 func buyitem1():
-	if player.coins >= cost1:
-		player.spendCoin(cost1)
+	if player.inventory.spend_coins(cost1):
 		get_parent().items1()
-	
+
 func buyitem2():
-	if player.coins >= cost2:
-		if upgrade < max1:
-			upgrade += 1
-			player.spendCoin(cost2)
-			get_parent().items2()
-		#player.maxHP += 1
-		#player.HP += 1
-		#player.coins -= cost2
+	if upgrade < max1 and player.inventory.spend_coins(cost2):
+		upgrade += 1
+		get_parent().items2()
 
 func _input(event):
 	if $GridContainer.visible:

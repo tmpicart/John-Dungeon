@@ -1,4 +1,5 @@
 extends Node2D
+class_name PlayerCombat
 
 # Signals
 signal hp_changed(current_hp: int)
@@ -85,6 +86,12 @@ func heal(amount: int):
 		return
 	hp = clamp(hp + amount, 0, max_hp)
 	hp_changed.emit(hp)
+
+# --- Weapon upgrade ---
+## Raises the weapon one level and resyncs the cached damage.
+func upgrade_weapon() -> void:
+	weapon.upgrade()
+	damage = weapon.damage
 
 # --- Death ---
 func kill():

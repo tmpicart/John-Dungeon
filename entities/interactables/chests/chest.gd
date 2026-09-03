@@ -1,5 +1,7 @@
 extends Node2D
 
+const MESSAGE_TIME := 1.0
+
 @onready var interaction_area: InteractionArea = $InteractionArea
 @onready var animation = $AnimationPlayer
 @onready var label = $Label
@@ -12,16 +14,14 @@ func _ready():
 	
 	
 func _on_interact():
-	if Global.player.keys != 0:
-		get_node("InteractionArea/CollisionShape2D").disabled = true
-		animation.play("Open")
-		if Path:
-			var item = Path.instantiate()
-			owner.add_child(item)
-			item.global_position = self.global_position + Vector2(0, 15)
-		Global.player.useKey()
-	else:
+	if not Global.player.inventory.consume_key():
 		label.show()
-		await get_tree().create_timer(Global.time_in_seconds).timeout
+		await get_tree().create_timer(MESSAGE_TIME).timeout
 		label.hide()
-		
+		return
+	get_node("InteractionArea/CollisionShape2D").disabled = true
+	animation.play("Open")
+	if Path:
+		var item = Path.instantiate()
+		owner.add_child(item)
+		item.global_position = self.global_position + Vector2(0, 15)

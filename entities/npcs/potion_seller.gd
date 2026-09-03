@@ -15,10 +15,10 @@ func _ready():
 	get_node("Shop2").max1 = 7
 	
 func items1():
-	player.addPotion()
-	
+	player.inventory.add_potion(1)
+
 func items2():
-	player.set_maxHP(player.maxHP + 1)
+	player.combat.max_hp += 1
 	
 func _on_interact():
 	if get_node("NPC Dialog").spoke == false:
