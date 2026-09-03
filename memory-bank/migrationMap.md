@@ -31,17 +31,14 @@
 ## Framework Debt (targeted by `refactorPlan.md`)
 | Issue | Task |
 |---|---|
-| String-based state transitions | R-20 |
-| Mouse attack/block ignored from idle (input type filter) | R-20 |
-| `Global` autoload caches null player/door at startup | R-20 |
+| String-based state transitions in enemy/boss states (player states are typed; strings bridge through `transition_to("Name")`) | R-23 |
 | Polling `wait_for_animation` lock-in guards | R-22 |
 | Double-delta enemy velocities (framerate-dependent) | R-22 |
 | Copy-paste enemy state override classes | R-23 |
-| camelCase/PascalCase identifiers inside scripts (`rayCast`, `textFile`, `Physics_Update`, `ChangeState`) — normalize to snake_case / past-tense signals per the GDScript style guide | R-20 / R-22 / R-23 / R-32 / R-33 |
+| camelCase/PascalCase identifiers inside scripts (`rayCast`, `textFile`, and remaining per-script findings) — normalize to snake_case / past-tense signals per the GDScript style guide (state-core identifiers `Physics_Update`/`ChangeState` done in R-20) | R-22 / R-23 / R-32 / R-33 |
 | InteractionManager per-frame sort + uncached player lookup | R-30 |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |
-| Framerate-dependent per-tick decay (PlayerAttack `*0.9`, PlayerBlock `*0.75`) | R-20 |
 | Red-slime pounce never moves (velocity set while `attacking` blocks `move_and_slide`) | R-22 |
 | `Engine.time_scale` not restored if the scene changes mid-freeze (camera) | R-22 |
 | `arcane_arrow.gd` lacks screen-exit cleanup (missed shots leak) | R-22 |
