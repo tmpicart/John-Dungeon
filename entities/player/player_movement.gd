@@ -1,13 +1,13 @@
 extends Node
 
-# 2x the pre-R-20 constants: states now tick once per physics frame
-# (the old setup double-drove them through Character._physics_process).
-@export var acceleration: int = 500
+# Post-R-20 constants: single state tick per physics frame; rates scale with
+# the doubled velocity range so input responsiveness matches the old feel.
+@export var acceleration: int = 1000
 @export var max_speed: int = 100
-@export var dash_boost: int = 100
+@export var dash_speed: int = 200
 
-var friction: float = max_speed * 4
-var decay_factor: float = 400
+var friction: float = max_speed * 8
+var decay_factor: float = 800
 var velocity: Vector2 = Vector2.ZERO
 var mov_direction: Vector2 = Vector2.ZERO
 var dash_direction: Vector2 = Vector2.ZERO
@@ -51,8 +51,7 @@ func dash():
 		is_dashing = true
 		dash_direction = mov_direction
 
-		var dash_speed_bonus = dash_direction.normalized() * dash_boost
-		velocity += dash_speed_bonus
+		velocity = dash_direction * dash_speed
 		parent.velocity = velocity
 		parent.move_and_slide()
 
