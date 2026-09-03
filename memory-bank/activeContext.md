@@ -3,26 +3,26 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-R1 structure complete (R-10 `983dbfc`, R-11 `67d4588`, R-12 `cc1df32`). Next: R-20 state core rebuild (opens Phase R2).
+Phase R2 opened: R-20 state core rebuild shipped (ba5246a). Next: R-21 player subsystem API.
 
 ## Conventions
-Godot official docs adopted as naming authority (R-12): folders + files snake_case, node names + `class_name` PascalCase, identifiers snake_case with past-tense signals. Vendored art lives in `assets/` (documented basic-assets exception to `addons/`). Script identifier normalization rides R-20/R-22/R-23/R-32/R-33 (`migrationMap.md`).
+State core (R-20): typed `next_state: State` exports wired in the Inspector and validated at startup (deferred ready pass); states receive `actor` by injection — `Global.player` (property-backed) only for non-state consumers; enemy/boss states keep string transitions (bridge → R-23). Godot 4.7: sibling `.tscn` NodePaths must be `../`-prefixed — bare sibling paths load as null. gdlint (gdtoolkit) adopted as a scoped verification gate — changed files pass; legacy findings ride migrationMap, not drive-by fixes.
 
 ## In Flight
-- Smoke run passed in the user's editor session post-R-12 (no regressions reported) — R-11 + R-12 editor-verified; R1 fully closed. The 4 Sorceress hitbox load errors remain known debt (R-24).
+- User smoke run pending: movement feel with the 2×-compensated constants, attack/block decay parity, dash feel, death → Esc.
 
 ## Recently Completed
-- `cc1df32` refactor(structure): snake_case all game folders (R-12) — 22 folders, ~850 paths, 355 reference files, gates green, headless run silent.
+- R-20 state core rebuild: typed transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, `player_idle.gd` deletion, Sorceress `Idle.enemy` wiring.
 
 ## Next Up
-1. R-20 state core rebuild — typed transitions (`@export var next_state: State` validated in `_ready()`), attack/block-from-idle input filter, states receive owner refs instead of `Global.player`, `Global` null-cache hardening, velocity-decay normalization (Attack/Block).
+1. R-21 player subsystem API — `spend_coins` / `consume_key` / `add_potion` on `PlayerInventory`; weapon upgrade via combat; public API documented; shrink-safe heart bar.
 
 ## Open Decisions
 - None.
 
 ## Working Agreements (quick recall)
-- Commits: agent drafts → user approves once → agent commits code, updates the memory bank, and commits it (`docs(memory):`) automatically. Never push unless told.
-- Terminal file moves are normal practice: stage reference rewrites together with the moves (see `.clinerules/godot-collaboration.md`).
-- Circuit breaker: 3 failed attempts on a step → stop, error report, defer to user (`.clinerules/circuit-breaker.md`).
+- Commits: agent drafts → user approves → commit; memory bank follows as `docs(memory)`. Push only when instructed.
+- Linting: gdlint on changed files (adopted R-20).
+- Circuit breaker: 3 failed attempts on a step → stop, report, defer.
 - Scene text edits surgical; editor-made changes never reverted silently.
 - New code follows `systemPatterns.md`; superseded patterns live in `migrationMap.md` only.
