@@ -11,8 +11,6 @@
 - Interaction manager/areas, HUD wiring, main-menu → Floor1 flow ✔
 
 ### Pending migration (details in `migrationMap.md`)
-- Shop item effects → route through `PlayerInventory` / `PlayerCombat` APIs
-- Doors/chests → replace undefined `Global` helpers with inventory service calls
 - The Sorceress (boss) → migrate onto the enemy framework + current states
 - MainMenu polish (title card load), dialogue system expansion
 - Legacy inventory UI (`Scenes/Items/inventory.gd`) → superseded by `PlayerInventory`; retire or redesign
@@ -30,3 +28,4 @@
 - 2026-09-02 | refactor | R-12 folder snake_case: 22 game folders incl. `Assets`→`assets` lowercased per Godot docs; ~850 paths + 355 reference files rewritten; gates green + silent headless run (cc1df32).
 - 2026-09-03 | refactor | R-20 state core rebuild: typed+validated transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, idle-state deletion, Sorceress Idle.enemy wiring; 41 files (ba5246a).
 - 2026-09-03 | fix | Player movement feel: rates rescaled for the single tick (accel 1000 / friction 800 / decay 800), dash normalized to fixed `dash_speed` 200; user-verified (80a8cbe).
+- 2026-09-03 | refactor | R-21 player subsystem API: `spend_coins`/`consume_key`/`add_potion`/`add_bomb` on `PlayerInventory`, `PlayerCombat.upgrade_weapon()` with damage resync, shop/NPC/doors/chest/pickup rewiring, local door-timing constants, shrink-safe heart bar, temporary `buy1`/`buy2` actions (e70a04d).

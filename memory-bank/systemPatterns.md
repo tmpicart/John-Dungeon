@@ -7,8 +7,8 @@
 ### Player (`entities/player/character.tscn`)
 Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a state machine.
 - `PlayerMovement` — acceleration/friction movement, dash with cooldown timer
-- `PlayerCombat` — HP, attack/block execution, damage intake; signals `hp_changed`, `max_hp_changed`
-- `PlayerInventory` — coins/bombs/potions/keys with `*_changed` signals
+- `PlayerCombat` — HP, attack/block execution, damage intake, `upgrade_weapon()` (resyncs cached damage); signals `hp_changed`, `max_hp_changed`
+- `PlayerInventory` — coins/bombs/potions/keys; public API `add_coin`/`spend_coins`/`add_key`/`consume_key`/`add_potion`/`add_bomb`/`use_potion`/`use_bomb` — atomic spend/consume return `bool`; every mutation emits its `*_changed` signal; callers never write the count fields directly
 - `PlayerAnimation` — 4-direction mouse-facing animation routing, equipment layering (weapon/shield foreground vs background)
 - `State Control` — generic state machine (`systems/state_core/state.gd`, `state_control.gd`): states call `transition_to(target)` — typed `State` refs on the player, node-name strings bridged until R-23; the control injects `actor` (the owning entity) into every state and validates exported refs at startup
 
