@@ -14,7 +14,7 @@ var target_rotation : float = 0.0
 var current_rotation : float = 0.0
 var particles : GPUParticles2D
 
-func Enter():
+func enter() -> void:
 	for enemy in get_tree().get_nodes_in_group("Enemies"):
 		if enemy is CharacterBody2D:
 			beamCast.add_exception(enemy)
@@ -61,7 +61,7 @@ func _on_beam_duration_timeout():
 	disappear()
 	await get_tree().create_timer(beam_recovery).timeout
 	beam.visible = false
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")
 
 	
 func appear() -> void:

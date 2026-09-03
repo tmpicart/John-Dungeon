@@ -3,7 +3,7 @@ class_name EnemyStun
 
 @export var enemy: CharacterBody2D
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	await enemy.stun()
-	ChangeState.emit(self, "EnemyChase")
+	transition_to("EnemyChase")

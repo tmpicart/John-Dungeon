@@ -5,18 +5,18 @@ extends State
 func _ready():
 	randomize()
 
-func Enter():
+func enter() -> void:
 	
 	if enemy.HP <= enemy.transition_hp and not enemy.phase2:
-			ChangeState.emit(self, "Intervention")
+			transition_to("Intervention")
 	else:
 		var random = randi_range(1,4)
 		match random:
 			1:
-				ChangeState.emit(self, "SlideInto")
+				transition_to("SlideInto")
 			2:
-				ChangeState.emit(self, "Melee")
+				transition_to("Melee")
 			3:
-				ChangeState.emit(self, "Cast")
+				transition_to("Cast")
 			4: 
-				ChangeState.emit(self, "SlideAway")
+				transition_to("SlideAway")

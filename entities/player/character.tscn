@@ -717,17 +717,23 @@ debug_color = Color(0.345241, 0.556973, 0.740921, 0.42)
 script = ExtResource("4_xutsd")
 initial_state = NodePath("MoveState")
 
-[node name="MoveState" type="Node" parent="State Control"]
+[node name="MoveState" type="Node" parent="State Control" node_paths=PackedStringArray("attack_state", "block_state", "dash_state")]
 script = ExtResource("5_oimsc")
+attack_state = NodePath("../AttackState")
+block_state = NodePath("../BlockState")
+dash_state = NodePath("../DashState")
 
-[node name="AttackState" type="Node" parent="State Control"]
+[node name="AttackState" type="Node" parent="State Control" node_paths=PackedStringArray("next_state")]
 script = ExtResource("6_v24in")
+next_state = NodePath("../MoveState")
 
-[node name="BlockState" type="Node" parent="State Control"]
+[node name="BlockState" type="Node" parent="State Control" node_paths=PackedStringArray("next_state")]
 script = ExtResource("9_abdyn")
+next_state = NodePath("../MoveState")
 
-[node name="DashState" type="Node" parent="State Control"]
+[node name="DashState" type="Node" parent="State Control" node_paths=PackedStringArray("next_state")]
 script = ExtResource("8_tu8cl")
+next_state = NodePath("../MoveState")
 
 [node name="DeadState" type="Node" parent="State Control"]
 script = ExtResource("10_uxyn6")

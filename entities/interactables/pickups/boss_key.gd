@@ -13,7 +13,7 @@ func _ready():
 	
 	
 func _on_interact():
-	Global.hasBossKey = true
+	Global.has_boss_key = true
 	sprite.hide()
 	await Global.time_in_seconds
 	message.show()

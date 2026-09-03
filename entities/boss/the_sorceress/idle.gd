@@ -5,4 +5,4 @@ extends State
 
 func activate():
 	Global.door.show()
-	ChangeState.emit(self, "Engage")
+	transition_to("Engage")

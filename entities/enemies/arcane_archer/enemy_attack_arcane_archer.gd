@@ -6,14 +6,14 @@ class_name EnemyAttackArcaneArcher
 
 var can_attack = true
 
-func Enter():
+func enter() -> void:
 	# Common attack behavior from base class
 	if can_attack:
 		await enemy.attack()
 		spawn_projectile()
 		can_attack = false
 		$attack_cooldown.start()
-	ChangeState.emit(self, "EnemyChase")
+	transition_to("EnemyChase")
 
 func spawn_projectile():
 	if projectile and not enemy.is_hit and not enemy.is_dead:

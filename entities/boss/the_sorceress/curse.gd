@@ -5,7 +5,7 @@ extends State
 
 var player : CharacterBody2D
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	await enemy.cast()
 	if curse_glyph:
@@ -14,4 +14,4 @@ func Enter():
 		get_tree().current_scene.add_child(glyph)
 		glyph.global_position = player.global_position
 	
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")

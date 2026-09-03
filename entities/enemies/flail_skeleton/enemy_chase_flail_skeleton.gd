@@ -5,7 +5,7 @@ class_name EnemyChaseFlailSkeleton
 var attempt_attack_range_x: float = attempt_attack_range
 var attempt_attack_range_y: float = attempt_attack_range / 3.0
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
@@ -14,12 +14,12 @@ func Physics_Update(delta: float):
 
 	# Transition to Idle if player is too far
 	if distance > chase_drop_distance:
-		ChangeState.emit(self, "EnemyIdle")
+		transition_to("EnemyIdle")
 		return
 
 	# Use derived x and y attack ranges
 	if abs(to_player.x) <= attempt_attack_range_x and abs(to_player.y) <= attempt_attack_range_y:
-		ChangeState.emit(self, "EnemyAttack")
+		transition_to("EnemyAttack")
 		return
 
 	# Recalculate path if needed

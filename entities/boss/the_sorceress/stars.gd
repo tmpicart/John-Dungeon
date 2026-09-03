@@ -7,7 +7,7 @@ extends State
 @export var delay = .3
 var player: Node2D
 
-func Enter():
+func enter() -> void:
 	if enemy.phase2:
 		enemy.velocity = Vector2.ZERO
 		player = get_tree().get_first_node_in_group("Player")
@@ -16,7 +16,7 @@ func Enter():
 			for i in range(amount):
 				update_raycast()
 				await launch_projectile()
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")
 
 func update_raycast():
 	# Point the raycast towards the player

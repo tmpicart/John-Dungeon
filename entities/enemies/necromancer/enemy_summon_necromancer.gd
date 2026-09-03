@@ -19,13 +19,13 @@ func _ready():
 	if tilemap_layer == null:
 		push_error("TileMapLayer not found in the scene!")
 
-func Enter():
+func enter() -> void:
 	if can_summon and not enemy.is_dead:
 		await enemy.summon()
 		can_summon = false
 		$summon_cooldown.start()
 
-	ChangeState.emit(self, "EnemyChase")
+	transition_to("EnemyChase")
 
 func spawn_enemies():
 	var summon_count = randi_range(min_summons, max_summons)

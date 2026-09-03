@@ -12,9 +12,9 @@ func _ready():
 	
 	
 func _on_interact():
-	if Global.hasBossKey:
+	if Global.has_boss_key:
 		if !open:
-			Global.hasBossKey = false
+			Global.has_boss_key = false
 			open = true
 			animation.play("open")
 			$AudioStreamPlayer2D.play()

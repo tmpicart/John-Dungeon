@@ -7,7 +7,7 @@ class_name EnemyAttackRedSlime
 var player: CharacterBody2D
 var direction_normalized: Vector2
 
-func Enter():
+func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	
 	# Calculate direction towards the player and normalize it
@@ -24,9 +24,9 @@ func Enter():
 	enemy.attacking = false
 	
 	# Change state to EnemyChase after the pounce
-	ChangeState.emit(self, "EnemyChase")
+	transition_to("EnemyChase")
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	# Move the enemy towards the player during the pounce
 	if not enemy.is_dead:
 		enemy.velocity = direction_normalized * pounce_speed * delta
