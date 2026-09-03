@@ -9,7 +9,7 @@ Phase R2 opened: R-20 state core rebuild shipped (ba5246a). Next: R-21 player su
 State core (R-20): typed `next_state: State` exports wired in the Inspector and validated at startup (deferred ready pass); states receive `actor` by injection — `Global.player` (property-backed) only for non-state consumers; enemy/boss states keep string transitions (bridge → R-23). Godot 4.7: sibling `.tscn` NodePaths must be `../`-prefixed — bare sibling paths load as null. gdlint (gdtoolkit) adopted as a scoped verification gate — changed files pass; legacy findings ride migrationMap, not drive-by fixes.
 
 ## In Flight
-- User smoke run pending: movement feel with the 2×-compensated constants, attack/block decay parity, dash feel, death → Esc.
+- R-20 smoke run passed. Post-playtest movement fix shipped: rates rescaled for the single tick (accel 1000 / friction 800 / decay 800), dash normalized to fixed `dash_speed` 200 — user-verified. Further feel tuning is Inspector-side (D-1 pass).
 
 ## Recently Completed
 - R-20 state core rebuild: typed transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, `player_idle.gd` deletion, Sorceress `Idle.enemy` wiring.
