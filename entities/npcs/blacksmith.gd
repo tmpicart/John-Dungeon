@@ -16,10 +16,10 @@ func _ready():
 	get_node("Shop2").max1 = 4
 	
 func items1():
-	player.bombs += 1
-	
+	player.inventory.add_bomb(1)
+
 func items2():
-		player.upgradeWeapon()
+	player.combat.upgrade_weapon()
 	
 func _on_interact():
 	if get_node("NPC Dialog").spoke == false:

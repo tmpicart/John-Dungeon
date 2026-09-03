@@ -1,30 +1,20 @@
 extends HBoxContainer
 
+var _last_hp := 0
+
 @onready var heart_scene = preload("res://ui/heart.tscn")
 
-# Function to add a heart to the container
-func add_MaxHealth():
-	var heart = heart_scene.instantiate()
-	add_child(heart)
-
-# Function to set the max health by adding hearts
+## Resizes the bar to max_hp in either direction and repaints it.
 func set_max_health(max_hp: int):
-	var hearts = get_children().size()  # Current number of hearts
-	var need = max_hp - hearts  # How many more hearts are needed
-	
-	# Add hearts until we reach the desired max health
-	for i in range(need):
-		add_MaxHealth()
+	while get_child_count() < max_hp:
+		add_child(heart_scene.instantiate())
+	for heart in get_children().slice(max_hp):
+		heart.queue_free()
+	update(_last_hp)
 
-# Function to update the health (filled hearts vs. empty hearts)
+## Repaints the hearts for the given HP: filled up to it, empty after.
 func update(current_hp: int):
+	_last_hp = current_hp
 	var hearts = get_children()
-	
-	# Update hearts based on current HP
-	for i in range(current_hp):
-		if i < hearts.size():
-			hearts[i].update(true)  # Set the heart to "filled" or active state
-	
-	# Set remaining hearts as "empty"
-	for i in range(current_hp, hearts.size()):
-		hearts[i].update(false)  # Set the heart to "empty" or inactive state
+	for i in hearts.size():
+		hearts[i].update(i < current_hp)

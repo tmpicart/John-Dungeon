@@ -1,5 +1,8 @@
 extends Node2D
 
+const LOCK_OPEN_DELAY := 0.5
+const MESSAGE_TIME := 1.0
+
 @onready var interaction_area: InteractionArea = $InteractionArea
 @onready var animation = $AnimationPlayer
 @onready var warning = $Label
@@ -12,17 +15,18 @@ func _ready():
 	
 	
 func _on_interact():
-	if Global.has_boss_key:
-		if !open:
-			Global.has_boss_key = false
-			open = true
-			animation.play("open")
-			$AudioStreamPlayer2D.play()
-			await get_tree().create_timer(Global.time_in_seconds-.5).timeout
-			get_node("StaticBody2D/CollisionShape2D").disabled = open
-			get_node("InteractionArea/CollisionShape2D").disabled = open
-	else:
+	if open:
+		return
+	if not Global.has_boss_key:
 		warning.show()
-		await get_tree().create_timer(Global.time_in_seconds).timeout
+		await get_tree().create_timer(MESSAGE_TIME).timeout
 		warning.hide()
+		return
+	Global.has_boss_key = false
+	open = true
+	animation.play("open")
+	$AudioStreamPlayer2D.play()
+	await get_tree().create_timer(LOCK_OPEN_DELAY).timeout
+	get_node("StaticBody2D/CollisionShape2D").disabled = true
+	get_node("InteractionArea/CollisionShape2D").disabled = true
 
