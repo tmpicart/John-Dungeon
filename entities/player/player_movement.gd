@@ -6,10 +6,6 @@ extends Node
 @export var max_speed: int = 100
 @export var dash_boost: int = 100
 
-@onready var dash_cooldown_timer = $"Dash Cooldown"
-@onready var parent: CharacterBody2D = get_parent()
-@onready var dash_sfx = $"../dash_sfx"
-
 var friction: float = max_speed * 4
 var decay_factor: float = 400
 var velocity: Vector2 = Vector2.ZERO
@@ -19,6 +15,10 @@ var dash_direction: Vector2 = Vector2.ZERO
 var is_dashing: bool = false
 var can_dash: bool = true
 var disabled: bool = false
+
+@onready var dash_cooldown_timer = $"Dash Cooldown"
+@onready var parent: CharacterBody2D = get_parent()
+@onready var dash_sfx = $"../dash_sfx"
 
 func set_disabled(value: bool):
 	disabled = value
@@ -50,12 +50,12 @@ func dash():
 		can_dash = false
 		is_dashing = true
 		dash_direction = mov_direction
-		
+
 		var dash_speed_bonus = dash_direction.normalized() * dash_boost
 		velocity += dash_speed_bonus
 		parent.velocity = velocity
 		parent.move_and_slide()
-		
+
 		dash_sfx.play()
 		await $"../PlayerAnimation".play_dash_animation(dash_direction)
 

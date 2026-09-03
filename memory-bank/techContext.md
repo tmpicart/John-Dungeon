@@ -5,6 +5,7 @@
 ## Engine
 - Godot **4.7.2 stable** (win64), Forward Plus renderer, GDScript
 - Editor path (VS Code setting): `c:\Users\Silent\Documents\Code\Godot_v4.7.2-stable_win64.exe`
+- Linting/formatting: `gdlint` / `gdformat` (gdtoolkit 4.5 via pip; config `gdlintrc`) — verification gate per `.clinerules/code-style.md`
 - Display: 1920×1080, `canvas_items` stretch mode, nearest texture filter (pixel art)
 - Main scene chain: `ui/main_menu.tscn` → `levels/floor_1.tscn` (remaster test level)
 
