@@ -4,7 +4,7 @@ class_name EnemyChaseArcaneArcher
 @export var rayCast: RayCast2D
 @export var retreat_range := 50  
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
@@ -12,11 +12,11 @@ func Physics_Update(delta: float):
 	var distance = to_player.length()
 
 	if distance > chase_drop_distance:
-		ChangeState.emit(self, "EnemyIdle")
+		transition_to("EnemyIdle")
 		return
 
 	if distance < retreat_range:
-		ChangeState.emit(self, "EnemyRetreat")
+		transition_to("EnemyRetreat")
 		return
 
 	if distance <= attempt_attack_range:
@@ -27,7 +27,7 @@ func Physics_Update(delta: float):
 		enemy.velocity = Vector2.ZERO
 
 		if rayCast.is_colliding() and rayCast.get_collider() == player:
-			ChangeState.emit(self, "EnemyAttack")
+			transition_to("EnemyAttack")
 		return
 
 	time_since_last_path += delta

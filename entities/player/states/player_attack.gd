@@ -1,16 +1,26 @@
 extends State
 
+@export var next_state: State
 
-func Enter():
+## Fraction of velocity kept per 60 Hz physics tick (parity with the legacy double-applied 0.9 decay).
+@export var velocity_retention := 0.81
+
+var player: Node
+
+func _ready() -> void:
+	player = actor
+
+
+func enter() -> void:
 	
-	await Global.player.combat.attack()  # Call the attack method from the player combat script
-	ChangeState.emit(self, "MoveState")
+	await player.combat.attack()
+	transition_to(next_state)
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	# Handle movement with PlayerMovement script
-	Global.player.movement.move(delta)
+	player.movement.move(delta)
 	
-	Global.player.movement.velocity = Global.player.movement.velocity * .9
+	player.movement.velocity *= pow(velocity_retention, delta * 60.0)
 	
 	# Update the animation state (idle or walking)
-	Global.player.animation.update_animation(Global.player.movement.velocity)
+	player.animation.update_animation(player.movement.velocity)

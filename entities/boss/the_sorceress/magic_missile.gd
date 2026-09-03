@@ -5,7 +5,7 @@ extends State
 @export var rayCast: RayCast2D
 @export var delay_between_rounds = 2
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	var rounds = 1
 	if enemy.phase2:
@@ -22,4 +22,4 @@ func Enter():
 				proj.global_position = enemy.global_position + offset
 				proj.global_rotation = rayCast.global_rotation
 			await get_tree().create_timer(delay_between_rounds).timeout	
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")

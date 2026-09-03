@@ -1,15 +1,17 @@
 extends Node
 
-@export var acceleration: int = 250
-@export var max_speed: int = 50
-@export var dash_boost: int = 50
+# 2x the pre-R-20 constants: states now tick once per physics frame
+# (the old setup double-drove them through Character._physics_process).
+@export var acceleration: int = 500
+@export var max_speed: int = 100
+@export var dash_boost: int = 100
 
 @onready var dash_cooldown_timer = $"Dash Cooldown"
 @onready var parent: CharacterBody2D = get_parent()
 @onready var dash_sfx = $"../dash_sfx"
 
 var friction: float = max_speed * 4
-var decay_factor: float = 200
+var decay_factor: float = 400
 var velocity: Vector2 = Vector2.ZERO
 var mov_direction: Vector2 = Vector2.ZERO
 var dash_direction: Vector2 = Vector2.ZERO

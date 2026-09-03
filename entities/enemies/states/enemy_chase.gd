@@ -11,11 +11,11 @@ class_name EnemyChase
 var player: CharacterBody2D
 var time_since_last_path := 0.0
 
-func Enter():
+func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	navigation_agent.target_position = player.global_position
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
@@ -24,12 +24,12 @@ func Physics_Update(delta: float):
 
 	# Transition to Idle if player is too far
 	if distance > chase_drop_distance:
-		ChangeState.emit(self, "EnemyIdle")
+		transition_to("EnemyIdle")
 		return
 	
 	# Transition to Attack if in range
 	if distance <= attempt_attack_range:
-		ChangeState.emit(self, "EnemyAttack")
+		transition_to("EnemyAttack")
 		return
 
 	# Recalculate path if needed

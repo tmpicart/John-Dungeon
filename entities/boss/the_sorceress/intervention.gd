@@ -6,7 +6,7 @@ extends State
 @export var force_wave: PackedScene = null
 @export var duration = 3
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	enemy.is_glide = true
 	if glyph:
@@ -44,4 +44,4 @@ func Enter():
 			await get_tree().create_timer(delay_between_rounds).timeout
 			rotation_offset += 45
 		enemy.phase2 = true
-		ChangeState.emit(self, "Cast")
+		transition_to("Cast")

@@ -9,7 +9,7 @@ extends State
 
 @onready var tilemap_parent = get_tree().current_scene
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	await enemy.big_cast()
 	if enemy.phase2 == false:
@@ -22,7 +22,7 @@ func Enter():
 			summon_enemies(2, summoned_creature4)
 		else:
 			summon_enemies(7, summoned_creature3)
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")
 	
 func detect_tilemap() -> TileMap:
 	var summoner_pos = enemy.global_position

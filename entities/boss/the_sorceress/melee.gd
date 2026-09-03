@@ -7,10 +7,10 @@ extends State
 
 var player: CharacterBody2D
 
-func Enter():
+func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	
-func Physics_Update(delta:float):
+func physics_update(delta: float) -> void:
 	var direction = player.global_position - enemy.global_position 
 	if direction.length() > attempt_attack_range:
 		enemy.velocity = direction * speed
@@ -28,5 +28,5 @@ func Physics_Update(delta:float):
 					proj.global_rotation = rotation
 					rotation_offset += 90  # Increase rotation offset for next projectile
 
-		ChangeState.emit(self, "Engage")
+		transition_to("Engage")
 

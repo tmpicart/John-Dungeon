@@ -4,7 +4,7 @@ class_name EnemyChaseNecromancer
 @export var rayCast: RayCast2D
 @export var summon_chance := 0.25
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
@@ -13,13 +13,13 @@ func Physics_Update(delta: float):
 
 	# Stop chasing and switch to idle if the player is too far
 	if distance > chase_drop_distance:
-		ChangeState.emit(self, "EnemyIdle")
+		transition_to("EnemyIdle")
 		return
 	
 	# Switch to retreat state if the enemy is retreating
 	if enemy.retreat and not enemy.is_hit:
 		enemy.retreat = false
-		ChangeState.emit(self, "EnemyRetreat")
+		transition_to("EnemyRetreat")
 		return
 
 	# Attack or summon logic if the player is within attack range
@@ -31,9 +31,9 @@ func Physics_Update(delta: float):
 
 		if rayCast.is_colliding() and rayCast.get_collider() == player:
 			if randf() < summon_chance:
-				ChangeState.emit(self, "EnemySummon")
+				transition_to("EnemySummon")
 			else:
-				ChangeState.emit(self, "EnemyAttack")
+				transition_to("EnemyAttack")
 		return
 
 	# If outside attack range, move towards the player

@@ -15,7 +15,7 @@ var time_since_last_path := 0.0
 var retreat_direction := Vector2.ZERO
 var retreat_timer := 0.0  # Timer for retreating duration
 
-func Enter():
+func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	time_since_last_path = 0.0
 	retreat_timer = 0.0  # Reset timer when entering retreat state
@@ -28,7 +28,7 @@ func Enter():
 	var updated_target = enemy.global_position + retreat_direction * retreat_distance
 	navigation_agent.target_position = updated_target
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
@@ -37,12 +37,12 @@ func Physics_Update(delta: float):
 
 	# Check if the retreat time exceeds the time limit, and switch to chase state if so
 	if retreat_timer >= retreat_time_limit:
-		ChangeState.emit(self, "EnemyChase")
+		transition_to("EnemyChase")
 		return
 
 	var current_distance = (enemy.global_position - player.global_position).length()
 	if current_distance >= retreat_distance:
-		ChangeState.emit(self, "EnemyChase")
+		transition_to("EnemyChase")
 		return
 
 	# Aim ray in the retreat direction and check for wall

@@ -7,15 +7,15 @@ extends State
 var player: CharacterBody2D
 var direction
 
-func Enter():
+func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
 	enemy.is_glide = true
 	direction = player.global_position - enemy.global_position
 	await get_tree().create_timer(duration).timeout
 	enemy.is_glide = false
-	ChangeState.emit(self, "Cast")
+	transition_to("Cast")
 	
-func Physics_Update(delta:float):
+func physics_update(delta: float) -> void:
 	enemy.velocity = direction * speed	
 	
 	

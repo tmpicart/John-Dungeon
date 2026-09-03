@@ -6,7 +6,7 @@ extends State
 @export var rounds = 5
 @export var phase2_rounds = 7
 
-func Enter():
+func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	await enemy.cast()
 	if enemy.phase2:
@@ -25,4 +25,4 @@ func Enter():
 				rotation_offset += 90  # Increase rotation offset for next projectile
 			await get_tree().create_timer(delay_between_rounds).timeout
 			rotation_offset += 45
-		ChangeState.emit(self, "Cast")
+		transition_to("Cast")

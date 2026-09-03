@@ -21,12 +21,12 @@ func randomized_stroll():
 	else:
 		wander_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1))
 	
-func Enter():
+func enter() -> void:
 	# On enter, get the player and set the wander direction
 	player = get_tree().get_first_node_in_group("Player")
 	randomized_stroll()
 
-func Physics_Update(delta: float):
+func physics_update(delta: float) -> void:
 	# Handle wander direction and update it based on the elapsed time (duration)
 	if duration > 0:
 		duration -= delta
@@ -40,4 +40,4 @@ func Physics_Update(delta: float):
 	# Check if the player is within detection range
 	var direction = player.global_position - enemy.global_position
 	if direction.length() < detection_range:
-		ChangeState.emit(self, "EnemyChase")
+		transition_to("EnemyChase")

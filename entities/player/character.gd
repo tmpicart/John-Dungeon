@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 # --- State Machine Controller ---
 @onready var state_machine = $"State Control"
+@onready var dead_state: State = $"State Control/DeadState"
 
 # --- Modular Subsystems ---
 @onready var movement = $PlayerMovement
@@ -13,14 +14,8 @@ extends CharacterBody2D
 @onready var death_label = $Label
 
 func _input(event):
-	if state_machine.current_state.has_method("handle_input"):
+	if state_machine.current_state:
 		state_machine.current_state.handle_input(event)
 
-func _physics_process(delta):
-	state_machine._physics_process(delta)
-
-func _process(delta):
-	state_machine._process(delta)
-
 func on_player_death():
-	state_machine.state_change(state_machine.current_state, "DeadState")
+	state_machine.transition_to(dead_state)

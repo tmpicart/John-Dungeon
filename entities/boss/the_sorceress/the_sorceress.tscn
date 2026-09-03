@@ -350,8 +350,9 @@ intervention_light = ExtResource("23_y1eak")
 glyph = ExtResource("13_iphtl")
 force_wave = ExtResource("14_bb51k")
 
-[node name="Idle" type="Node" parent="State Control"]
+[node name="Idle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("30_35754")
+enemy = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
