@@ -24,8 +24,8 @@ Autoload `InteractionManager` (registry + prompt label) and `InteractionArea` (`
 
 ### Combat Surfaces
 - Physics layers 6–9: PlayerHitbox / PlayerHurtbox / EnemyHitbox / EnemyHurtbox (full map in `techContext.md`)
-- Damage roles: hurtboxes resolve `hitbox.owner.damage` per surface — `BaseEnemy.damage` covers only body-owned hitboxes (contact/melee); projectiles and hazards carry their own `damage` exports (boss star vs missile differ per scene); per-hitbox values are an R-24 option if ever needed
-- `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage
+- Damage roles: hurtboxes resolve `hitbox.get("damage")` first, falling back to `hitbox.owner.damage` — scripted `EnemyHitbox` surfaces (entities/enemies/hitbox.gd) carry per-surface values (boss swing 2 / slide 1); plain areas resolve the owner's export. `unblockable` (same probe) makes PlayerHurtbox skip its parry branch — waves, intervention light, and stars are dodge-only; magic missiles reflect
+- `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage; block+facing a `stun()`-capable non-interruptible boss opens `begin_exposure(duration)` — yellow pulse + doubled damage, attacks continue
 
 ### HUD
 Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and `item_hud`; no polling.
@@ -46,8 +46,11 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | New enemy | Extend `BaseEnemy.gd`; reuse base states; add override states only for unique behavior; wire nav agent + audio in the scene |
 | New interactable | `Node2D` + `InteractionArea`; assign the `interact` Callable in `_ready`; keep effects data-driven where possible |
 | Folder structure | **Hybrid** — all folders snake_case (Godot docs): feature bundles under `entities/` (player, enemies, boss, npcs, projectiles, interactables — scene + scripts + states together); type-based `systems/` (state_core, interaction, dialogue, shop), `ui/`, `levels/` (incl. `room_blocks/`), `assets/` (vendored art packs — documented basic-assets exception to `addons/`); the `Global` autoload lives in `systems/global/` |
-| State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player and enemy states have no string-matched names (the boss bridges strings until R-24). Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
+| State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player and enemy states have no string-matched names. Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
 | Enemy state customization | Shared states + exported configuration (landed R-23); state subclasses only for genuinely unique behavior (e.g. `EnemyPounce`) |
+| Rendering tiers | z-index: ground decals + floor TileMapLayer −1, y-sorted world 0, airborne (projectiles, beam line) +1, UI on CanvasLayer |
+| Flash palette | On-hit flash WHITE for enemies, RED for the player; stun/vulnerable YELLOW `Color(1, 1, 0, 1)` pulsed on a `FlashPlayer` animation channel (per-animation flash_color tracks own the color) |
+| Non-interruptible bosses | `interruptible = false`: hits flash + damage only; parry and beam recovery open `begin_exposure(duration)` vulnerable windows (doubled damage) without stopping attacks; summon placement needs `is_summonable`-painted tiles and skips cleanly without |
 | Animation coupling | Signal-driven flow (`await animation_finished` + interrupt flow tokens, Call Method Tracks for hit windows/sfx); polling waits removed (R-22) |
 
 ## Known Trade-offs (accepted for now)
