@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://systems/loot/loot_table.gd" id="1_table"]
+[ext_resource type="PackedScene" path="res://entities/interactables/pickups/coin.tscn" id="2_coin"]
+[ext_resource type="PackedScene" path="res://entities/interactables/pickups/potion.tscn" id="3_potion"]
+
+[resource]
+script = ExtResource("1_table")
+tier = 1
+entries = Array[PackedScene]([ExtResource("2_coin"), ExtResource("3_potion")])
