@@ -8,12 +8,15 @@
 - Hit-stop / frame-freeze tuning pass
 - Coin behavior feel (pickup magnetism, drop arcs) and enemies dropping coins/loot
 - Death/restart flow: restart prompt/option on player death
+- Boss pacing (deferred from R-24): inter-attack cooldowns, magic missile lifetime
+- Projectile PointLight2D optimization (burst render cost during volleys; deferred from R-24)
 
 ## D-2 Progression & economy (after R-21 / R-32)
 - Expanded shop stock, weapon tiers, consumable variety
 
 ## D-3 Dialogue & world content (after R-33)
 - Staged dialogue authored in the JSON format; new NPCs and story beats
+- Boss intro cutscene/dialogue for The Sorceress (dormancy + door flow removed in R-24)
 
 ## D-4 Bestiary (after R-23 / R-24)
 - New enemies; new bosses; **The Sorceress fight redesign** (migration is 1:1 per refactorPlan R-24; redesign intent recorded here)
