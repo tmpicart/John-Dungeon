@@ -3,7 +3,7 @@ class_name StateControl
 
 @export var initial_state: State
 
-var states: Dictionary = {}
+var states: Array[State] = []
 var current_state: State
 
 func _enter_tree() -> void:
@@ -13,7 +13,7 @@ func _enter_tree() -> void:
 
 func _register_state(node: Node) -> void:
 	if node is State:
-		states[node.name] = node
+		states.append(node)
 		node.actor = get_parent()
 		node.transition_requested.connect(_on_transition_requested)
 	for child in node.get_children():
@@ -31,7 +31,7 @@ func _ready() -> void:
 	current_state.enter()
 
 func validate_states() -> void:
-	for state in states.values():
+	for state in states:
 		state.validate_exports()
 
 func _process(delta: float) -> void:
@@ -43,22 +43,21 @@ func _physics_process(delta: float) -> void:
 		current_state.physics_update(delta)
 
 ## Programmatic transition (e.g. death, external triggers).
-func transition_to(to_state) -> void:
-	_resolve_and_enter(to_state)
+func transition_to(to_state: State) -> void:
+	_enter_state(to_state)
 
-func _on_transition_requested(from_state: State, to_state) -> void:
+func _on_transition_requested(from_state: State, to_state: State) -> void:
 	if from_state != current_state:
 		return
-	_resolve_and_enter(to_state)
+	_enter_state(to_state)
 
-func _resolve_and_enter(to_state) -> void:
-	var target: State = to_state if to_state is State else states.get(to_state)
-	if target == null:
-		push_error("%s: unknown transition target '%s'" % [get_path(), to_state])
+func _enter_state(to_state: State) -> void:
+	if to_state == null:
+		push_error("%s: transition target is not assigned" % get_path())
 		return
 
 	if current_state:
 		current_state.exit()
 
-	current_state = target
+	current_state = to_state
 	current_state.enter()

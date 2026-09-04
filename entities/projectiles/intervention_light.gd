@@ -1,9 +1,15 @@
 extends Node2D
 
-@export var damage:int = 5
+## Falling pillar of light: destroys itself when its animation ends.
+## Unblockable — shields never stop it.
+
+@export var damage: int = 5
+
+## PlayerHurtbox skips its parry branch for this surface.
+var unblockable := true
 
 var shooter: CharacterBody2D = null
-var player: CharacterBody2D	
+var player: CharacterBody2D
 
 func destroy():
 	queue_free()

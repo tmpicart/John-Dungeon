@@ -19,13 +19,4 @@ var player: Node:
 	set(value):
 		_player = value
 
-var door: Node:
-	get:
-		if not is_instance_valid(_door):
-			_door = get_tree().get_first_node_in_group("door")
-		return _door
-	set(value):
-		_door = value
-
 var _player: Node
-var _door: Node

@@ -1,22 +1,30 @@
 extends State
 
-@export var enemy : CharacterBody2D
+## Melee-range picker: phase gate first, then a uniform roll across the
+## engage moves.
 
-func _ready():
-	randomize()
+@export var intervention_state: State
+@export var slide_into_state: State
+@export var melee_state: State
+@export var cast_state: State
+@export var slide_away_state: State
+
+var boss  # TheSorceress (phase gate)
+
+func _ready() -> void:
+	boss = actor
 
 func enter() -> void:
-	
-	if enemy.HP <= enemy.transition_hp and not enemy.phase2:
-			transition_to("Intervention")
-	else:
-		var random = randi_range(1,4)
-		match random:
-			1:
-				transition_to("SlideInto")
-			2:
-				transition_to("Melee")
-			3:
-				transition_to("Cast")
-			4: 
-				transition_to("SlideAway")
+	if boss.should_transition_phase():
+		transition_to(intervention_state)
+		return
+
+	match randi_range(1, 4):
+		1:
+			transition_to(slide_into_state)
+		2:
+			transition_to(melee_state)
+		3:
+			transition_to(cast_state)
+		4:
+			transition_to(slide_away_state)

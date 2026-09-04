@@ -16,7 +16,8 @@ const CELL_NEIGHBORS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i
 @export var summon_radius := 5
 @export var min_summons := 2
 @export var max_summons := 5
-## Seconds before this summoner may summon again.
+## Seconds before this summoner may summon again; 0 disables the cooldown
+## (roll-gated summoners such as the boss).
 @export var summon_cooldown_duration := 10.0
 @export var summon_animation := "Summon"
 @export var summon_sfx: AudioStreamPlayer2D
@@ -44,7 +45,8 @@ func enter() -> void:
 	if _summon_cooldown.is_stopped() and not enemy.is_dead:
 		if await enemy.run_action_animation(summon_animation, summon_sfx):
 			_spawn_creatures()
-		_summon_cooldown.start(summon_cooldown_duration)
+		if summon_cooldown_duration > 0.0:
+			_summon_cooldown.start(summon_cooldown_duration)
 
 	transition_to(chase_state)
 
@@ -101,6 +103,10 @@ func _enqueue_neighbors(cell: Vector2i, visited: Dictionary, frontier: Array[Vec
 			frontier.append(next)
 
 func _is_summonable_cell(cell: Vector2i, tilemap: TileMapLayer) -> bool:
+	# Tilesets without the layer (e.g. the boss room until its remake) skip cleanly.
+	var tile_set = tilemap.tile_set
+	if tile_set == null or tile_set.get_custom_data_layer_by_name("is_summonable") == -1:
+		return false
 	var tile_data: TileData = tilemap.get_cell_tile_data(cell)
 	return tile_data != null and tile_data.get_custom_data("is_summonable")
 
@@ -109,4 +115,8 @@ func _find_tilemap_layer() -> TileMapLayer:
 	for child in scene_root.get_children():
 		if child is TileMapLayer:
 			return child
+		# Legacy TileMap wrappers (R-40 debt) hold the layers one level deeper.
+		for grandchild in child.get_children():
+			if grandchild is TileMapLayer:
+				return grandchild
 	return null
