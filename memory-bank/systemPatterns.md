@@ -13,9 +13,11 @@ Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a stat
 - `State Control` — generic state machine (`systems/state_core/state.gd`, `state_control.gd`): states call `transition_to(target)` — typed `State` refs on the player, node-name strings bridged until R-23; the control injects `actor` (the owning entity) into every state and validates exported refs at startup
 
 ### Enemies
-- `entities/enemies/base_enemy.gd` — CharacterBody2D base: HP/damage, `take_damage`/`stun`/`kill`/`attack` with animation-await helpers, audio hooks
-- Reusable states: `entities/enemies/states/enemy_idle|chase|attack|retreat.gd` (NavigationAgent2D pathfinding); bundles hold scene + scripts + states together
+- `entities/enemies/base_enemy.gd` — CharacterBody2D base: `hp`/`damage`/`attack_cooldown_duration` exports; signal-driven action flows (`run_action_animation` → `attack`/`summon`) guarded by interrupt flow tokens; `take_damage(dmg, from_position)` knockback-ready; `stun()`/`kill()` route interrupts through State Control; audio hooks
+- Reusable states: `entities/enemies/states/enemy_idle|chase|attack|retreat|hurt|stun.gd` (pathfinding + interrupt states; every enemy scene wires `EnemyHurt`/`EnemyStun`); bundles hold scene + scripts + states together
 - Per-enemy behavior via override states (e.g. `EnemyChaseNecromancer`, `EnemyAttackFlailSkeleton`) wired in each enemy scene
+- Velocities are px/s — never multiplied by delta (`move_and_slide` applies the tick delta)
+- Summoning: shared combatant capability (necromancer now; Sorceress R-24; future bosses by design) — R-23 promotes a shared `EnemySummon` state: radius + summonable-tile gating with a same-room flood-fill failsafe; only composition is per-summoner; R-43 room markers supersede tile scanning
 - Target: all combatants — including bosses — run on this framework
 
 ### Interaction
@@ -46,7 +48,7 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | Folder structure | **Hybrid** — all folders snake_case (Godot docs): feature bundles under `entities/` (player, enemies, boss, npcs, projectiles, interactables — scene + scripts + states together); type-based `systems/` (state_core, interaction, dialogue, shop), `ui/`, `levels/` (incl. `room_blocks/`), `assets/` (vendored art packs — documented basic-assets exception to `addons/`); the `Global` autoload lives in `systems/global/` |
 | State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player states have no string-matched names (enemy/boss bridge strings until R-23). Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
 | Enemy state customization | Shared states + exported configuration + hook methods; subclass copy-paste overrides are not used for new enemies (target: R-23) |
-| Animation coupling | Signal-driven flow (`animation_finished`, Call Method Tracks for hit windows/sfx); polling waits are superseded (target: R-22) |
+| Animation coupling | Signal-driven flow (`await animation_finished` + interrupt flow tokens, Call Method Tracks for hit windows/sfx); polling waits removed (R-22) |
 
 ## Known Trade-offs (accepted for now)
 - Player states receive the character via the injected `actor` reference; `Global.player` (property-backed; re-resolves freed/missing refs) remains the access path for non-state consumers.
