@@ -1,21 +1,34 @@
 extends State
 
-@export var enemy: CharacterBody2D
+## Glide along the captured direction for a fixed duration, then hand off to
+## the ranged picker.
+
+@export var cast_state: State
+## Body-length attack surface, live only while gliding.
+@export var slide_hitbox: EnemyHitbox
+## Damped glide: velocity = captured direction * speed.
 @export var speed := 1.75
 @export var duration := 1.5
 
 var player: CharacterBody2D
-var direction
+var boss  # TheSorceress (is_glide flag)
+var direction: Vector2
+
+func _ready() -> void:
+	boss = actor
 
 func enter() -> void:
 	player = get_tree().get_first_node_in_group("Player")
-	enemy.is_glide = true
-	direction = player.global_position - enemy.global_position
+	if player == null:
+		transition_to(cast_state)
+		return
+	boss.is_glide = true
+	slide_hitbox.set_active(true)
+	direction = player.global_position - boss.global_position
 	await get_tree().create_timer(duration).timeout
-	enemy.is_glide = false
-	transition_to("Cast")
-	
-func physics_update(delta: float) -> void:
-	enemy.velocity = direction * speed	
-	
-	
+	boss.is_glide = false
+	slide_hitbox.set_active(false)
+	transition_to(cast_state)
+
+func physics_update(_delta: float) -> void:
+	boss.velocity = direction * speed

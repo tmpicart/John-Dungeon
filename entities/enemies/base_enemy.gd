@@ -18,6 +18,9 @@ const FLIP_THRESHOLD := 0.1
 @export var state_control: StateControl
 @export var hurt_state: State
 @export var stun_state: State
+## When false (bosses), hits deal damage + feedback only: no interrupt
+## routing, no flow cancellation, and attacks continue through hits.
+@export var interruptible := true
 
 var attacking = false
 var stunned = false
@@ -44,7 +47,7 @@ func _ready() -> void:
 	_attack_cooldown.one_shot = true
 	add_child(_attack_cooldown)
 
-	if state_control and (hurt_state == null or stun_state == null):
+	if state_control and interruptible and (hurt_state == null or stun_state == null):
 		push_error("%s: state_control assigned but hurt_state/stun_state missing" % get_path())
 
 
@@ -75,7 +78,22 @@ func handle_animations():
 ## Damage entry point (Hurtbox routes here). `from_position` is where the hit
 ## originated — stored for the knockback pass, not applied yet.
 func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
-	if is_dead or is_hit:
+	if is_dead:
+		return
+
+	if not interruptible:
+		# Boss-style intake: feedback + damage only; nothing is cancelled or
+		# routed, so movement and attacks continue through hits.
+		if ouch_sfx:
+			ouch_sfx.play()
+		last_hit_from = from_position
+		hp = max(hp - dmg, 0)
+		_play_hit_flash()
+		if hp == 0:
+			kill()
+		return
+
+	if is_hit:
 		return
 
 	is_hit = true
@@ -108,7 +126,7 @@ func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
 ## Parry-stun entry point (called from PlayerHurtbox). Damage taken while
 ## stunned is doubled.
 func stun() -> void:
-	if is_dead:
+	if is_dead or not interruptible:
 		return
 
 	_cancel_flows()
@@ -185,6 +203,11 @@ func play_interrupt_animation(anim_name: String) -> bool:
 	animation_player.stop()
 	animation_player.play(anim_name)
 	return await _wait_for_animation(anim_name, _flow_id)
+
+## Hit feedback for non-interruptible combatants. Silent by default; override
+## to flash on a channel that does not cut action animations.
+func _play_hit_flash() -> void:
+	pass
 
 func _cancel_flows() -> void:
 	_flow_id += 1

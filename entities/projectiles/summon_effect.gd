@@ -1,7 +1,8 @@
 extends Sprite2D
 
-func _ready():
+## Spawn flourish: frees itself when the arise animation completes.
+
+func _ready() -> void:
 	$AnimationPlayer.play("Arise")
-	var duration = $AnimationPlayer.current_animation_length +.1
-	await get_tree().create_timer(duration).timeout
+	await $AnimationPlayer.animation_finished
 	queue_free()

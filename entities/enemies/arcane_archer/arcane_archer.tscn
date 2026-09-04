@@ -20,7 +20,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
 resource_local_to_scene = true
 shader = ExtResource("3_dsqkb")
-shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]

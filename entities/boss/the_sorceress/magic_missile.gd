@@ -1,25 +1,40 @@
 extends State
 
-@export var enemy: CharacterBody2D
-@export var projectile: PackedScene = null
-@export var rayCast: RayCast2D
-@export var delay_between_rounds = 2
+## Volley of homing missiles in an arc; more rounds in phase 2.
+
+@export var cast_state: State
+@export var projectile: PackedScene
+@export var ray_cast: RayCast2D
+@export var delay_between_rounds := 2.0
+@export var phase2_rounds := 3
+
+var boss  # TheSorceress (phase gate)
+
+func _ready() -> void:
+	boss = actor
 
 func enter() -> void:
-	enemy.velocity = Vector2.ZERO
+	boss.velocity = Vector2.ZERO
 	var rounds = 1
-	if enemy.phase2:
-		rounds = 3
-	await enemy.cast()
-	if projectile:
+	if boss.phase2:
+		rounds = phase2_rounds
+
+	if await boss.run_action_animation("Cast"):
 		for i in rounds:
-			var offsets = [Vector2(-30, -70), Vector2(-15, -75), Vector2(0, -80), Vector2(15, -75),  Vector2(30, -70)]
-			for offset in offsets:
-				var proj = projectile.instantiate()
-				get_tree().current_scene.add_child(proj)
-				proj.add_to_group("Enemies")
-				proj.scale = Vector2(1.25, 1.25)
-				proj.global_position = enemy.global_position + offset
-				proj.global_rotation = rayCast.global_rotation
-			await get_tree().create_timer(delay_between_rounds).timeout	
-	transition_to("Cast")
+			_fire_volley()
+			await get_tree().create_timer(delay_between_rounds).timeout
+	transition_to(cast_state)
+
+func _fire_volley() -> void:
+	if projectile == null:
+		return
+	var offsets = [
+		Vector2(-30, -70), Vector2(-15, -75), Vector2(0, -80), Vector2(15, -75), Vector2(30, -70),
+	]
+	for offset in offsets:
+		var proj = projectile.instantiate()
+		get_tree().current_scene.add_child(proj)
+		proj.add_to_group("Enemies")
+		proj.scale = Vector2(1.25, 1.25)
+		proj.global_position = boss.global_position + offset
+		proj.global_rotation = ray_cast.global_rotation

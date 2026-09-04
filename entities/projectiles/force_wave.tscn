@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://cexkcx50jsodx"]
+[gd_scene load_steps=10 format=3 uid="uid://cexkcx50jsodx"]
 
 [ext_resource type="Script" uid="uid://bcm0huht7kuns" path="res://entities/projectiles/force_wave.gd" id="1_um5a1"]
-[ext_resource type="Script" path="res://Scripts/Hitboxes/projectile_hitbox.gd" id="2_18kql"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="3_nbn0v"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://assets/effects/retro_impact_effect_pack_5_b.png" id="4_bytw6"]
 
@@ -50,8 +49,9 @@ scale = Vector2(1.5, 1.5)
 script = ExtResource("1_um5a1")
 
 [node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 128
+collision_mask = 64
 scale = Vector2(0.5, 0.5)
-script = ExtResource("2_18kql")
 
 [node name="Sprite2D" type="Sprite2D" parent="Hitbox"]
 material = SubResource("ShaderMaterial_u2g5o")
@@ -83,6 +83,4 @@ scale = Vector2(0.371745, 0.833333)
 color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_7odju")
 
-[connection signal="area_entered" from="Hitbox" to="." method="_on_arcane_arrow_area_entered"]
-[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
 [connection signal="screen_exited" from="Hitbox/VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]

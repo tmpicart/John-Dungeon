@@ -19,7 +19,7 @@ func _physics_process(delta):
 		if not passed:
 			var target_direction = (player.global_position - global_position).normalized()
 			var target_angle = target_direction.angle()
-			
+
 			# Smooth rotation toward target angle
 			rotation = lerp_angle(rotation, target_angle, delta * turn_speed)
 			direction = Vector2.RIGHT.rotated(rotation)
@@ -29,39 +29,44 @@ func _physics_process(delta):
 
 	global_position += direction * speed * delta
 
-	if global_position.distance_to(player.global_position) < leniency_threshold:
+	if not passed and global_position.distance_to(player.global_position) < leniency_threshold:
 		passed = true
-		await get_tree().create_timer(track_resume_delay).timeout
-		passed = false
+		_resume_tracking_later()
 
 	$AnimationPlayer.play("Track")
 
+## Pauses homing briefly after passing the player; one timer per pass instead
+## of one per frame.
+func _resume_tracking_later() -> void:
+	await get_tree().create_timer(track_resume_delay).timeout
+	passed = false
+
 func reflect():
 	reflected = true
-	
+
 	var hitbox = $Hitbox
 	var collider = $Collider
-	
+
 	# hitbox: belongs to layer 6, collides with layer 9
 	hitbox.collision_layer = 1 << 5             # Layer 6
 	hitbox.collision_mask = 1 << 8              # Collides with Layer 9
-	
+
 	# collider: collides with layers 2 and 3
 	collider.collision_mask = (1 << 2)  # Collides with Layer 3
-	
+
 	var sprite = $Sprite2D  # Replace with your actual node path
 	var shader_material := sprite.material as ShaderMaterial
-	
+
 	# Set flash color to #0076e3 (RGB: 0, 118, 227)
 	shader_material.set_shader_parameter("flash_color", Color8(0, 118, 227))
-	
+
 	# Set flash value to max (fully show the flash color)
 	shader_material.set_shader_parameter("flash_value", 0.60)
-	
+
 	$PointLight2D.color = Color.html("#0076e3")
-	
-	var mouseDirection: Vector2 = (get_global_mouse_position() - global_position).normalized()
-	rotation = mouseDirection.angle()
+
+	var mouse_direction: Vector2 = (get_global_mouse_position() - global_position).normalized()
+	rotation = mouse_direction.angle()
 
 func _on_collider_body_entered(body: Node2D) -> void:
 	# If it's the player and the player is not blocking, or it's another object, destroy the missile

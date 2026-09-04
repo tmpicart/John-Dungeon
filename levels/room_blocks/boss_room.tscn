@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://dgiujaj1xoyn7"]
+[gd_scene load_steps=9 format=3 uid="uid://dgiujaj1xoyn7"]
 
 [ext_resource type="Texture2D" uid="uid://r7se2pkijaca" path="res://assets/tilesets/tileset_dungeon.png" id="1_gp13s"]
-[ext_resource type="Script" uid="uid://5coqm14khml8" path="res://levels/room_blocks/boss_room.gd" id="1_vks44"]
 [ext_resource type="PackedScene" uid="uid://rhhukbmueh53" path="res://entities/boss/the_sorceress/the_sorceress.tscn" id="2_h5iji"]
 [ext_resource type="PackedScene" uid="uid://bps0k3jhyu0ia" path="res://entities/interactables/doors/no_open.tscn" id="4_tgjfn"]
 
@@ -232,7 +231,6 @@ polygon = PackedVector2Array(-24.5103, -12.589, -18.495, -12.589, -18.495, -6.85
 
 [node name="Bossroom" type="Node2D"]
 z_index = -1
-script = ExtResource("1_vks44")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_mpjga")

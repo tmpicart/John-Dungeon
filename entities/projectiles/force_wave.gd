@@ -1,28 +1,31 @@
 extends Node2D
 
-@export var speed := 1
-@export var damage:int = 3
+## Straight force wave: constant px/s drift; destroys on leaving the screen or
+## on touching the player's hurtbox. Unblockable — shields never stop it.
+
+@export var speed := 60.0
+@export var damage: int = 3
+
+## PlayerHurtbox skips its parry branch for this surface.
+var unblockable := true
 
 var shooter: CharacterBody2D = null
-var player: CharacterBody2D	
 
-func _physics_process(_delta):
-	var direction = Vector2.RIGHT.rotated(rotation)
-	global_position += speed * direction 
+@onready var hitbox: Area2D = $Hitbox
+
+func _ready() -> void:
+	hitbox.area_entered.connect(_on_hitbox_area_entered)
+
+func _physics_process(delta: float) -> void:
+	global_position += Vector2.RIGHT.rotated(rotation) * speed * delta
 	$AnimationPlayer.play("Play")
 
-func destroy():
+func destroy() -> void:
 	queue_free()
 
-func _on_visible_on_screen_notifier_2d_screen_exited():
+func _on_visible_on_screen_notifier_2d_screen_exited() -> void:
 	destroy()
 
-func _on_hitbox_body_entered(body):
-	player = get_tree().get_first_node_in_group("Player")
-	if body != shooter and body.get_groups() != self.get_groups() and player.blocking == false:
+func _on_hitbox_area_entered(area: Area2D) -> void:
+	if area is PlayerHurtbox:
 		destroy()
-		
-func reflect():
-	player = get_tree().get_first_node_in_group("Player")
-	player.blocking = false
-	player.take_damage(damage)

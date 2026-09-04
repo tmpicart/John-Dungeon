@@ -1,10 +1,7 @@
 extends Node
 class_name State
 
-## Requests a state transition. `to_state` may be a State node reference
-## (typed, preferred) or a node-name String (legacy bridge, removed in R-24
-## with the boss migration).
-signal transition_requested(from_state: State, to_state)
+signal transition_requested(from_state: State, to_state: State)
 
 ## The entity this state machine belongs to, injected by StateControl.
 var actor: Node
@@ -24,8 +21,8 @@ func physics_update(_delta: float) -> void:
 func handle_input(_event: InputEvent) -> void:
 	pass
 
-## Requests a transition from this state to `to_state` (State reference or String name).
-func transition_to(to_state) -> void:
+## Requests a transition from this state to `to_state`.
+func transition_to(to_state: State) -> void:
 	transition_requested.emit(self, to_state)
 
 ## Fails fast if any exported node property was left unassigned in the Inspector.
