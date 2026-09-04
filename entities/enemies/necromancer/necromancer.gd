@@ -2,16 +2,10 @@ extends "res://entities/enemies/base_enemy.gd"
 
 var retreat = false
 
-func summon():
-	if attacking or is_dead or is_hit or stunned:
-		return
+func summon() -> bool:
+	return await run_action_animation("Summon", $summon_sfx)
 
-	attacking = true
-	$AnimationPlayer.play("Summon")
-	$summon_sfx.play() # Uses attack_sfx for summoning sounds
-	await wait_for_animation("Summon")
-	attacking = false
-
-func take_damage(num):
-	super.take_damage(num)
+func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
+	super.take_damage(dmg, from_position)
 	retreat = true
+

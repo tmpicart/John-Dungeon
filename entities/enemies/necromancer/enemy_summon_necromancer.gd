@@ -8,22 +8,29 @@ class_name EnemySummonNecromancer
 @export var summon_radius: int = 5  # In tiles
 @export var min_summons: int = 2
 @export var max_summons: int = 5
+## Seconds before the necromancer may summon again.
+@export var summon_cooldown_duration := 10.0
 
 var tilemap_layer: TileMapLayer
-var can_summon := true
 var positions := []
-const DEG_TO_RAD = PI / 180
+
+var _summon_cooldown: Timer
 
 func _ready():
 	tilemap_layer = find_tilemap_node()
 	if tilemap_layer == null:
 		push_error("TileMapLayer not found in the scene!")
 
+	_summon_cooldown = Timer.new()
+	_summon_cooldown.one_shot = true
+	add_child(_summon_cooldown)
+
 func enter() -> void:
-	if can_summon and not enemy.is_dead:
-		await enemy.summon()
-		can_summon = false
-		$summon_cooldown.start()
+	if _summon_cooldown.is_stopped() and not enemy.is_dead:
+		var completed: bool = await enemy.summon()
+		if completed:
+			spawn_enemies()
+		_summon_cooldown.start(summon_cooldown_duration)
 
 	transition_to("EnemyChase")
 
@@ -76,9 +83,3 @@ func find_tilemap_node() -> TileMapLayer:
 			return child
 	return null
 
-func _on_summon_cooldown_timeout():
-	can_summon = true
-
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "Summon":
-		spawn_enemies()

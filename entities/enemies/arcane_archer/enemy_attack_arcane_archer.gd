@@ -2,27 +2,28 @@ extends EnemyAttack
 class_name EnemyAttackArcaneArcher
 
 @export var projectile: PackedScene = null
-@export var rayCast: RayCast2D
-
-var can_attack = true
+@export var ray_cast: RayCast2D
 
 func enter() -> void:
-	# Common attack behavior from base class
-	if can_attack:
-		await enemy.attack()
+	enemy.velocity = Vector2.ZERO
+	if not enemy.can_attack():
+		transition_to("EnemyChase")
+		return
+
+	var completed: bool = await enemy.attack()
+	if not completed:
+		return
+
+	if projectile and not enemy.is_hit and not enemy.is_dead:
 		spawn_projectile()
-		can_attack = false
-		$attack_cooldown.start()
+
 	transition_to("EnemyChase")
 
 func spawn_projectile():
-	if projectile and not enemy.is_hit and not enemy.is_dead:
-		var arrow = projectile.instantiate()
-		get_tree().current_scene.add_child(arrow)
-		arrow.add_to_group("Enemies")
-		
-		arrow.global_position = rayCast.global_position
-		arrow.global_rotation = rayCast.global_rotation
+	var arrow = projectile.instantiate()
+	get_tree().current_scene.add_child(arrow)
+	arrow.add_to_group("Enemies")
 
-func _on_attack_cooldown_timeout() -> void:
-	can_attack = true
+	arrow.global_position = ray_cast.global_position
+	arrow.global_rotation = ray_cast.global_rotation
+

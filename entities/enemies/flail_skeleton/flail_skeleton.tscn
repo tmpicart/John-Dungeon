@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://cvk5t5c7vvgv6"]
+[gd_scene load_steps=33 format=3 uid="uid://cvk5t5c7vvgv6"]
 
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="1_4ypjl"]
 [ext_resource type="Script" uid="uid://dejbi0wub3y8c" path="res://entities/enemies/flail_skeleton/flail_skeleton.gd" id="1_f6r1p"]
@@ -13,6 +13,8 @@
 [ext_resource type="AudioStream" uid="uid://6qjeassam43e" path="res://assets/sounds/enemies/skeleton/fs_concrete_soldier_crouch_n05.wav" id="12_mmbep"]
 [ext_resource type="AudioStream" uid="uid://brkww44g4c71" path="res://assets/sounds/enemies/skeleton/leeks_break_bone_crack_body_arm_13.wav" id="12_v12wj"]
 [ext_resource type="AudioStream" uid="uid://cpqix0gqavlh5" path="res://assets/sounds/enemies/skeleton/swsh_swing_3_large_03_ddumais_none.wav" id="13_ngujd"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="14_hurt"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="15_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_u6lgf"]
 resource_local_to_scene = true
@@ -396,7 +398,7 @@ collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_f6r1p")
-HP = 3
+hp = 3
 damage = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -451,6 +453,14 @@ navigation_agent = NodePath("../../NavigationAgent2D")
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("5_gev0g")
+enemy = NodePath("../..")
+
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("14_hurt")
+enemy = NodePath("../..")
+
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("15_stun")
 enemy = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

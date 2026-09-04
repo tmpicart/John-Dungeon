@@ -3,12 +3,13 @@ class_name EnemyRetreat
 
 @export var enemy: CharacterBody2D
 @export var navigation_agent: NavigationAgent2D
-@export var speed := 2500
+## Retreat speed in px/s (physics-tick independent).
+@export var speed := 42
 @export var retreat_distance := 100
 @export var wall_avoid_distance := 25
 @export var retreat_time_limit := 2.0  # New time limit for retreating
 @export var path_update_interval := 0.2
-@export var rayCast: RayCast2D
+@export var ray_cast: RayCast2D
 
 var player: CharacterBody2D
 var time_since_last_path := 0.0
@@ -46,19 +47,19 @@ func physics_update(delta: float) -> void:
 		return
 
 	# Aim ray in the retreat direction and check for wall
-	rayCast.global_rotation = retreat_direction.angle()
-	rayCast.force_raycast_update()
+	ray_cast.global_rotation = retreat_direction.angle()
+	ray_cast.force_raycast_update()
 
-	if rayCast.is_colliding():
-		var collision_point = rayCast.get_collision_point()
+	if ray_cast.is_colliding():
+		var collision_point = ray_cast.get_collision_point()
 		var distance_to_collision = (enemy.global_position - collision_point).length()
 
 		if distance_to_collision <= wall_avoid_distance:
 			# Wall avoidance logic: Find a new direction
 			# Rotate retreat direction randomly within a 90 degree range to avoid the wall
 			retreat_direction = retreat_direction.rotated(deg_to_rad(90))
-			rayCast.global_rotation = retreat_direction.angle()
-			rayCast.force_raycast_update()
+			ray_cast.global_rotation = retreat_direction.angle()
+			ray_cast.force_raycast_update()
 
 	# Update retreat target if path time expired
 	time_since_last_path += delta
@@ -78,4 +79,4 @@ func physics_update(delta: float) -> void:
 		return
 
 	var path_direction = (next_position - enemy.global_position).normalized()
-	enemy.velocity = path_direction * speed * delta
+	enemy.velocity = path_direction * speed

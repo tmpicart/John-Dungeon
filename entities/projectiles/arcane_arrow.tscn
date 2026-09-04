@@ -43,4 +43,8 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_r4ntl")
 debug_color = Color(0.933354, 0, 0, 0.419608)
 
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+rect = Rect2(-8, -8, 16, 16)
+
 [connection signal="body_entered" from="Collider" to="." method="_on_collider_body_entered"]
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_screen_exited"]

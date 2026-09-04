@@ -5,5 +5,10 @@ class_name EnemyAttack
 
 func enter() -> void:
 	enemy.velocity = Vector2.ZERO
-	await enemy.attack()
-	transition_to("EnemyChase")
+	if not enemy.can_attack():
+		transition_to("EnemyChase")
+		return
+	if await enemy.attack():
+		transition_to("EnemyChase")
+	# Interrupted flows (hit/stun/death) route themselves to their states.
+

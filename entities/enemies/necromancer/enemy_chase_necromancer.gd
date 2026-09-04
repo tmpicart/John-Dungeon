@@ -1,7 +1,7 @@
 extends EnemyChase
 class_name EnemyChaseNecromancer
 
-@export var rayCast: RayCast2D
+@export var ray_cast: RayCast2D
 @export var summon_chance := 0.25
 
 func physics_update(delta: float) -> void:
@@ -15,7 +15,7 @@ func physics_update(delta: float) -> void:
 	if distance > chase_drop_distance:
 		transition_to("EnemyIdle")
 		return
-	
+
 	# Switch to retreat state if the enemy is retreating
 	if enemy.retreat and not enemy.is_hit:
 		enemy.retreat = false
@@ -27,9 +27,9 @@ func physics_update(delta: float) -> void:
 		enemy.velocity = Vector2.ZERO  # Stop moving when in attack range
 
 		var angle_to_player = to_player.angle()
-		rayCast.global_rotation = angle_to_player
+		ray_cast.global_rotation = angle_to_player
 
-		if rayCast.is_colliding() and rayCast.get_collider() == player:
+		if ray_cast.is_colliding() and ray_cast.get_collider() == player:
 			if randf() < summon_chance:
 				transition_to("EnemySummon")
 			else:
@@ -51,4 +51,5 @@ func physics_update(delta: float) -> void:
 		return
 
 	var path_direction = (next_position - enemy.global_position).normalized()
-	enemy.velocity = path_direction * speed * delta
+	enemy.velocity = path_direction * speed
+
