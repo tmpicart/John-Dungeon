@@ -15,6 +15,6 @@ offset_right = 106.0
 offset_bottom = 23.0
 grow_horizontal = 2
 scale = Vector2(0.3, 0.3)
-text = "[E] TO INTERACT"
+text = ""
 horizontal_alignment = 1
 vertical_alignment = 1

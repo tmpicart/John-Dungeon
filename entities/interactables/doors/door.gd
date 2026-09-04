@@ -1,20 +1,23 @@
 extends Node2D
 
-@onready var interaction_area: InteractionArea = $InteractionArea
-@onready var animation = $AnimationPlayer
-@onready var time_in_seconds = 1
-var open = false
+const OPEN_TIME := 1.0
 
-func _ready():
-	interaction_area.interact = Callable(self, "_on_interact")
-	
-	
-func _on_interact():
-	if !open:
-		open = true
-		animation.play("open")
-		await get_tree().create_timer(time_in_seconds).timeout
-		get_node("StaticBody2D/CollisionShape2D").disabled = open
-		get_node("InteractionArea/CollisionShape2D").disabled = open
-	
+var open := false
 
+@onready var interaction_area: Interactable = $InteractionArea
+@onready var animation: AnimationPlayer = $AnimationPlayer
+@onready var static_collision: CollisionShape2D = $StaticBody2D/CollisionShape2D
+
+
+func _ready() -> void:
+	interaction_area.interacted.connect(_on_interact)
+
+
+func _on_interact() -> void:
+	if open:
+		return
+	open = true
+	animation.play("open")
+	await get_tree().create_timer(OPEN_TIME).timeout
+	static_collision.disabled = true
+	interaction_area.enabled = false

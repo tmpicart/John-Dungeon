@@ -3,18 +3,21 @@ extends Node2D
 const LOCK_OPEN_DELAY := 0.5
 const MESSAGE_TIME := 1.0
 
-@onready var interaction_area: InteractionArea = $InteractionArea
-@onready var animation = $AnimationPlayer
-@onready var warning = $Label
-var open = false
+var open := false
+
+@onready var interaction_area: Interactable = $InteractionArea
+@onready var animation: AnimationPlayer = $AnimationPlayer
+@onready var warning: Label = $Label
+@onready var open_sfx: AudioStreamPlayer2D = $AudioStreamPlayer2D
+@onready var static_collision: CollisionShape2D = $StaticBody2D/CollisionShape2D
 
 
-func _ready():
-	interaction_area.interact = Callable(self, "_on_interact")
+func _ready() -> void:
+	interaction_area.interacted.connect(_on_interact)
 	warning.hide()
-	
-	
-func _on_interact():
+
+
+func _on_interact() -> void:
 	if open:
 		return
 	if not Global.has_boss_key:
@@ -25,8 +28,7 @@ func _on_interact():
 	Global.has_boss_key = false
 	open = true
 	animation.play("open")
-	$AudioStreamPlayer2D.play()
+	open_sfx.play()
 	await get_tree().create_timer(LOCK_OPEN_DELAY).timeout
-	get_node("StaticBody2D/CollisionShape2D").disabled = true
-	get_node("InteractionArea/CollisionShape2D").disabled = true
-
+	static_collision.disabled = true
+	interaction_area.enabled = false

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_wtffu"]
 [ext_resource type="Texture2D" uid="uid://bqtcnoupjlua2" path="res://assets/objects/door_2_animation.png" id="2_exnfa"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interaction_area.tscn" id="3_iowql"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_iowql"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ncsu4"]
 size = Vector2(32, 32)
@@ -80,7 +80,7 @@ hframes = 6
 vframes = 2
 
 [node name="InteractionArea" parent="." instance=ExtResource("3_iowql")]
-action_name = "Open Door"
+prompt = "Open Door"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 position = Vector2(0, -16)

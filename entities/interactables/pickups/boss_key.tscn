@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dw4lmk58x05ck" path="res://entities/interactables/pickups/boss_key.gd" id="1_uhj3g"]
 [ext_resource type="Texture2D" uid="uid://ws3ngcsd20v1" path="res://assets/items/key.png" id="2_xn8gs"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interaction_area.tscn" id="3_aq0md"]
+[ext_resource type="PackedScene" path="res://entities/interactables/pickups/pickup.tscn" id="3_aq0md"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_daybg"]
 radius = 20.025
@@ -10,6 +10,8 @@ radius = 20.025
 [node name="BossKey" type="Node2D"]
 z_index = 100
 script = ExtResource("1_uhj3g")
+sprite_path = NodePath("Sprite2D")
+loot_tier = -1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_xn8gs")
@@ -17,6 +19,8 @@ hframes = 2
 frame = 1
 
 [node name="InteractionArea" parent="." instance=ExtResource("3_aq0md")]
+prompt = "Pick Up"
+auto_pickup = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_daybg")
