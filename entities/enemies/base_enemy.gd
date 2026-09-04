@@ -1,9 +1,10 @@
 extends CharacterBody2D
+class_name BaseEnemy
 
 ## Base for all enemies: stats, signal-driven action flows, and interrupt routing.
 ## Interrupts (hit / parry-stun / death) cancel in-flight action flows via a flow
-## token and hand control to the interrupt states (EnemyHurt / EnemyStun) through
-## the State Control node.
+## token and hand control to the interrupt states (EnemyHurt / EnemyStun)
+## through State Control via the typed state exports below.
 
 const FLIP_THRESHOLD := 0.1
 
@@ -11,11 +12,19 @@ const FLIP_THRESHOLD := 0.1
 @export var damage: int = 1
 ## Minimum seconds between attacks; 0 disables the cooldown.
 @export var attack_cooldown_duration := 0.0
+## Set when the attack sound is triggered by animation tracks, not by code.
+@export var attack_sfx_from_animation := false
+## Interrupt routing into the state machine (validated in _ready).
+@export var state_control: StateControl
+@export var hurt_state: State
+@export var stun_state: State
 
 var attacking = false
 var stunned = false
 var is_dead = false
 var is_hit = false
+## Set on hit; consumed by EnemyChase when configured to retreat after damage.
+var retreat_requested = false
 ## Position the last hit came from; consumed by the knockback pass (D-1).
 var last_hit_from := Vector2.INF
 var last_velocity_x := 0.0
@@ -34,6 +43,9 @@ func _ready() -> void:
 	_attack_cooldown = Timer.new()
 	_attack_cooldown.one_shot = true
 	add_child(_attack_cooldown)
+
+	if state_control and (hurt_state == null or stun_state == null):
+		push_error("%s: state_control assigned but hurt_state/stun_state missing" % get_path())
 
 
 func _physics_process(_delta):
@@ -82,8 +94,10 @@ func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
 		kill()
 		return
 
-	if get_node_or_null("State Control"):
-		get_node("State Control").transition_to("EnemyHurt")
+	retreat_requested = true
+
+	if state_control:
+		state_control.transition_to(hurt_state)
 		return
 
 	# No state machine attached: recover in place.
@@ -99,8 +113,8 @@ func stun() -> void:
 
 	_cancel_flows()
 
-	if get_node_or_null("State Control"):
-		get_node("State Control").transition_to("EnemyStun")
+	if state_control:
+		state_control.transition_to(stun_state)
 		return
 
 	# No state machine attached: recover in place.
@@ -128,7 +142,8 @@ func kill():
 func attack() -> bool:
 	if not can_attack():
 		return false
-	var completed := await run_action_animation("Attack", attack_sfx)
+	var sfx = null if attack_sfx_from_animation else attack_sfx
+	var completed := await run_action_animation("Attack", sfx)
 	if completed:
 		start_attack_cooldown()
 	return completed

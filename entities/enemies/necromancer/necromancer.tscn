@@ -1,14 +1,14 @@
 [gd_scene format=3 uid="uid://ci70mpdu1yk5g"]
 
-[ext_resource type="Script" uid="uid://dgxbx852w1ogj" path="res://entities/enemies/necromancer/necromancer.gd" id="1_pwncg"]
+[ext_resource type="Script" uid="uid://bqejjo6stwwg" path="res://entities/enemies/base_enemy.gd" id="1_pwncg"]
 [ext_resource type="Texture2D" uid="uid://k5puvnbpg420" path="res://assets/enemies/enemy_necromancer.png" id="2_0u5aw"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="2_byyqd"]
 [ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://systems/state_core/state_control.gd" id="4_f2shu"]
 [ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://entities/enemies/states/enemy_idle.gd" id="5_l3tat"]
-[ext_resource type="Script" uid="uid://bsvmvi373paec" path="res://entities/enemies/necromancer/enemy_chase_necromancer.gd" id="6_eko0r"]
-[ext_resource type="Script" uid="uid://ck5gaaab0fvfa" path="res://entities/enemies/necromancer/enemy_attack_necromancer.gd" id="7_woxk7"]
+[ext_resource type="Script" uid="uid://bj8p1bwlk2xlw" path="res://entities/enemies/states/enemy_chase.gd" id="6_eko0r"]
+[ext_resource type="Script" uid="uid://lmqo5i4nwfec" path="res://entities/enemies/states/enemy_attack.gd" id="7_woxk7"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://entities/projectiles/magic_missile.tscn" id="8_ctycn"]
-[ext_resource type="Script" uid="uid://dcc0go2d02ckp" path="res://entities/enemies/necromancer/enemy_summon_necromancer.gd" id="9_vb21g"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_summon.gd" id="9_vb21g"]
 [ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://entities/enemies/flail_skeleton/flail_skeleton.tscn" id="10_eo0t0"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://entities/projectiles/summon_effect.tscn" id="11_eupuc"]
 [ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://entities/enemies/states/enemy_retreat.gd" id="12_f46sl"]
@@ -275,13 +275,16 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
-[node name="Necromancer" type="CharacterBody2D" unique_id=862063401 groups=["Enemies"]]
+[node name="Necromancer" type="CharacterBody2D" unique_id=862063401 groups=["Enemies"] node_paths=PackedStringArray("state_control", "hurt_state", "stun_state")]
 y_sort_enabled = true
 scale = Vector2(0.75, 0.75)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_pwncg")
+state_control = NodePath("State Control")
+hurt_state = NodePath("State Control/EnemyHurt")
+stun_state = NodePath("State Control/EnemyStun")
 hp = 5
 attack_cooldown_duration = 2.0
 
@@ -302,46 +305,53 @@ shape = SubResource("CapsuleShape2D_pdttr")
 script = ExtResource("4_f2shu")
 initial_state = NodePath("EnemyIdle")
 
-[node name="EnemyIdle" type="Node" parent="State Control" unique_id=654133669 node_paths=PackedStringArray("enemy")]
+[node name="EnemyIdle" type="Node" parent="State Control" unique_id=654133669 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("5_l3tat")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("ray_cast", "enemy", "navigation_agent")]
+[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "summon_state", "aim_ray_cast")]
 script = ExtResource("6_eko0r")
-ray_cast = NodePath("../../AimRaycast")
-enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
+idle_state = NodePath("../EnemyIdle")
+attack_state = NodePath("../EnemyAttack")
+retreat_state = NodePath("../EnemyRetreat")
+summon_state = NodePath("../EnemySummon")
+aim_ray_cast = NodePath("../../AimRaycast")
 chase_drop_distance = 300
 attempt_attack_range = 200
+retreat_on_hit = true
+summon_chance = 0.25
 
-[node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("ray_cast", "enemy")]
+[node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("chase_state", "aim_ray_cast")]
 script = ExtResource("7_woxk7")
 projectile = ExtResource("8_ctycn")
-ray_cast = NodePath("../../AimRaycast")
-enemy = NodePath("../..")
+aim_ray_cast = NodePath("../../AimRaycast")
+chase_state = NodePath("../EnemyChase")
+projectile_offsets = Array[Vector2]([Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)])
 
-[node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("enemy")]
+[node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("chase_state", "summon_sfx")]
 script = ExtResource("9_vb21g")
-enemy = NodePath("../..")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
+summon_sfx = NodePath("../../summon_sfx")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("enemy", "navigation_agent", "ray_cast")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "ray_cast")]
 script = ExtResource("12_f46sl")
-enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
+chase_state = NodePath("../EnemyChase")
+ray_cast = NodePath("../../AimRaycast")
 speed = 100
 retreat_distance = 125
 wall_avoid_distance = 50
-ray_cast = NodePath("../../AimRaycast")
 
-[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("17_hurt")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("18_stun")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1493848902]
 libraries/ = SubResource("AnimationLibrary_yixv0")

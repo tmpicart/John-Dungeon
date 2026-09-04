@@ -1,4 +1,5 @@
 extends Node
+class_name StateControl
 
 @export var initial_state: State
 

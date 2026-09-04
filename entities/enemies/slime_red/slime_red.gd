@@ -1,15 +1,16 @@
 extends "res://entities/enemies/base_enemy.gd"
 
-func _physics_process(_delta):
-	if is_dead or is_hit:
-		return
+## The red slime dies to any damage or parry and explodes when its pounce
+## connects with anything.
 
-	move_and_slide()  # Godot's move_and_slide already accounts for delta internally
+@export var pounce_state: EnemyPounce
 
-	if get_slide_collision_count() > 0 and attacking:
-		explode()
-
-	handle_animations()
+func _ready() -> void:
+	super()
+	if pounce_state:
+		pounce_state.pounce_contact.connect(explode)
+	else:
+		push_error("%s: pounce_state is not assigned" % get_path())
 
 func explode():
 	is_dead = true
@@ -24,4 +25,5 @@ func stun() -> void:
 
 func take_damage(_dmg: int, _from_position: Vector2 = Vector2.INF) -> void:
 	kill()
+
 
