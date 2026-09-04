@@ -1,18 +1,39 @@
 extends Node2D
 
-@onready var interaction_area: InteractionArea = $InteractionArea
-@export var Path: PackedScene = null
+@export var drop_scene: PackedScene = null
+@export var loot_table: LootTable = null
+@export var loot_value := 0
+@export var scatter_strength := 20.0
 
-func _ready():
-	interaction_area.interact = Callable(self, "_on_interact")
-	
-func _drop_key():
-	if Path:
-		var item = Path.instantiate()
-		owner.add_child(item)
-		item.global_position = self.global_position + Vector2(0, 15)
-	
-func _on_interact():
-		get_node("InteractionArea/CollisionShape2D").disabled = true
-		$Sprite2D.frame = 2
-		_drop_key()
+@onready var interaction_area: Interactable = $InteractionArea
+@onready var sprite: Sprite2D = $Sprite2D
+
+
+func _ready() -> void:
+	interaction_area.interacted.connect(_on_interact)
+
+
+func _on_interact() -> void:
+	sprite.frame = 2
+	_drop_key()
+	_drop_loot()
+
+
+func _drop_key() -> void:
+	if drop_scene == null:
+		return
+	_spawn(drop_scene)
+
+
+func _drop_loot() -> void:
+	if loot_table == null or loot_value <= 0:
+		return
+	for scene in loot_table.roll(loot_value):
+		_spawn(scene)
+
+
+func _spawn(scene: PackedScene) -> void:
+	var item: PickupItem = scene.instantiate()
+	owner.add_child(item)
+	item.global_position = global_position + Vector2(0, 15)
+	item.scatter(scatter_strength)

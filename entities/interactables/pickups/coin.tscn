@@ -1,7 +1,7 @@
 [gd_scene load_steps=13 format=3 uid="uid://cqbfd3ribv0bg"]
 
 [ext_resource type="Script" uid="uid://ctb6md8echaht" path="res://entities/interactables/pickups/coin.gd" id="1_80edu"]
-[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://systems/interaction/interaction_area.gd" id="2_tgf2n"]
+[ext_resource type="PackedScene" path="res://entities/interactables/pickups/pickup.tscn" id="2_tgf2n"]
 [ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_1.png" id="3_cbks3"]
 [ext_resource type="Texture2D" uid="uid://cq260knfg0d18" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_2.png" id="4_qgs5s"]
 [ext_resource type="Texture2D" uid="uid://cqd1dn42cg8xi" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_3.png" id="5_h0fnp"]
@@ -43,9 +43,11 @@ stream_2/stream = ExtResource("9_s1y4p")
 [node name="Coin" type="Node2D"]
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_80edu")
+sprite_path = NodePath("AnimatedSprite2D")
+loot_tier = 1
+loot_value = 1
 
-[node name="InteractionArea" type="Area2D" parent="."]
-script = ExtResource("2_tgf2n")
+[node name="InteractionArea" parent="." instance=ExtResource("2_tgf2n")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_0vsgq")
@@ -58,5 +60,3 @@ frame_progress = 0.922801
 stream = SubResource("AudioStreamRandomizer_2tp37")
 volume_db = -5.0
 
-[connection signal="area_entered" from="InteractionArea" to="." method="_on_interaction_area_area_entered"]
-[connection signal="body_entered" from="InteractionArea" to="." method="_on_interaction_area_body_entered"]

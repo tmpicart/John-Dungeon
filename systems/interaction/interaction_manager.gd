@@ -1,45 +1,83 @@
 extends Node2D
 
-@onready var player = get_tree().get_first_node_in_group("Player")
-@onready var label = $InteractionText
+## Interaction registry + world-space prompt. Interactables register on player
+## contact; the nearest enabled area wins and is triggered by the `interact`
+## action. Nearest is re-resolved only when the registry changes or on input —
+## no per-frame scans.
 
-const base_txt = "[F] to "
+const PROMPT_FALLBACK := "[?] "
+const INTERACT_ACTION := "interact"
 
-var active_areas = []
-var can_interact = true
+var _active_areas: Array[Interactable] = []
+var _best_area: Interactable = null
+var _locked := false
+
+@onready var label: Label = $InteractionText
 
 
-func register_area(area: InteractionArea):
-	active_areas.push_back(area)
-	
-func unregister_area(area: InteractionArea):
-	var index = active_areas.find(area)
-	if index != -1:
-		active_areas.remove_at(index)
+func register_area(area: Interactable) -> void:
+	if _active_areas.has(area):
+		return
+	_active_areas.append(area)
+	_select_best()
 
-func _process(_delta):
-	if active_areas.size() > 0 && can_interact:
-		active_areas.sort_custom(_sort_by_distance_to_player)
-		label.text = base_txt + active_areas[0].action_name
-		label.global_position = active_areas[0].global_position
-		label.global_position.y -= 15
-		label.global_position.x -= (label.size.x / 2) - 42.5
-		label.show()
-	else:
+
+func unregister_area(area: Interactable) -> void:
+	_active_areas.erase(area)
+	if _best_area == area:
+		_best_area = null
+		_select_best()
+
+
+## Freeze hook for modals (dialogue, shop) and cutscene-style flows.
+func set_locked(value: bool) -> void:
+	_locked = value
+	_update_prompt()
+
+
+func _select_best() -> void:
+	_active_areas = _active_areas.filter(is_instance_valid)
+	_best_area = null
+	var best_distance := INF
+	var player: Node2D = Global.player
+	if player == null:
+		_update_prompt()
+		return
+	for area in _active_areas:
+		var distance := player.global_position.distance_to(area.global_position)
+		if distance < best_distance:
+			best_distance = distance
+			_best_area = area
+	_update_prompt()
+
+
+func _update_prompt() -> void:
+	if _locked or _best_area == null or _best_area.prompt.is_empty():
 		label.hide()
-		
-func _sort_by_distance_to_player(area1, area2):
-	player = get_tree().get_first_node_in_group("Player")
-	var area1_to_player = player.global_position.distance_to(area1.global_position)
-	var area2_to_player = player.global_position.distance_to(area2.global_position)
-	return area1_to_player < area2_to_player
-	
-func _input(event):
-	if event.is_action_pressed("Interact") && can_interact:
-		if active_areas.size() > 0:
-			can_interact = false
-			label.hide()
-			
-			await active_areas[0].interact.call()
-			
-			can_interact = true
+		return
+	label.text = _prompt_prefix() + _best_area.prompt
+	label.global_position = _best_area.global_position \
+			+ Vector2(-label.size.x * label.scale.x / 2.0, -15)
+	label.show()
+
+
+func _prompt_prefix() -> String:
+	var events := InputMap.action_get_events(INTERACT_ACTION)
+	if events.is_empty():
+		return PROMPT_FALLBACK
+	var event: InputEvent = events[0]
+	var key_text := ""
+	if event is InputEventKey:
+		var key: Key = event.physical_keycode if event.physical_keycode != KEY_NONE else event.keycode
+		key_text = OS.get_keycode_string(key)
+	else:
+		key_text = event.as_text()
+	return "[%s] " % key_text
+
+
+func _input(event: InputEvent) -> void:
+	if _locked or not event.is_action_pressed(INTERACT_ACTION):
+		return
+	_select_best()
+	if _best_area != null:
+		_best_area.try_interact()

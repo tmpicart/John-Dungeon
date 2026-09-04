@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b841tyqchsknk" path="res://entities/interactables/doors/key_door.gd" id="1_jb23n"]
 [ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://assets/objects/image.png" id="2_34n7f"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interaction_area.tscn" id="3_eki16"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_eki16"]
 [ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_5ta5b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xqm0d"]
@@ -91,6 +91,7 @@ text = "You Need a Key To Open!"
 horizontal_alignment = 1
 
 [node name="InteractionArea" parent="." instance=ExtResource("3_eki16")]
+prompt = "Open Door"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 position = Vector2(-1, -2.5)

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://chyde3qbuba2q" path="res://entities/npcs/tutorial_npc.gd" id="1_dvvii"]
 [ext_resource type="Texture2D" uid="uid://crf32w5xu0ss1" path="res://assets/npc/npc.png" id="2_bl230"]
-[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://systems/interaction/interaction_area.gd" id="3_lwwwf"]
+[ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://systems/interaction/interactable.gd" id="3_lwwwf"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://systems/dialogue/npc_dialog.tscn" id="4_3l3jg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5vtg3"]
@@ -29,6 +29,8 @@ position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_5vtg3")
 
 [node name="InteractionArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 1
 script = ExtResource("3_lwwwf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
@@ -37,5 +39,3 @@ shape = SubResource("RectangleShape2D_j1cut")
 
 [node name="NPC Dialog" parent="." instance=ExtResource("4_3l3jg")]
 
-[connection signal="body_entered" from="InteractionArea" to="InteractionArea" method="_on_body_entered"]
-[connection signal="body_exited" from="InteractionArea" to="InteractionArea" method="_on_body_exited"]

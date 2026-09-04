@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://cghx8ibvkewpx"]
+[gd_scene load_steps=8 format=3 uid="uid://cghx8ibvkewpx"]
 
 [ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://entities/interactables/chests/chest_no_key.gd" id="1_fwwkf"]
 [ext_resource type="Texture2D" uid="uid://co3p8g8khbhap" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/box_1/box_1_1.png" id="1_rwhoh"]
 [ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://entities/interactables/pickups/key.tscn" id="2_85n7e"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interaction_area.tscn" id="3_c47yh"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_c47yh"]
+[ext_resource type="Resource" path="res://systems/loot/loot_table_tier_1.tres" id="5_loot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sh3du"]
 size = Vector2(120, 120)
@@ -14,7 +15,8 @@ radius = 284.605
 [node name="chest" type="Node2D"]
 scale = Vector2(0.1, 0.1)
 script = ExtResource("1_fwwkf")
-Path = ExtResource("2_85n7e")
+drop_scene = ExtResource("2_85n7e")
+loot_table = ExtResource("5_loot")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(10, 10)
@@ -31,7 +33,8 @@ shape = SubResource("RectangleShape2D_sh3du")
 [node name="InteractionArea" parent="." instance=ExtResource("3_c47yh")]
 collision_layer = 16
 collision_mask = 1
-action_name = "Open"
+prompt = "Open"
+one_shot = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_uvggd")
