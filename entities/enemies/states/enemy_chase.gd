@@ -3,7 +3,8 @@ class_name EnemyChase
 
 @export var enemy: CharacterBody2D
 @export var navigation_agent: NavigationAgent2D
-@export var speed := 2000
+## Pathfinding speed in px/s (physics-tick independent).
+@export var speed := 33
 @export var chase_drop_distance := 200
 @export var attempt_attack_range := 15
 @export var path_update_interval := 0.5
@@ -26,7 +27,7 @@ func physics_update(delta: float) -> void:
 	if distance > chase_drop_distance:
 		transition_to("EnemyIdle")
 		return
-	
+
 	# Transition to Attack if in range
 	if distance <= attempt_attack_range:
 		transition_to("EnemyAttack")
@@ -46,4 +47,4 @@ func physics_update(delta: float) -> void:
 		return
 
 	var direction = (next_position - enemy.global_position).normalized()
-	enemy.velocity = direction * speed * delta
+	enemy.velocity = direction * speed

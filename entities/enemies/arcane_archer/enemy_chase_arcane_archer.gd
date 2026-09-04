@@ -1,8 +1,8 @@
 extends EnemyChase
 class_name EnemyChaseArcaneArcher
 
-@export var rayCast: RayCast2D
-@export var retreat_range := 50  
+@export var ray_cast: RayCast2D
+@export var retreat_range := 50
 
 func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
@@ -20,13 +20,13 @@ func physics_update(delta: float) -> void:
 		return
 
 	if distance <= attempt_attack_range:
-		var ray_origin = enemy.to_global(rayCast.position)
+		var ray_origin = enemy.to_global(ray_cast.position)
 		var offset_to_player = player.global_position - ray_origin
-		rayCast.global_rotation = offset_to_player.angle()
+		ray_cast.global_rotation = offset_to_player.angle()
 
 		enemy.velocity = Vector2.ZERO
 
-		if rayCast.is_colliding() and rayCast.get_collider() == player:
+		if ray_cast.is_colliding() and ray_cast.get_collider() == player:
 			transition_to("EnemyAttack")
 		return
 
@@ -47,4 +47,5 @@ func physics_update(delta: float) -> void:
 		return
 
 	var path_direction = (next_position - enemy.global_position).normalized()
-	enemy.velocity = path_direction * speed * delta
+	enemy.velocity = path_direction * speed
+

@@ -2,32 +2,31 @@ extends EnemyAttack
 class_name EnemyAttackNecromancer
 
 @export var projectile: PackedScene = null
-@export var rayCast: RayCast2D
-
-var can_attack = true
+@export var ray_cast: RayCast2D
 
 func enter() -> void:
-	# Common attack behavior from base class
-	if can_attack:
-		await enemy.attack()
-		can_attack = false
-		$attack_cooldown.start()
-	
+	enemy.velocity = Vector2.ZERO
+	if not enemy.can_attack():
+		transition_to("EnemyChase")
+		return
+
+	var completed: bool = await enemy.attack()
+	if not completed:
+		return
+
+	spawn_projectiles()
+
 	transition_to("EnemyChase")
 
 func spawn_projectiles():
-	if projectile and not enemy.is_dead:
-		var offsets = [Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)]
-		for offset in offsets:
-			var proj = projectile.instantiate()
-			get_tree().current_scene.add_child(proj)
-			proj.add_to_group("Enemies")
-			proj.global_position = enemy.global_position + offset
-			proj.global_rotation = rayCast.global_rotation
+	if projectile == null or enemy.is_dead:
+		return
 
-func _on_attack_cooldown_timeout() -> void:
-	can_attack = true
+	var offsets = [Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)]
+	for offset in offsets:
+		var proj = projectile.instantiate()
+		get_tree().current_scene.add_child(proj)
+		proj.add_to_group("Enemies")
+		proj.global_position = enemy.global_position + offset
+		proj.global_rotation = ray_cast.global_rotation
 
-func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if anim_name == "Attack":
-		spawn_projectiles()

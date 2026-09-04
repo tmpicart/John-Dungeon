@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://clp3rxlbhwvv6"]
+[gd_scene load_steps=27 format=3 uid="uid://clp3rxlbhwvv6"]
 
 [ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://assets/enemies/enemy_slime.png" id="1_75lyw"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="1_d5q7n"]
@@ -11,6 +11,8 @@
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="9_a6klr"]
 [ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://entities/enemies/hurtbox.gd" id="9_ijt3p"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="10_5m1q3"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="11_hurt"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="12_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oclns"]
 resource_local_to_scene = true
@@ -323,7 +325,7 @@ collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_dnrxr")
-HP = 2
+hp = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_oclns")
@@ -350,8 +352,16 @@ enemy = NodePath("../..")
 script = ExtResource("6_pt62m")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-speed = 3000
+speed = 50
 attempt_attack_range = 0
+
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("11_hurt")
+enemy = NodePath("../..")
+
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("12_stun")
+enemy = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

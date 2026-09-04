@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dl6hpi8ycnpdd"]
+[gd_scene load_steps=26 format=3 uid="uid://dl6hpi8ycnpdd"]
 
 [ext_resource type="Script" uid="uid://bjwe3f2g4ooa8" path="res://entities/enemies/slime_red/slime_red.gd" id="1_brr4j"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="1_pf7gv"]
@@ -12,6 +12,8 @@
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://assets/sounds/enemies/slime/353250__zuzek06__slimejump.wav" id="11_ya6ns"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="12_jslwe"]
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="13_kyiiu"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="14_hurt"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="15_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sfh3l"]
 resource_local_to_scene = true
@@ -207,12 +209,20 @@ enemy = NodePath("../..")
 script = ExtResource("7_vcgv5")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-speed = 4000
+speed = 67
 attempt_attack_range = 50
 
 [node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
 script = ExtResource("8_vkf7y")
-pounce_speed = 8000
+pounce_speed = 133
+enemy = NodePath("../..")
+
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("14_hurt")
+enemy = NodePath("../..")
+
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("15_stun")
 enemy = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

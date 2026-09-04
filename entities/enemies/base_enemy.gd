@@ -1,7 +1,28 @@
 extends CharacterBody2D
 
-@export var HP: int = 1
+## Base for all enemies: stats, signal-driven action flows, and interrupt routing.
+## Interrupts (hit / parry-stun / death) cancel in-flight action flows via a flow
+## token and hand control to the interrupt states (EnemyHurt / EnemyStun) through
+## the State Control node.
+
+const FLIP_THRESHOLD := 0.1
+
+@export var hp: int = 1
 @export var damage: int = 1
+## Minimum seconds between attacks; 0 disables the cooldown.
+@export var attack_cooldown_duration := 0.0
+
+var attacking = false
+var stunned = false
+var is_dead = false
+var is_hit = false
+## Position the last hit came from; consumed by the knockback pass (D-1).
+var last_hit_from := Vector2.INF
+var last_velocity_x := 0.0
+
+## Bumped by every interrupt; async flows compare their token to detect staleness.
+var _flow_id := 0
+var _attack_cooldown: Timer
 
 @onready var walk_sfx = $walk_sfx if has_node("walk_sfx") else null
 @onready var attack_sfx = $attack_sfx if has_node("attack_sfx") else null
@@ -9,13 +30,11 @@ extends CharacterBody2D
 @onready var death_sfx = $death_sfx if has_node("death_sfx") else null
 @onready var animation_player = $AnimationPlayer
 
-var attacking = false
-var stunned = false
-var is_dead = false
-var is_hit = false
+func _ready() -> void:
+	_attack_cooldown = Timer.new()
+	_attack_cooldown.one_shot = true
+	add_child(_attack_cooldown)
 
-const FLIP_THRESHOLD := 0.1
-var last_velocity_x := 0.0
 
 func _physics_process(_delta):
 	if is_dead or is_hit or attacking or stunned:
@@ -41,11 +60,14 @@ func handle_animations():
 
 		last_velocity_x = velocity.x
 
-func take_damage(dmg: int):
+## Damage entry point (Hurtbox routes here). `from_position` is where the hit
+## originated — stored for the knockback pass, not applied yet.
+func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
 	if is_dead or is_hit:
 		return
 
-	is_hit = true  # Immediately mark hit to prevent overlap
+	is_hit = true
+	_cancel_flows()
 
 	if stunned:
 		dmg *= 2
@@ -53,32 +75,37 @@ func take_damage(dmg: int):
 	if ouch_sfx:
 		ouch_sfx.play()
 
-	# Apply damage immediately
-	HP = max(HP - dmg, 0)
+	last_hit_from = from_position
+	hp = max(hp - dmg, 0)
 
-	# Handle death right away
-	if HP == 0:
+	if hp == 0:
 		kill()
 		return
 
-	# Play animation if still alive
-	if animation_player.has_animation("OnHit"):
-		await get_tree().process_frame
-		animation_player.stop()
-		animation_player.play("OnHit")
-		await wait_for_animation("OnHit")
+	if get_node_or_null("State Control"):
+		get_node("State Control").transition_to("EnemyHurt")
+		return
 
-	is_hit = false  # Only clear after animation is finished
+	# No state machine attached: recover in place.
+	await play_interrupt_animation("OnHit")
+	is_hit = false
 
 
-func stun():
+## Parry-stun entry point (called from PlayerHurtbox). Damage taken while
+## stunned is doubled.
+func stun() -> void:
+	if is_dead:
+		return
+
+	_cancel_flows()
+
+	if get_node_or_null("State Control"):
+		get_node("State Control").transition_to("EnemyStun")
+		return
+
+	# No state machine attached: recover in place.
 	stunned = true
-	attacking = false
-	if animation_player.has_animation("stun"):
-		await get_tree().process_frame
-		animation_player.stop()
-		animation_player.play("stun")
-		await wait_for_animation("stun")
+	await play_interrupt_animation("stun")
 	stunned = false
 
 func kill():
@@ -86,34 +113,76 @@ func kill():
 		return
 
 	is_dead = true
-	
+	_cancel_flows()
+
 	if animation_player.has_animation("Death"):
 		animation_player.play("Death")
 	if death_sfx:
 		death_sfx.play()
-	await wait_for_animation("Death")
+	if animation_player.has_animation("Death"):
+		await animation_player.animation_finished
 	queue_free()
 
-func attack():
+
+## Returns true when the attack completed; false when blocked or interrupted.
+func attack() -> bool:
+	if not can_attack():
+		return false
+	var completed := await run_action_animation("Attack", attack_sfx)
+	if completed:
+		start_attack_cooldown()
+	return completed
+
+func can_attack() -> bool:
+	if attack_cooldown_duration <= 0.0:
+		return true
+	return _attack_cooldown.is_stopped()
+
+func start_attack_cooldown() -> void:
+	if attack_cooldown_duration > 0.0:
+		_attack_cooldown.start(attack_cooldown_duration)
+
+## Shared action flow: locks movement, plays the animation + sfx, and waits it
+## out signal-driven. Returns false if an interrupt cancelled the flow.
+func run_action_animation(anim_name: String, sfx: AudioStreamPlayer2D = null) -> bool:
 	if attacking or is_dead or is_hit or stunned:
-		return
+		return false
 
 	attacking = true
-	if animation_player.has_animation("Attack"):
-		animation_player.play("Attack")
-	if attack_sfx:
-		attack_sfx.play()
-	await wait_for_animation("Attack")
+	var flow = _flow_id
+
+	if animation_player.has_animation(anim_name):
+		animation_player.play(anim_name)
+	if sfx:
+		sfx.play()
+
+	var completed := await _wait_for_animation(anim_name, flow)
+	attacking = false
+	return completed
+
+## Plays an interrupt animation and waits it out signal-driven.
+## Returns false if another interrupt took over while waiting.
+func play_interrupt_animation(anim_name: String) -> bool:
+	if not animation_player.has_animation(anim_name):
+		return true
+
+	await get_tree().process_frame
+	animation_player.stop()
+	animation_player.play(anim_name)
+	return await _wait_for_animation(anim_name, _flow_id)
+
+func _cancel_flows() -> void:
+	_flow_id += 1
 	attacking = false
 
-func wait_for_animation(anim_name: String) -> void:
-	# Wait until the animation starts
+## Signal-driven wait for `anim_name` to finish. Returns false when the flow
+## was superseded by an interrupt (token mismatch) instead of ending normally.
+func _wait_for_animation(anim_name: String, flow: int) -> bool:
 	while animation_player.current_animation != anim_name:
+		if flow != _flow_id:
+			return false
 		await get_tree().process_frame
 
-	while true:
-		await get_tree().process_frame
+	var finished_name: StringName = await animation_player.animation_finished
+	return flow == _flow_id and finished_name == anim_name
 
-		# Exit if animation finished or was interrupted
-		if animation_player.current_animation != anim_name:
-			break

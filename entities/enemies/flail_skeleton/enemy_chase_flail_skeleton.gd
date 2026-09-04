@@ -36,4 +36,4 @@ func physics_update(delta: float) -> void:
 		return
 
 	var direction = (next_position - enemy.global_position).normalized()
-	enemy.velocity = direction * speed * delta
+	enemy.velocity = direction * speed

@@ -1,13 +1,13 @@
 extends "res://entities/enemies/base_enemy.gd"
 
-func attack():
-	if attacking or is_dead or is_hit or stunned:
-		return
+## Base attack flow without attack_sfx — this skeleton's swing sound is
+## triggered by an animation value track, not by code.
 
-	attacking = true
-	if animation_player.has_animation("Attack"):
-		animation_player.play("Attack")
-	
-	# No attack_sfx played here
-	await wait_for_animation("Attack")
-	attacking = false
+func attack() -> bool:
+	if not can_attack():
+		return false
+	var completed := await run_action_animation("Attack")
+	if completed:
+		start_attack_cooldown()
+	return completed
+

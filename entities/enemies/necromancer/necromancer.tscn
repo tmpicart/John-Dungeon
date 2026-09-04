@@ -16,6 +16,8 @@
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="14_1t88p"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://assets/sounds/enemies/slime/353250__zuzek06__slimejump.wav" id="15_0uktk"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="16_v2j72"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="17_hurt"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="18_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f7sk2"]
 resource_local_to_scene = true
@@ -280,7 +282,8 @@ collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_pwncg")
-HP = 5
+hp = 5
+attack_cooldown_duration = 2.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1514341465]
 material = SubResource("ShaderMaterial_f7sk2")
@@ -303,23 +306,19 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("5_l3tat")
 enemy = NodePath("../..")
 
-[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("rayCast", "enemy", "navigation_agent")]
+[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("ray_cast", "enemy", "navigation_agent")]
 script = ExtResource("6_eko0r")
-rayCast = NodePath("../../AimRaycast")
+ray_cast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
 chase_drop_distance = 300
 attempt_attack_range = 200
 
-[node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("rayCast", "enemy")]
+[node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("ray_cast", "enemy")]
 script = ExtResource("7_woxk7")
 projectile = ExtResource("8_ctycn")
-rayCast = NodePath("../../AimRaycast")
+ray_cast = NodePath("../../AimRaycast")
 enemy = NodePath("../..")
-
-[node name="attack_cooldown" type="Timer" parent="State Control/EnemyAttack" unique_id=1477868263]
-wait_time = 2.0
-one_shot = true
 
 [node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("enemy")]
 script = ExtResource("9_vb21g")
@@ -327,18 +326,22 @@ enemy = NodePath("../..")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 
-[node name="summon_cooldown" type="Timer" parent="State Control/EnemySummon" unique_id=632023049]
-wait_time = 10.0
-one_shot = true
-
-[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("enemy", "navigation_agent", "rayCast")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("enemy", "navigation_agent", "ray_cast")]
 script = ExtResource("12_f46sl")
 enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
-speed = 6000
+speed = 100
 retreat_distance = 125
 wall_avoid_distance = 50
-rayCast = NodePath("../../AimRaycast")
+ray_cast = NodePath("../../AimRaycast")
+
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("17_hurt")
+enemy = NodePath("../..")
+
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+script = ExtResource("18_stun")
+enemy = NodePath("../..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1493848902]
 libraries/ = SubResource("AnimationLibrary_yixv0")
@@ -377,7 +380,4 @@ volume_db = -5.0
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1509397695]
 
-[connection signal="timeout" from="State Control/EnemyAttack/attack_cooldown" to="State Control/EnemyAttack" method="_on_attack_cooldown_timeout"]
-[connection signal="timeout" from="State Control/EnemySummon/summon_cooldown" to="State Control/EnemySummon" method="_on_summon_cooldown_timeout"]
-[connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemyAttack" method="_on_animation_player_animation_finished"]
-[connection signal="animation_finished" from="AnimationPlayer" to="State Control/EnemySummon" method="_on_animation_player_animation_finished"]
+
