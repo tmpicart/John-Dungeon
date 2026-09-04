@@ -13,7 +13,7 @@
 | Name | Path | Role |
 |---|---|---|
 | `Global` | `systems/global/global.gd` | player/door references (property-backed; re-resolves freed/missing refs), `Direction` enum, `has_boss_key` flag |
-| `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + "[F] to …" prompt label |
+| `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + binding-derived "…" prompt |
 
 ## Physics Layers
 | # | Name | # | Name |
@@ -27,9 +27,12 @@
 Render layers 1–2: Player, Enemies.
 
 ## Input Map
-`right/left/up/down` (WASD) · `attack` (LMB) · `block` (RMB) · `dash` (Space) · `pickup` (E) · `Interact` (F) · `bomb` (Q) · `potion` (Shift) · `quit` (Esc)
+`right/left/up/down` (WASD) · `attack` (LMB) · `block` (RMB) · `dash` (Space) · `interact` (E, physical) · `bomb` (Q) · `potion` (Shift) · `quit` (Esc) · `buy1`/`buy2` (1/2, temporary — R-32)
 
-> Note: `pickup` (E) is currently unwired — reserved for future use, do not remove. Binding consolidation (with `Interact`) happens during the interaction refactor (R-30).
+> `interact` is the single interaction action (R-30 consolidated the old `pickup`/`Interact` pair); controller support later = adding an event to the action. Prompts derive their key label from this binding.
+
+## Tests
+- `tests/interaction_smoke.tscn` — headless interaction-framework regression (32 assertions; exit 0 = pass): `Godot --headless --path . res://tests/interaction_smoke.tscn`
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`

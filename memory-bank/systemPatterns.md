@@ -20,7 +20,9 @@ Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a stat
 - Target: all combatants — including bosses — run on this framework
 
 ### Interaction
-Autoload `InteractionManager` (registry + prompt label) and `InteractionArea` (`action_name`, `interact` Callable). Areas register/unregister on player contact; the nearest area wins; prompt format "[F] to …".
+Autoload `InteractionManager` (registry + world-space prompt) and `Interactable` (Area2D: `prompt`, `enabled`, `one_shot`, `auto_pickup`, `interacted` signal). Areas self-register on player contact and unregister on `_exit_tree`; the nearest area wins; nearest is re-resolved only on registry change or keypress (no per-frame scans); player resolves via `Global.player`; freed entries are pruned; prompt prefix derives from the `interact` input binding; `set_locked()` freezes interaction for future modals.
+- Universal pickups: `Pickup` (extends `Interactable`; `pickup.tscn` bakes auto + one-shot) + `PickupItem` (item root: desynced bob, fake-height `scatter()`/`eject()` with bounces, collection gated until settle + `pickup_delay`, airborne z+1, front-hemisphere scatter default, `loot_tier`/`loot_value` exports)
+- Loot: `LootTable` resource (`tier`, `entries: Array[PackedScene]`) — `roll(budget)` picks random affordable entries until spent; item scenes own pricing (single source of truth); a value-1 entry guarantees exact sums. Chests: `drop_scene` (deterministic progression) + `loot_table`/`loot_value` (rolled); keys/boss keys are progression (tier −1, never rolled)
 
 ### Combat Surfaces
 - Physics layers 6–9: PlayerHitbox / PlayerHurtbox / EnemyHitbox / EnemyHurtbox (full map in `techContext.md`)
@@ -44,7 +46,7 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | Globals | `Global` autoload = service locator (player reference, shared enums, cross-scene flags); InteractionManager remains an autoload by design; no ad-hoc globals elsewhere |
 | Scene edits | `.tscn`/`.tres` are text and may be edited surgically (see `.clinerules/godot-collaboration.md`) |
 | New enemy | Extend `BaseEnemy.gd`; reuse base states; add override states only for unique behavior; wire nav agent + audio in the scene |
-| New interactable | `Node2D` + `InteractionArea`; assign the `interact` Callable in `_ready`; keep effects data-driven where possible |
+| New interactable | Node + `Interactable` child (or instance `pickup.tscn` for walk-over items); connect `interacted`, configure `prompt`/`one_shot`/`auto_pickup` in the scene; toggle `enabled` instead of poking collision shapes |
 | Folder structure | **Hybrid** — all folders snake_case (Godot docs): feature bundles under `entities/` (player, enemies, boss, npcs, projectiles, interactables — scene + scripts + states together); type-based `systems/` (state_core, interaction, dialogue, shop), `ui/`, `levels/` (incl. `room_blocks/`), `assets/` (vendored art packs — documented basic-assets exception to `addons/`); the `Global` autoload lives in `systems/global/` |
 | State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player and enemy states have no string-matched names. Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
 | Enemy state customization | Shared states + exported configuration (landed R-23); state subclasses only for genuinely unique behavior (e.g. `EnemyPounce`) |
