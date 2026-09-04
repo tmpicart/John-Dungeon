@@ -3,30 +3,31 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-Phase R2 opened: R-21 player subsystem API shipped (e70a04d). Next: R-22 enemy anim/logic separation.
+Phase R2: R-22 enemy anim/logic separation shipped (757331a). Next: R-23 enemy state configuration.
 
 ## Conventions
-State core (R-20): typed `next_state: State` exports validated at startup (deferred ready pass); states receive `actor` by injection; `Global.player` only for non-state consumers; enemy/boss states keep string transitions (bridge → R-23). Godot 4.7: sibling `.tscn` NodePaths must be `../`-prefixed.
-Inventory/combat access (R-21): all callers mutate player stats only via `PlayerInventory`/`PlayerCombat` methods — atomic spend/consume return `bool`; count fields are never written directly; the HUD stays signal-fed. `HeartBar.set_max_health` resizes both directions.
-gdlint is a scoped gate: rewritten files pass clean; findings on untouched lines ride migrationMap (re-baselined at 48 after R-21).
+State core (R-20): typed `next_state: State` exports validated at startup; states receive `actor` by injection; enemy states keep string transitions (bridge → R-23). Godot 4.7: sibling `.tscn` NodePaths must be `../`-prefixed.
+Enemy flow (R-22): signal-driven animation waits guarded by interrupt flow tokens; hits/parry-stuns/deaths route through State Control (`EnemyHurt`/`EnemyStun` wired in every enemy scene); `take_damage(dmg, from_position)` is knockback-ready (D-1 consumes); attack cooldowns are a `BaseEnemy` export; enemy velocities are plain px/s (never `* delta`).
+Summoning (decided): shared combatant capability (necromancer, Sorceress R-24, future bosses). R-23: shared `EnemySummon` state — radius + summonable-tile gating, same-room flood-fill failsafe; only composition is per-summoner; R-43 room markers supersede tile scanning.
+gdlint is a scoped gate: rewritten files pass clean; untouched findings ride migrationMap. Repo-wide baseline lives as a per-directory table in `migrationMap.md` (the old "48" was a mis-scoped measure).
 
 ## In Flight
-- R-21 runtime verification pending (user editor run): shop purchases via keys 1/2, sword upgrade applying real damage, key door/chest key flow, heart-bar growth. Godot binary not locatable from the terminal — editor run is the only runtime gate.
-- `levels/floor_1.tscn` holds the user's uncommitted editor changes (Flail_Skeleton placement) — never staged by the agent.
+- R-22 runtime verification pending (user editor run): parry-stun the flail skeleton (stun + doubled damage), red-slime pounce lunge, archer/necromancer cooldowns, die-mid-freeze restart (time scale restored), arrow despawn, necromancer summons 2–5 skeletons.
+- `levels/floor_1.tscn` holds the user's uncommitted editor changes (all five enemies placed for the verification run) — never staged by the agent.
 
-## Recently Completed
-- R-21 player subsystem API: inventory spend/consume/add methods, combat upgrade path with stale-damage fix, consumer rewiring (shop, NPCs, key/boss-key doors, chest, potion pickup), local door-timing constants, shrink-safe heart bar, temporary `buy1`/`buy2` input actions.
-- R-20 state core rebuild + post-playtest movement feel fix (see `progress.md`).
+## Verification Gates
+- gdlint on touched files (must be clean).
+- Godot headless boots work from the terminal (the R-21 "binary not locatable" note was stale): `Godot_v4.7.2-stable_win64.exe --headless --path . <scene> --quit-after 5` — parse/wiring checks per scene + full level integration boot.
 
 ## Next Up
-1. R-22 enemy anim/logic separation — signal-driven interruption-safe flow, double-delta velocities, attack cooldowns in base, knockback-ready damage signature, red-slime pounce fix, `time_scale` restore guard, `arcane_arrow` screen-exit cleanup, parry-stun unification.
+1. R-23 enemy state configuration — exports for ranges/speeds/cooldowns; typed transitions; behavior hooks; promote necromancer summon to shared `EnemySummon`.
 
 ## Open Decisions
 - None.
 
 ## Working Agreements (quick recall)
 - Commits: agent drafts → user approves → commit; memory bank follows as `docs(memory)`. Push only when instructed.
-- Linting: gdlint on changed files (adopted R-20).
+- Pre-flight before any commit pause: repo-wide gdlint baseline + scoped gate on touched files, both green.
 - Circuit breaker: 3 failed attempts on a step → stop, report, defer.
 - Scene text edits surgical; editor-made changes never reverted silently.
 - New code follows `systemPatterns.md`; superseded patterns live in `migrationMap.md` only.
