@@ -25,9 +25,8 @@
 ## Framework Debt (targeted by `refactorPlan.md`)
 | Issue | Task |
 |---|---|
-| String-based state transitions in enemy/boss states (player states are typed; strings bridge through `transition_to("Name")`) | R-23 |
-| Copy-paste enemy state override classes | R-23 |
-| camelCase/PascalCase identifiers (`textFile`, `openShop`/`closeShop`, chest `Path`/`Inv`, `weaponName`) plus class-definitions-order and blank-line-whitespace findings in surgically-touched scripts — normalize to snake_case per the GDScript style guide (state-core done R-20; enemy-side `HP`/`rayCast` done R-22) | R-23 / R-32 / R-33 |
+| String-based state transitions in boss states (enemies are typed since R-23; the bridge lives in `StateControl` until the Sorceress migrates) | R-24 |
+| camelCase/PascalCase identifiers (`textFile`, `openShop`/`closeShop`, chest `Path`/`Inv`, `weaponName`) plus class-definitions-order and blank-line-whitespace findings in surgically-touched scripts — normalize to snake_case per the GDScript style guide (state-core done R-20; enemy-side done R-22) | R-32 / R-33 |
 | InteractionManager per-frame sort + uncached player lookup | R-30 |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |

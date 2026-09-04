@@ -9,9 +9,7 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 ## Phase R2 — Combat & AI framework
 | ID | Task | Notes |
 |---|---|---|
-| R-20 | State core rebuild | Typed transitions (`@export var next_state: State`, validated in `_ready()`); fix attack/block-from-idle input filter; states receive owner refs instead of `Global.player`; `Global` null-cache hardened; normalize per-tick velocity decay (Attack/Block) |
-| R-23 | Enemy state configuration | Ranges/speeds/cooldowns become exports; typed transitions; behavior hooks replace copy-paste override states; promote necromancer summon to shared `EnemySummon` (radius + summonable-tile gating, same-room flood-fill failsafe; composition-only overrides) |
-| R-24 | Boss migration (1:1) | Sorceress onto `BaseEnemy` + shared state core; absorb misplaced `Idle.gd`; phase-2 as reusable layer; fight design preserved (redesign → `devPlan.md`); boss projectile fixes (per-frame timers, delta units, `Stars` `_ready()` hack, `Beam` cleanup, `Summon` scan); repair her 4 scriptless hitbox nodes (stale legacy `Hitbox.gd`/`projectile_hitbox.gd` — physics layers carry hitboxes now) |
+| R-24 | Boss migration (1:1) | Sorceress onto `BaseEnemy` + shared state core; absorb misplaced `Idle.gd`; phase-2 as reusable layer; fight design preserved (redesign → `devPlan.md`); boss projectile fixes (per-frame timers, delta units, `Stars` `_ready()` hack, `Beam` cleanup, `Summon` scan); repair her 4 scriptless hitbox nodes (stale legacy `Hitbox.gd`/`projectile_hitbox.gd` — physics layers carry hitboxes now); damage stays per-surface (`BaseEnemy.damage` = body only; projectiles keep their own exports) |
 
 ## Phase R3 — Interaction & UI systems (after R2)
 | ID | Task | Notes |

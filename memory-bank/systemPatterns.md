@@ -13,11 +13,10 @@ Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a stat
 - `State Control` — generic state machine (`systems/state_core/state.gd`, `state_control.gd`): states call `transition_to(target)` — typed `State` refs on the player, node-name strings bridged until R-23; the control injects `actor` (the owning entity) into every state and validates exported refs at startup
 
 ### Enemies
-- `entities/enemies/base_enemy.gd` — CharacterBody2D base: `hp`/`damage`/`attack_cooldown_duration` exports; signal-driven action flows (`run_action_animation` → `attack`/`summon`) guarded by interrupt flow tokens; `take_damage(dmg, from_position)` knockback-ready; `stun()`/`kill()` route interrupts through State Control; audio hooks
-- Reusable states: `entities/enemies/states/enemy_idle|chase|attack|retreat|hurt|stun.gd` (pathfinding + interrupt states; every enemy scene wires `EnemyHurt`/`EnemyStun`); bundles hold scene + scripts + states together
-- Per-enemy behavior via override states (e.g. `EnemyChaseNecromancer`, `EnemyAttackFlailSkeleton`) wired in each enemy scene
+- `entities/enemies/base_enemy.gd` — `BaseEnemy` CharacterBody2D base: `hp`/`damage`/`attack_cooldown_duration` exports; typed interrupt routing (`state_control`/`hurt_state`/`stun_state` exports, validated in `_ready`); signal-driven action flows (`run_action_animation` → `attack`) guarded by interrupt flow tokens; `take_damage(dmg, from_position)` knockback-ready; `attack_sfx_from_animation` for animation-triggered swing sounds; audio hooks
+- Reusable states: `entities/enemies/states/enemy_idle|chase|attack|retreat|hurt|stun|summon|pounce.gd` — every enemy scene configures the same state set through exports (typed state refs wired `../`-prefixed; ranges/speeds/cooldowns/flags per scene); bundles hold scene + scripts + states together
+- Per-enemy behavior = exported configuration (R-23): `EnemyChase` (proximity/hit retreat, line-of-sight, radial/axis-box ranges, approach stop, summon rolls; unassigned `attack_state` = validated pacifist), `EnemyAttack` (projectile sets), `EnemySummon` (composition + cooldown owned by the state; same-room flood-fill over summonable tiles; R-43 room markers supersede tile scanning). State subclasses only for genuinely unique behavior (`EnemyPounce` lunge; red slime's death/explode semantics live on its enemy script)
 - Velocities are px/s — never multiplied by delta (`move_and_slide` applies the tick delta)
-- Summoning: shared combatant capability (necromancer now; Sorceress R-24; future bosses by design) — R-23 promotes a shared `EnemySummon` state: radius + summonable-tile gating with a same-room flood-fill failsafe; only composition is per-summoner; R-43 room markers supersede tile scanning
 - Target: all combatants — including bosses — run on this framework
 
 ### Interaction
@@ -25,6 +24,7 @@ Autoload `InteractionManager` (registry + prompt label) and `InteractionArea` (`
 
 ### Combat Surfaces
 - Physics layers 6–9: PlayerHitbox / PlayerHurtbox / EnemyHitbox / EnemyHurtbox (full map in `techContext.md`)
+- Damage roles: hurtboxes resolve `hitbox.owner.damage` per surface — `BaseEnemy.damage` covers only body-owned hitboxes (contact/melee); projectiles and hazards carry their own `damage` exports (boss star vs missile differ per scene); per-hitbox values are an R-24 option if ever needed
 - `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage
 
 ### HUD
@@ -46,8 +46,8 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | New enemy | Extend `BaseEnemy.gd`; reuse base states; add override states only for unique behavior; wire nav agent + audio in the scene |
 | New interactable | `Node2D` + `InteractionArea`; assign the `interact` Callable in `_ready`; keep effects data-driven where possible |
 | Folder structure | **Hybrid** — all folders snake_case (Godot docs): feature bundles under `entities/` (player, enemies, boss, npcs, projectiles, interactables — scene + scripts + states together); type-based `systems/` (state_core, interaction, dialogue, shop), `ui/`, `levels/` (incl. `room_blocks/`), `assets/` (vendored art packs — documented basic-assets exception to `addons/`); the `Global` autoload lives in `systems/global/` |
-| State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player states have no string-matched names (enemy/boss bridge strings until R-23). Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
-| Enemy state customization | Shared states + exported configuration + hook methods; subclass copy-paste overrides are not used for new enemies (target: R-23) |
+| State transitions | Typed references — states export direct `State` references wired in the Inspector and validated at startup (deferred ready pass); player and enemy states have no string-matched names (the boss bridges strings until R-24). Godot 4.7 loader quirk: sibling references in `.tscn` must be `../`-prefixed — bare sibling NodePaths load as null |
+| Enemy state customization | Shared states + exported configuration (landed R-23); state subclasses only for genuinely unique behavior (e.g. `EnemyPounce`) |
 | Animation coupling | Signal-driven flow (`await animation_finished` + interrupt flow tokens, Call Method Tracks for hit windows/sfx); polling waits removed (R-22) |
 
 ## Known Trade-offs (accepted for now)
