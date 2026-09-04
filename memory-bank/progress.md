@@ -32,3 +32,5 @@
 - 2026-09-03 | refactor | R-22 enemy anim/logic separation: signal-driven waits + interrupt flow tokens, EnemyHurt/EnemyStun interrupt states, knockback-ready take_damage, base attack cooldowns, px/s velocity retune, red-slime pounce / camera time-scale / arrow-leak fixes, necromancer summon spawn fold-in (757331a).
 - 2026-09-04 | refactor | R-23 enemy state configuration: typed transitions + exported behavior config replace all per-enemy state scripts; shared EnemySummon (same-room flood-fill) + EnemyPounce added; 11 scripts + sidecars deleted (fc90c84).
 - 2026-09-04 | refactor | R-24 Sorceress onto BaseEnemy: typed states + non-interruptible intake, per-hitbox damage, parry-vulnerable/beam-recovery window, unblockable projectile tiers, z-tier + flash-palette conventions, door/dormancy decoupling; playtest-hardened (ced8c35).
+- 2026-09-04 | feat | LootTable resource + tier-1 table: exact-sum budget rolls, item-owned tier/value (e580a54).
+- 2026-09-04 | refactor | R-30 interaction framework: Interactable base, event-driven InteractionManager, `interact` input on E, PickupItem scatter drops + Pickup migration, chest loot wiring, headless smoke test (7c37b7e).

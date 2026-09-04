@@ -3,26 +3,27 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-Phase R2: R-24 Sorceress migration shipped (ced8c35, playtest-hardened). Next: cleanup tasks (R-30+) or D-plan features.
+Phase R3: R-30 interaction framework shipped (feat(loot) e580a54, refactor(interaction) 7c37b7e). Next: R-31 unified doors or R-32 shop rework.
 
 ## Conventions
-- Enemy framework (R-22..R-24): `BaseEnemy` + shared states configured by scene exports; typed state core only (string bridge retired). `interruptible = false` (bosses): hits deal damage + `_play_hit_flash()` only — nothing cancels flows or routes interrupts.
-- Per-hitbox damage: scripted `EnemyHitbox` (entities/enemies/hitbox.gd) carries `damage`; hurtboxes resolve `hitbox.get("damage")` → fallback `hitbox.owner.damage`. `unblockable` flag (same probe) makes PlayerHurtbox skip its parry branch — waves/intervention light/stars dodge-only; magic missiles reflect; boss melee/slide → vulnerable window.
-- Boss vulnerable window: parry or beam recovery → `begin_exposure(duration)` — yellow pulse via the FlashPlayer "Vulnerable" loop + doubled damage; never interrupts. Palette: enemy + boss on-hit flash WHITE (player RED); stun/vulnerable YELLOW `Color(1,1,0,1)`.
-- Rendering tiers (z): ground decals/effects −1 (floor TileMapLayer −1 too), entities/world 0 y-sorted, airborne +1 (projectiles, beam line), UI on CanvasLayer. `FlashPlayer` is the boss's parallel flash channel (renamed from OnHitPlayer).
+- Interaction: `Interactable` (Area2D — prompt/enabled/one_shot/auto_pickup + `interacted` signal); InteractionManager is event-driven (nearest re-selection on registry change/keypress only, cached `Global.player`, freed-entry pruning, `set_locked()` freeze hook). Prompts derive from the `interact` binding ("[E] …").
+- Pickups: `PickupItem` root (desynced bob, fake-height scatter/bounce, collection gated until settle + `pickup_delay`, airborne z+1, front-hemisphere scatter, loot exports) + `Pickup` area (`pickup.tscn` bakes auto + one-shot). Toggle `enabled`; never poke collision shapes.
+- Loot: `LootTable.roll(budget)` exact-sum rolls; chests default to the tier-1 table; item scenes own tier/value; keys/boss keys are progression (tier −1).
+- Input: single `interact` action (E physical); controller support later = adding an event to it.
 - gdlint is a scoped gate: rewritten files pass clean; untouched findings ride migrationMap.
 
 ## In Flight
-- None. User playtest feedback on the shipped fight drives the next round.
+- None. `levels/floor_1.tscn` holds the user's uncommitted playtest layout (boss removed, doors/pickups placed, chest2 `drop_scene` restored) — pending a user level-content commit.
+- User playtest feedback on interaction/drops drives the next round.
 
 ## Verification Gates
-- gdlint on touched files (must be clean); baseline table in `migrationMap.md`.
-- Headless: `Godot_v4.7.2-stable_win64.exe --headless --path . <scene> --quit-after 5` boots; scripted SceneTree tests for combat flows (stub-player pattern, enemies instantiated without entering the tree for static checks). ObjectDB leak warnings under `--quit-after` are engine noise.
-- New `class_name` scripts need `--headless --import` before headless script runs can resolve them.
+- gdlint on touched files (clean); baseline in `migrationMap.md`.
+- `tests/interaction_smoke.tscn` headless — 32 assertions, exit 0 = pass.
+- `--headless --import` before headless runs (new `class_name` scripts); boot floor_1 `--quit-after 5` (ObjectDB warnings = engine noise).
 
 ## Next Up
-1. R-30/R-31/R-32 cleanup tasks or D-plan features. Deferred from R-24 (user call): projectile lighting optimization, boss attack cooldowns, missile lifetime.
-2. Boss room remake (R-42/R-43): paint `is_summonable` ground tiles; reset the room's z tiers (boss_room root currently sits at z −1).
+1. R-31 unified doors (retire 3 door scripts + parse-stale `chest.gd`/`door.gd` duplicates) or R-32 shop rework.
+2. D-plan hooks now live: monster coin drops (`PickupItem.scatter(TAU)`), pickup animation, bomb pickup scene (tier-2 loot).
 
 ## Open Decisions
 - None recorded this session.

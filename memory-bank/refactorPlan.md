@@ -14,8 +14,7 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 ## Phase R3 — Interaction & UI systems (after R2)
 | ID | Task | Notes |
 |---|---|---|
-| R-30 | Interactable framework | `Interactable` base (prompt, enabled, one-shot feedback); InteractionManager: cached player, no per-frame sort; consolidate `pickup`/`Interact` inputs |
-| R-31 | Unified doors | One door scene/script with `lock_type` (none/key/boss_key) and defined timings; retire the 3 door scripts + duplicate `Door.gd` |
+| R-31 | Unified doors | One door scene/script with `lock_type` (none/key/boss_key) and defined timings; retire the 3 door scripts + duplicate `Door.gd` + `chest.gd` |
 | R-32 | Shop rework | Mouse cards (hover + click), N items via `ShopData` resource, purchases through `PlayerInventory`; close on Esc/walk-away; retire legacy shop scenes; freeze player input while open |
 | R-33 | Dialogue system | JSON dialogue (pages, stage transitions); `PlayerProgress` on player (flags + per-NPC stages); correct stale Tutorial text (Tab → Shift); freeze player input during dialogue |
 
