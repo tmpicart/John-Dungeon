@@ -2,7 +2,8 @@ extends Node
 class_name State
 
 ## Requests a state transition. `to_state` may be a State node reference
-## (typed, preferred) or a node-name String (legacy bridge, removed in R-23).
+## (typed, preferred) or a node-name String (legacy bridge, removed in R-24
+## with the boss migration).
 signal transition_requested(from_state: State, to_state)
 
 ## The entity this state machine belongs to, injected by StateControl.

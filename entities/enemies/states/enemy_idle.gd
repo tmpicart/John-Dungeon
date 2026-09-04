@@ -1,15 +1,19 @@
 extends State
 class_name EnemyIdle
 
-@export var enemy : CharacterBody2D
-## Wander speed in px/s (physics-tick independent).
+## Wanders randomly until the player enters detection range.
+
 @export var speed := 8
 @export var detection_range := 100
+@export var chase_state: State
 
-var wander_direction : Vector2
-var duration : float
-
+var wander_direction: Vector2
+var duration: float
 var player: CharacterBody2D
+var enemy: BaseEnemy
+
+func _ready() -> void:
+	enemy = actor
 
 func randomized_stroll():
 	# Set a new wander duration
@@ -44,4 +48,5 @@ func physics_update(delta: float) -> void:
 	# Check if the player is within detection range
 	var direction = player.global_position - enemy.global_position
 	if direction.length() < detection_range:
-		transition_to("EnemyChase")
+		transition_to(chase_state)
+

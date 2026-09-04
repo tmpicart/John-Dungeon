@@ -5,14 +5,20 @@ class_name EnemyHurt
 ## `is_hit` is cleared here (on exit) so overlapping damage is ignored during
 ## recovery, and any interrupting state takes over cleanly.
 
-@export var enemy: CharacterBody2D
+@export var chase_state: State
+
+var enemy: BaseEnemy
+
+func _ready() -> void:
+	enemy = actor
 
 func enter() -> void:
 	enemy.velocity = Vector2.ZERO
 	await enemy.play_interrupt_animation("OnHit")
 	if enemy.is_dead:
 		return
-	transition_to("EnemyChase")
+	transition_to(chase_state)
 
 func exit() -> void:
 	enemy.is_hit = false
+

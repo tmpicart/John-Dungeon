@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://systems/state_core/state_control.gd" id="3_le46k"]
 [ext_resource type="Script" uid="uid://dplmy4wbp01qs" path="res://entities/enemies/states/enemy_idle.gd" id="4_ocfdr"]
 [ext_resource type="Script" uid="uid://bj8p1bwlk2xlw" path="res://entities/enemies/states/enemy_chase.gd" id="7_vcgv5"]
-[ext_resource type="Script" uid="uid://kx8ch2o2p2mt" path="res://entities/enemies/slime_red/enemy_attack_red_slime.gd" id="8_vkf7y"]
+[ext_resource type="Script" path="res://entities/enemies/states/enemy_pounce.gd" id="8_vkf7y"]
 [ext_resource type="Script" uid="uid://ddk5n0w8658gd" path="res://entities/enemies/hurtbox.gd" id="10_u7gum"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://assets/sounds/enemies/slime/353250__zuzek06__slimejump.wav" id="11_ya6ns"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="12_jslwe"]
@@ -163,13 +163,17 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("13_kyiiu")
 
-[node name="Slime_Red" type="CharacterBody2D" groups=["Enemies"]]
+[node name="Slime_Red" type="CharacterBody2D" groups=["Enemies"] node_paths=PackedStringArray("state_control", "hurt_state", "stun_state", "pounce_state")]
 y_sort_enabled = true
 scale = Vector2(0.65, 0.65)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_brr4j")
+state_control = NodePath("State Control")
+hurt_state = NodePath("State Control/EnemyHurt")
+stun_state = NodePath("State Control/EnemyStun")
+pounce_state = NodePath("State Control/EnemyPounce")
 damage = 3
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -201,29 +205,30 @@ shape = SubResource("CapsuleShape2D_52k7c")
 script = ExtResource("3_le46k")
 initial_state = NodePath("EnemyIdle")
 
-[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("4_ocfdr")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("enemy", "navigation_agent")]
+[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state")]
 script = ExtResource("7_vcgv5")
-enemy = NodePath("../..")
 navigation_agent = NodePath("../../NavigationAgent2D")
+idle_state = NodePath("../EnemyIdle")
+attack_state = NodePath("../EnemyPounce")
 speed = 67
 attempt_attack_range = 50
 
-[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyPounce" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("8_vkf7y")
 pounce_speed = 133
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("14_hurt")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("enemy")]
+[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
 script = ExtResource("15_stun")
-enemy = NodePath("../..")
+chase_state = NodePath("../EnemyChase")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
