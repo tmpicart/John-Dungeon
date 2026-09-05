@@ -12,6 +12,9 @@ const CELL_NEIGHBORS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i
 @export var chase_state: State
 @export var summoned_creature: PackedScene
 @export var summon_effect: PackedScene
+## Seconds the materialize effect plays before the creature appears, so the
+## spawn is telegraphed instead of instant.
+@export var spawn_delay := 0.5
 ## Search radius around the summoner, in tiles.
 @export var summon_radius := 5
 @export var min_summons := 2
@@ -63,13 +66,24 @@ func _spawn_creatures() -> void:
 		push_warning("Found only %d valid summon positions." % positions.size())
 
 	for position in positions:
+		_spawn_summon(position, summoned_creature)
+
+## Spawns the materialize effect, then the creature after spawn_delay.
+## Fire-and-forget coroutine: callers schedule whole sets at once while each
+## creature materializes after its own telegraph. A dead summoner cancels.
+func _spawn_summon(position: Vector2, creature: PackedScene) -> void:
+	if summon_effect:
 		var effect = summon_effect.instantiate()
 		get_tree().current_scene.add_child(effect)
 		effect.global_position = position
 
-		var creature = summoned_creature.instantiate()
-		get_tree().current_scene.add_child(creature)
-		creature.global_position = position
+	await get_tree().create_timer(spawn_delay).timeout
+	if enemy.is_dead:
+		return
+
+	var instance = creature.instantiate()
+	get_tree().current_scene.add_child(instance)
+	instance.global_position = position
 
 ## Flood-fills from the summoner's cell through connected summonable tiles,
 ## bounded by the summon radius, so spawns cannot land across walls.

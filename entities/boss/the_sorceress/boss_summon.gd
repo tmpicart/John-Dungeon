@@ -52,17 +52,3 @@ func _spawn_creatures() -> void:
 				return
 			_spawn_summon(positions[index], request[0])
 			index += 1
-
-func _spawn_summon(position: Vector2, creature: PackedScene) -> void:
-	if creature == null:
-		push_error("%s: summoned creature scene is not assigned" % get_path())
-		return
-
-	if summon_effect:
-		var effect = summon_effect.instantiate()
-		get_tree().current_scene.add_child(effect)
-		effect.global_position = position
-
-	var instance = creature.instantiate()
-	get_tree().current_scene.add_child(instance)
-	instance.global_position = position
