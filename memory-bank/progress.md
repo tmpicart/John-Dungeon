@@ -34,3 +34,4 @@
 - 2026-09-04 | refactor | R-24 Sorceress onto BaseEnemy: typed states + non-interruptible intake, per-hitbox damage, parry-vulnerable/beam-recovery window, unblockable projectile tiers, z-tier + flash-palette conventions, door/dormancy decoupling; playtest-hardened (ced8c35).
 - 2026-09-04 | feat | LootTable resource + tier-1 table: exact-sum budget rolls, item-owned tier/value (e580a54).
 - 2026-09-04 | refactor | R-30 interaction framework: Interactable base, event-driven InteractionManager, `interact` input on E, PickupItem scatter drops + Pickup migration, chest loot wiring, headless smoke test (7c37b7e).
+- 2026-09-04 | feat | Sorceress parry-stagger: parried melee/slide freezes her on the yellow pulse with doubled damage (boss_stagger state, stun() override, attack-surface shutdown on interrupt/death); beam recovery unchanged (04168fb).

@@ -27,7 +27,7 @@ Autoload `InteractionManager` (registry + world-space prompt) and `Interactable`
 ### Combat Surfaces
 - Physics layers 6–9: PlayerHitbox / PlayerHurtbox / EnemyHitbox / EnemyHurtbox (full map in `techContext.md`)
 - Damage roles: hurtboxes resolve `hitbox.get("damage")` first, falling back to `hitbox.owner.damage` — scripted `EnemyHitbox` surfaces (entities/enemies/hitbox.gd) carry per-surface values (boss swing 2 / slide 1); plain areas resolve the owner's export. `unblockable` (same probe) makes PlayerHurtbox skip its parry branch — waves, intervention light, and stars are dodge-only; magic missiles reflect
-- `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage; block+facing a `stun()`-capable non-interruptible boss opens `begin_exposure(duration)` — yellow pulse + doubled damage, attacks continue
+- `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage; block+facing a non-interruptible boss's body hitbox (melee/slide) routes her `stun()` → parry-stagger (freeze-frame + doubled damage); projectiles reflect (missiles) or are unblockable (waves/stars/light); beam recovery keeps the exposure-only window
 
 ### HUD
 Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and `item_hud`; no polling.
@@ -52,7 +52,7 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | Enemy state customization | Shared states + exported configuration (landed R-23); state subclasses only for genuinely unique behavior (e.g. `EnemyPounce`) |
 | Rendering tiers | z-index: ground decals + floor TileMapLayer −1, y-sorted world 0, airborne (projectiles, beam line) +1, UI on CanvasLayer |
 | Flash palette | On-hit flash WHITE for enemies, RED for the player; stun/vulnerable YELLOW `Color(1, 1, 0, 1)` pulsed on a `FlashPlayer` animation channel (per-animation flash_color tracks own the color) |
-| Non-interruptible bosses | `interruptible = false`: hits flash + damage only; parry and beam recovery open `begin_exposure(duration)` vulnerable windows (doubled damage) without stopping attacks; summon placement needs `is_summonable`-painted tiles and skips cleanly without |
+| Non-interruptible bosses | `interruptible = false`: hits flash + damage only; a parried body hitbox staggers via the boss `stun()` override (`boss_stagger` state: freeze-frame + exposure, doubled damage); attack surfaces are animation-track- or code-driven, so interrupts and death must kill them (`disable_attack_surfaces()` + slide `exit()` cleanups); summon placement needs `is_summonable`-painted tiles and skips cleanly without |
 | Animation coupling | Signal-driven flow (`await animation_finished` + interrupt flow tokens, Call Method Tracks for hit windows/sfx); polling waits removed (R-22) |
 
 ## Known Trade-offs (accepted for now)
