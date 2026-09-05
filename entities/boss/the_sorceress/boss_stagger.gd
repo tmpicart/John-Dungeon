@@ -16,9 +16,10 @@ func _ready() -> void:
 func enter() -> void:
 	boss.velocity = Vector2.ZERO
 	boss.stunned = true
-	# Freezing the main player holds her current frame; the yellow pulse rides
-	# the FlashPlayer channel on top of it.
-	boss.animation_player.stop()
+	# pause() holds her current frame and applies no track values; stop() seeks
+	# to 0 and would write the animation's first-frame hitbox keys while the
+	# parry's area signal is still inside the physics flush.
+	boss.animation_player.pause()
 	boss.begin_exposure(duration)
 	await get_tree().create_timer(duration).timeout
 	if boss.is_dead:
@@ -27,3 +28,6 @@ func enter() -> void:
 
 func exit() -> void:
 	boss.stunned = false
+	# Clears the pause and position so a repeat of the same attack animation
+	# restarts from the top instead of resuming mid-swing.
+	boss.animation_player.stop()
