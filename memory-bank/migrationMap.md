@@ -22,6 +22,7 @@
 | Issue | Task |
 |---|---|
 | camelCase/PascalCase identifiers (`textFile`, `openShop`/`closeShop`, chest `Inv`, `weaponName`) plus class-definitions-order and blank-line-whitespace findings in surgically-touched scripts — normalize to snake_case per the GDScript style guide (state-core done R-20; enemy-side done R-22; interaction-side done R-30) | R-32 / R-33 |
+| Group-scan/exception discovery: `beam.gd` add_exception loop over `Enemies` (likely a no-op under its Player+Environment mask), `energy_star.gd` group loops, projectile `Enemies` membership | D-5 faction pass |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |
 | No player input freeze during dialogue/shop modals | R-32 / R-33 |
