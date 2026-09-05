@@ -59,9 +59,9 @@ func begin_exposure(duration: float) -> void:
 ## Restores the flash material after a looping vulnerable animation.
 func _reset_flash() -> void:
 	flash_player.stop()
-	var material := ($Sprite2D as Sprite2D).material as ShaderMaterial
-	material.set_shader_parameter("flash_color", Color.WHITE)
-	material.set_shader_parameter("flash_value", 0.0)
+	var sprite_material := ($Sprite2D as Sprite2D).material as ShaderMaterial
+	sprite_material.set_shader_parameter("flash_color", Color.WHITE)
+	sprite_material.set_shader_parameter("flash_value", 0.0)
 
 func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:
 	if exposed:
