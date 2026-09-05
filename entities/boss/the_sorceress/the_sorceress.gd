@@ -5,8 +5,6 @@ extends BaseEnemy
 ## bundle (Engage/Cast pickers plus the attack states); she engages from spawn.
 
 @export var phase_transition_hp := 75
-## Seconds of yellow flash + double damage after a parry.
-@export var expose_duration := 3.0
 
 var phase2 = false
 var is_glide = false
@@ -15,28 +13,38 @@ var _expose_id := 0
 
 @onready var flash_player: AnimationPlayer = $FlashPlayer
 @onready var slide_hitbox: EnemyHitbox = $"Slide Hitbox"
+@onready var melee_hitbox: EnemyHitbox = $"Melee Hitbox"
 
 ## Phase-2 gate shared by the Engage/Cast pickers.
 func should_transition_phase() -> bool:
 	return hp <= phase_transition_hp and not phase2
 
-## A live slide hitbox must not survive into the death animation.
+## A live attack surface must not survive into the death animation.
 func kill():
 	_expose_id += 1
 	exposed = false
 	_reset_flash()
-	slide_hitbox.set_active(false)
+	disable_attack_surfaces()
 	super()
 
-## Parry response: a vulnerable window instead of a stun — she flashes yellow
-## and takes double damage while attacks keep flowing.
+## Parry response: a stagger — the current animation freezes on the yellow
+## pulse and she cannot act for the duration (doubled damage while exposed).
 func stun() -> void:
-	if is_dead:
+	if is_dead or stunned:
 		return
-	begin_exposure(expose_duration)
+	disable_attack_surfaces()
+	_cancel_flows()
+	state_control.transition_to(stun_state)
 
-## Vulnerable window: yellow pulse + doubled damage. Used by the parry and the
-## beam's recovery timeout. Nothing interrupts her attacks.
+## Attack surfaces live either outside animations (slides) or inside their
+## animation tracks (melee swing); neither may survive an interrupt or death.
+func disable_attack_surfaces() -> void:
+	is_glide = false
+	slide_hitbox.set_active(false)
+	melee_hitbox.set_active(false)
+
+## Vulnerable window: yellow pulse + doubled damage. Used by the stagger state
+## and the beam's recovery timeout. Nothing interrupts her attacks.
 func begin_exposure(duration: float) -> void:
 	_expose_id += 1
 	var id = _expose_id

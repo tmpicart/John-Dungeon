@@ -30,5 +30,10 @@ func enter() -> void:
 	slide_hitbox.set_active(false)
 	transition_to(cast_state)
 
+func exit() -> void:
+	# A stagger mid-glide must not leave the slide surface live or the flag set.
+	boss.is_glide = false
+	slide_hitbox.set_active(false)
+
 func physics_update(_delta: float) -> void:
 	boss.velocity = direction * speed
