@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://5dnflp2x3nl4"]
+[gd_scene load_steps=10 format=3 uid="uid://5dnflp2x3nl4"]
 
 [ext_resource type="Script" uid="uid://c6urgg1a0uscd" path="res://entities/projectiles/magic_missile.gd" id="1_oudw1"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://assets/effects/retro_impact_effect_pack_5_b.png" id="3_rjssa"]
@@ -9,10 +9,6 @@ resource_local_to_scene = true
 shader = ExtResource("3_rrxm4")
 shader_parameter/flash_color = Color(0, 0.462745, 0.890196, 1)
 shader_parameter/flash_value = 0.0
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gq3fx"]
-radius = 2.66667
-height = 10.6667
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
 radius = 5.33333
@@ -60,19 +56,10 @@ hframes = 9
 vframes = 30
 frame = 72
 
-[node name="Collider" type="Area2D" parent="."]
-collision_layer = 0
-collision_mask = 5
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Collider"]
-position = Vector2(5.33333, 0)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_gq3fx")
-
 [node name="Hitbox" type="Area2D" parent="."]
 scale = Vector2(0.5, 0.5)
 collision_layer = 128
-collision_mask = 64
+collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 visibility_layer = 2
@@ -92,4 +79,4 @@ scale = Vector2(0.347656, 0.291667)
 color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_ua7vb")
 
-[connection signal="body_entered" from="Collider" to="." method="_on_collider_body_entered"]
+[connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]

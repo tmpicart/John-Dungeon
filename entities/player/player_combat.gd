@@ -5,6 +5,10 @@ class_name PlayerCombat
 signal hp_changed(current_hp: int)
 signal max_hp_changed(max_hp: int)
 
+# Aiming: the reflect-target lock picks the enemy nearest the cursor
+# (the reticle) within aim_snap_radius.
+@export var aim_snap_radius := 120.0
+
 # Combat-related nodes
 @onready var weapon: Node = $Weapon
 @onready var shield: Node = $Shield
@@ -37,6 +41,39 @@ func _ready():
 	hp = max_hp
 	max_hp_changed.emit(max_hp)
 	hp_changed.emit(hp)
+
+# --- Aiming ---
+## Unit vector from the player toward the mouse cursor; the single source of
+## aim truth for the parry cone and reflected-projectile targeting.
+func aim_direction() -> Vector2:
+	return (get_global_mouse_position() - player.global_position).normalized()
+
+## The enemy the player is aiming at: the EnemyHurtbox surface nearest the
+## cursor (the reticle), inside aim_snap_radius. Null when none — callers
+## fall back to straight fire. Only callable from the physics step.
+func get_aim_target() -> Node2D:
+	var cursor := get_global_mouse_position()
+	var query = PhysicsShapeQueryParameters2D.new()
+	var circle = CircleShape2D.new()
+	circle.radius = aim_snap_radius
+	query.shape = circle
+	query.transform = Transform2D(0.0, cursor)
+	query.collision_mask = 1 << 8 # EnemyHurtbox
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+
+	var best: Node2D = null
+	var best_distance := INF
+	for hit in get_world_2d().direct_space_state.intersect_shape(query):
+		var surface := hit.collider as Area2D
+		var enemy := surface.owner as BaseEnemy
+		if enemy == null or enemy.is_dead:
+			continue
+		var distance := surface.global_position.distance_to(cursor)
+		if distance < best_distance:
+			best = enemy
+			best_distance = distance
+	return best
 
 # --- Combat ---
 func attack():

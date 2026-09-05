@@ -5,11 +5,16 @@ extends Node2D
 @export var leniency_threshold = 25
 @export var track_resume_delay = .5
 @export var turn_speed = 3
+## Launches the reflect this many degrees wide of the aim line (random side)
+## so the homing visibly arcs onto the lock.
+@export var reflect_arc_deg := 75.0
 
 var reflected = false
 var passed = false
 var direction: Vector2
 var player: CharacterBody2D
+var target: Node2D
+var launch_angle := 0.0
 
 func _ready():
 	player = get_tree().get_first_node_in_group("Player")
@@ -24,12 +29,21 @@ func _physics_process(delta):
 			rotation = lerp_angle(rotation, target_angle, delta * turn_speed)
 			direction = Vector2.RIGHT.rotated(rotation)
 	else:
-		# After reflection, keep moving in the current rotated direction
+		# After reflection the chase never gives up: targetless missiles keep
+		# polling the player's aim (this is the physics step) and settle onto
+		# the aim line between locks; only contact ends them.
+		if not is_instance_valid(target):
+			target = player.combat.get_aim_target()
+		var desired_angle := launch_angle
+		if target != null:
+			desired_angle = (target.global_position - global_position).normalized().angle()
+		rotation = lerp_angle(rotation, desired_angle, delta * turn_speed)
 		direction = Vector2.RIGHT.rotated(rotation)
 
 	global_position += direction * speed * delta
 
-	if not passed and global_position.distance_to(player.global_position) < leniency_threshold:
+	var distance_to_player = global_position.distance_to(player.global_position)
+	if not passed and not reflected and distance_to_player < leniency_threshold:
 		passed = true
 		_resume_tracking_later()
 
@@ -44,15 +58,11 @@ func _resume_tracking_later() -> void:
 func reflect():
 	reflected = true
 
+	# The single surface now pairs with enemy hurtboxes and self-frees on
+	# enemy bodies and walls — reflected missiles no longer pierce.
 	var hitbox = $Hitbox
-	var collider = $Collider
-
-	# hitbox: belongs to layer 6, collides with layer 9
-	hitbox.collision_layer = 1 << 5             # Layer 6
-	hitbox.collision_mask = 1 << 8              # Collides with Layer 9
-
-	# collider: collides with layers 2 and 3
-	collider.collision_mask = (1 << 2)  # Collides with Layer 3
+	hitbox.collision_layer = 1 << 5             # Layer 6 (PlayerHitbox)
+	hitbox.collision_mask = (1 << 1) | (1 << 2) # Collides with Layers 2 and 3
 
 	var sprite = $Sprite2D  # Replace with your actual node path
 	var shader_material := sprite.material as ShaderMaterial
@@ -66,9 +76,10 @@ func reflect():
 	$PointLight2D.color = Color.html("#0076e3")
 
 	var mouse_direction: Vector2 = (get_global_mouse_position() - global_position).normalized()
-	rotation = mouse_direction.angle()
+	launch_angle = mouse_direction.angle()
+	rotation = launch_angle + deg_to_rad(reflect_arc_deg) * (1.0 if randf() < 0.5 else -1.0)
 
-func _on_collider_body_entered(body: Node2D) -> void:
+func _on_hitbox_body_entered(body: Node2D) -> void:
 	# If it's the player and the player is not blocking, or it's another object, destroy the missile
 	if body != player or (body == player and not player.combat.blocking):
 		queue_free()
