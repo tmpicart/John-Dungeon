@@ -16,7 +16,7 @@ func _physics_process(delta):
 	if _lifetime >= max_lifetime:
 		queue_free()
 
-func _on_collider_body_entered(body: Node2D) -> void:
+func _on_hitbox_body_entered(body: Node2D) -> void:
 	if body is CollisionObject2D:
 		var body_layer = body.collision_layer
 		var is_player = (body_layer & (1 << 0)) != 0
@@ -29,15 +29,11 @@ func _on_screen_exited() -> void:
 	queue_free()
 
 func reflect():
+	# The single surface now pairs with enemy hurtboxes and self-frees on
+	# enemy bodies and walls.
 	var hitbox = $Hitbox
-	var collider = $Collider
-
-	# hitbox: belongs to layer 6, collides with layer 9
-	hitbox.collision_layer = 1 << 5             # Layer 6
-	hitbox.collision_mask = 1 << 8              # Collides with Layer 9
-
-	# collider: collides with layers 2 and 3
-	collider.collision_mask = (1 << 1) | (1 << 2)  # Collides with Layer 2 and 3
+	hitbox.collision_layer = 1 << 5             # Layer 6 (PlayerHitbox)
+	hitbox.collision_mask = (1 << 1) | (1 << 2) # Collides with Layers 2 and 3
 
 	var sprite = $Sprite2D  # Replace with your actual node path
 	var shader_material := sprite.material as ShaderMaterial

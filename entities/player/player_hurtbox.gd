@@ -9,8 +9,7 @@ func _on_area_entered(area: Area2D) -> void:
 	var hitbox = area
 	var player = self.get_owner()
 
-	var mouse_pos = get_global_mouse_position()
-	var shield_dir = mouse_pos - player.global_position
+	var shield_dir = player.combat.aim_direction()
 	var hit_direction = (hitbox.global_position - player.global_position).normalized()
 
 	# Check angle between player's facing and hitbox direction
