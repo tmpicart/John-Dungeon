@@ -37,3 +37,4 @@
 - 2026-09-04 | feat | Sorceress parry-stagger: parried melee/slide freezes her on the yellow pulse with doubled damage (boss_stagger state, stun() override, attack-surface shutdown on interrupt/death); beam recovery unchanged (04168fb).
 - 2026-09-04 | feat | Aim-locked arcing homing reflects: PlayerCombat aim API (aim_direction + cursor-snap get_aim_target over EnemyHurtbox shape queries), missiles launch ±75° wide and re-lock persistently, single-Hitbox projectiles, no-pierce reflect (1ee97d4).
 - 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish effect via the shared EnemySummon state; dead summoners cancel pending spawns (6897d87).
+- 2026-09-04 | fix | Boss phase-2 playtest: intervention warning 3.0s→1.5s; stars spawn at chest height, wall-bounce via collision_mask 4 (exception loops dropped), contact-kill on PlayerHurtbox (f1143d2).

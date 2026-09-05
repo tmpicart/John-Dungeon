@@ -3,7 +3,7 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-R3 shipped. Combat pass shipped: boss parry-stagger (04168fb), aim-locked arcing homing reflects (1ee97d4), summon telegraph (6897d87). Next: R-31 unified doors or R-32 shop rework.
+R3 shipped. Combat pass shipped: boss parry-stagger (04168fb), aim-locked arcing homing reflects (1ee97d4), summon telegraph (6897d87). Boss phase-2 playtest fixes in (f1143d2): pillar telegraph 1.5 s, star chest spawn + wall bounce + contact kill — runtime feel pending user playtest. Next: R-31 unified doors or R-32 shop rework.
 
 ## Conventions
 - Player aim API (`PlayerCombat`): `aim_direction()` (player→cursor; feeds the parry cone + reflect launches) and `get_aim_target()` (EnemyHurtbox shape query centered on the cursor within `aim_snap_radius`, nearest surface wins; physics-step only, no group scans). The facing direction is the input-agnostic aim primitive; the controller model is an open decision (reticle vs direction + soft lock).
@@ -17,8 +17,8 @@ R3 shipped. Combat pass shipped: boss parry-stagger (04168fb), aim-locked arcing
 - gdlint is a scoped gate: rewritten files pass clean; untouched findings ride migrationMap.
 
 ## In Flight
-- None. `levels/floor_1.tscn` holds the user's uncommitted playtest layout — pending a user level-content commit.
-- User playtest feedback on reflect arc/lock feel and summon pacing drives tuning.
+- User editor-session changes, uncommitted: `the_sorceress.tscn` (uid churn + `hp = 75` test tuning — hp at the phase threshold leaves the gate open at spawn, so intervention fires as her opening move, `phase2` arms immediately, and the glyph's `add_child` fails in the ready cascade: benign no-telegraph quirk that disappears once test hp rises above 75; line 31 also carries a stale uid the engine falls back from) and `character.tscn` (PlayerCombat hitbox `damage = 10`). User decides commit/dispose.
+- Star-volley feel (bounce, contact-kill) and the 1.5 s pillar telegraph await user playtest feedback.
 
 ## Verification Gates
 - gdlint on touched files (clean); baseline in `migrationMap.md`.
