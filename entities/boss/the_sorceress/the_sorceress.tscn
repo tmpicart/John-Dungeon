@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://rhhukbmueh53"]
+[gd_scene load_steps=50 format=3 uid="uid://rhhukbmueh53"]
 
 [ext_resource type="Script" uid="uid://c8c4nxdy3w8lh" path="res://entities/boss/the_sorceress/the_sorceress.gd" id="1_oe1ie"]
 [ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://systems/state_core/state_control.gd" id="2_1px53"]
@@ -30,6 +30,7 @@
 [ext_resource type="AudioStream" uid="uid://b3shrwwetxpvd" path="res://assets/sounds/chargeup.mp3" id="24_4ob3e"]
 [ext_resource type="PackedScene" uid="uid://s0p7t5g4q00k" path="res://entities/projectiles/energy_star.tscn" id="24_dovkt"]
 [ext_resource type="AudioStream" uid="uid://sa01ncok46o" path="res://assets/sounds/ta_da.mp3" id="31_pndny"]
+[ext_resource type="Script" path="res://entities/boss/the_sorceress/boss_stagger.gd" id="26_stgr"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_63oa0"]
 shader = ExtResource("2_galxm")
@@ -276,12 +277,13 @@ scale_max = 5.0
 scale_curve = SubResource("CurveTexture_rerdh")
 color = Color(0.992822, 0.673956, 1, 1)
 
-[node name="The Sorceress" type="CharacterBody2D" groups=["Enemies"] node_paths=PackedStringArray("state_control")]
+[node name="The Sorceress" type="CharacterBody2D" groups=["Enemies"] node_paths=PackedStringArray("state_control", "stun_state")]
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_oe1ie")
 state_control = NodePath("State Control")
+stun_state = NodePath("State Control/Stagger")
 hp = 150
 interruptible = false
 
@@ -425,6 +427,10 @@ cast_state = NodePath("../Cast")
 intervention_light = ExtResource("23_y1eak")
 glyph = ExtResource("13_iphtl")
 force_wave = ExtResource("14_bb51k")
+
+[node name="Stagger" type="Node" parent="State Control" node_paths=PackedStringArray("return_state")]
+script = ExtResource("26_stgr")
+return_state = NodePath("../Engage")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
