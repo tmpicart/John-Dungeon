@@ -14,12 +14,6 @@ var shooter: CharacterBody2D = null
 
 func _ready() -> void:
 	$AnimationPlayer.play("Play")
-	for body in get_tree().get_nodes_in_group("Enemies"):
-		if body is PhysicsBody2D and body != self:
-			add_collision_exception_with(body)
-	for body in get_tree().get_nodes_in_group("Player"):
-		if body is PhysicsBody2D:
-			add_collision_exception_with(body)
 	velocity = Vector2.RIGHT.rotated(rotation) * speed
 	get_tree().create_timer(duration).timeout.connect(queue_free)
 
@@ -27,3 +21,8 @@ func _physics_process(delta: float) -> void:
 	var collision = move_and_collide(velocity * delta)
 	if collision:
 		velocity = velocity.bounce(collision.get_normal())
+
+## Single-hit trade: touching the player's hurtbox ends the ricochet lifetime.
+func _on_hitbox_area_entered(area: Area2D) -> void:
+	if area is PlayerHurtbox:
+		queue_free()
