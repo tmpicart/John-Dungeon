@@ -7,7 +7,7 @@ extends State
 @export var intervention_light: PackedScene
 @export var glyph: PackedScene
 @export var force_wave: PackedScene
-@export var warning_duration := 3.0
+@export var warning_duration := 1.5
 @export var light_linger := 0.5
 @export var barrage_rounds := 15
 @export var delay_between_rounds := 0.3

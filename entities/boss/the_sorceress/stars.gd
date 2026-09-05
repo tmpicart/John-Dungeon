@@ -39,5 +39,5 @@ func _launch_projectile() -> void:
 	proj.rotation = ray_cast.rotation
 	get_tree().current_scene.add_child(proj)
 	proj.add_to_group("Enemies")
-	proj.global_position = boss.global_position
+	proj.global_position = boss.global_position + Vector2(0, -40)  # chest height
 	await get_tree().create_timer(delay).timeout

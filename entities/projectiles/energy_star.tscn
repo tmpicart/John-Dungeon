@@ -41,6 +41,8 @@ fill_from = Vector2(0.5, 0.527523)
 fill_to = Vector2(0.830275, 0.169725)
 
 [node name="Energy Star" type="CharacterBody2D" groups=["Enemies"]]
+collision_layer = 0
+collision_mask = 4
 z_index = 1
 script = ExtResource("1_e5xby")
 
@@ -73,3 +75,5 @@ position = Vector2(0, 0.5)
 scale = Vector2(0.265625, 0.265625)
 color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_ww2ve")
+
+[connection signal="area_entered" from="hitbox" to="." method="_on_hitbox_area_entered"]
