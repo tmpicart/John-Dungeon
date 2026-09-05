@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://bj8p1bwlk2xlw" path="res://entities/enemies/states/enemy_chase.gd" id="6_eko0r"]
 [ext_resource type="Script" uid="uid://lmqo5i4nwfec" path="res://entities/enemies/states/enemy_attack.gd" id="7_woxk7"]
 [ext_resource type="PackedScene" uid="uid://5dnflp2x3nl4" path="res://entities/projectiles/magic_missile.tscn" id="8_ctycn"]
-[ext_resource type="Script" path="res://entities/enemies/states/enemy_summon.gd" id="9_vb21g"]
+[ext_resource type="Script" uid="uid://dv2dglgnub3du" path="res://entities/enemies/states/enemy_summon.gd" id="9_vb21g"]
 [ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://entities/enemies/flail_skeleton/flail_skeleton.tscn" id="10_eo0t0"]
 [ext_resource type="PackedScene" uid="uid://4evtkf3vje6p" path="res://entities/projectiles/summon_effect.tscn" id="11_eupuc"]
 [ext_resource type="Script" uid="uid://c4g08avna1fjd" path="res://entities/enemies/states/enemy_retreat.gd" id="12_f46sl"]
@@ -16,8 +16,8 @@
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="14_1t88p"]
 [ext_resource type="AudioStream" uid="uid://bihw5plpyvxx6" path="res://assets/sounds/enemies/slime/353250__zuzek06__slimejump.wav" id="15_0uktk"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="16_v2j72"]
-[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="17_hurt"]
-[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="18_stun"]
+[ext_resource type="Script" uid="uid://b6nfl5rpgojwg" path="res://entities/enemies/states/enemy_hurt.gd" id="17_hurt"]
+[ext_resource type="Script" uid="uid://bmty43qg65woh" path="res://entities/enemies/states/enemy_stun.gd" id="18_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f7sk2"]
 resource_local_to_scene = true
@@ -43,7 +43,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2i(5, 0)]
+"values": [Vector2i(3, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -198,7 +198,7 @@ tracks/1/keys = {
 [sub_resource type="Animation" id="Animation_6pa2e"]
 resource_name = "Summon"
 length = 0.9
-step = 0.05
+step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -206,10 +206,34 @@ tracks/0/path = NodePath("Sprite2D:frame_coords")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(3, 0), Vector2i(4, 0)]
+"values": [Vector2i(5, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:material:shader_parameter/flash_color")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.835398, 0.356332, 0.824726, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:material:shader_parameter/flash_value")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.04, 0.09, 0.14, 0.19, 0.24, 0.29, 0.34, 0.39, 0.44, 0.49, 0.54, 0.59, 0.64, 0.69, 0.74, 0.79, 0.84, 0.89),
+"transitions": PackedFloat32Array(1, 8.93604e-05, 0.00285954, 1e-05, 1.00671e-05, 1e-05, 3.88965e-05, 8.05362e-05, 4.16883e-05, 1e-05, 7.25834e-05, 0.0005055, 0.000505501, 1e-05, 0.000102649, 0.000396607, 0.00390625, 1e-05, 0.000106268),
+"update": 0,
+"values": [0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0]
 }
 
 [sub_resource type="Animation" id="Animation_b6ywu"]
@@ -275,18 +299,18 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
-[node name="Necromancer" type="CharacterBody2D" unique_id=862063401 groups=["Enemies"] node_paths=PackedStringArray("state_control", "hurt_state", "stun_state")]
+[node name="Necromancer" type="CharacterBody2D" unique_id=862063401 node_paths=PackedStringArray("state_control", "hurt_state", "stun_state") groups=["Enemies"]]
 y_sort_enabled = true
 scale = Vector2(0.75, 0.75)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_pwncg")
+hp = 5
+attack_cooldown_duration = 2.0
 state_control = NodePath("State Control")
 hurt_state = NodePath("State Control/EnemyHurt")
 stun_state = NodePath("State Control/EnemyStun")
-hp = 5
-attack_cooldown_duration = 2.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1514341465]
 material = SubResource("ShaderMaterial_f7sk2")
@@ -316,25 +340,25 @@ idle_state = NodePath("../EnemyIdle")
 attack_state = NodePath("../EnemyAttack")
 retreat_state = NodePath("../EnemyRetreat")
 summon_state = NodePath("../EnemySummon")
-aim_ray_cast = NodePath("../../AimRaycast")
 chase_drop_distance = 300
 attempt_attack_range = 200
 retreat_on_hit = true
+aim_ray_cast = NodePath("../../AimRaycast")
 summon_chance = 0.25
 
 [node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("chase_state", "aim_ray_cast")]
 script = ExtResource("7_woxk7")
+chase_state = NodePath("../EnemyChase")
 projectile = ExtResource("8_ctycn")
 aim_ray_cast = NodePath("../../AimRaycast")
-chase_state = NodePath("../EnemyChase")
 projectile_offsets = Array[Vector2]([Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)])
 
 [node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("chase_state", "summon_sfx")]
 script = ExtResource("9_vb21g")
+chase_state = NodePath("../EnemyChase")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 summon_sfx = NodePath("../../summon_sfx")
-chase_state = NodePath("../EnemyChase")
 
 [node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "ray_cast")]
 script = ExtResource("12_f46sl")
@@ -345,11 +369,11 @@ speed = 100
 retreat_distance = 125
 wall_avoid_distance = 50
 
-[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
+[node name="EnemyHurt" type="Node" parent="State Control" unique_id=574359299 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("17_hurt")
 chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
+[node name="EnemyStun" type="Node" parent="State Control" unique_id=781961754 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("18_stun")
 chase_state = NodePath("../EnemyChase")
 
@@ -389,5 +413,3 @@ volume_db = -5.0
 [node name="summon_sfx" type="AudioStreamPlayer2D" parent="." unique_id=331029290]
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1509397695]
-
-
