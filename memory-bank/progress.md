@@ -38,3 +38,4 @@
 - 2026-09-04 | feat | Aim-locked arcing homing reflects: PlayerCombat aim API (aim_direction + cursor-snap get_aim_target over EnemyHurtbox shape queries), missiles launch ±75° wide and re-lock persistently, single-Hitbox projectiles, no-pierce reflect (1ee97d4).
 - 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish effect via the shared EnemySummon state; dead summoners cancel pending spawns (6897d87).
 - 2026-09-04 | fix | Boss phase-2 playtest: intervention warning 3.0s→1.5s; stars spawn at chest height, wall-bounce via collision_mask 4 (exception loops dropped), contact-kill on PlayerHurtbox (f1143d2).
+- 2026-09-05 | fix | Boss parry-stagger flush violation: stagger pauses mid-action, exit stops (dc71bf7); necromancer summon/cast swap poses and share the purple attack strobe, no more baked white flicker (46986e1).
