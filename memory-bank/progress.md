@@ -35,3 +35,5 @@
 - 2026-09-04 | feat | LootTable resource + tier-1 table: exact-sum budget rolls, item-owned tier/value (e580a54).
 - 2026-09-04 | refactor | R-30 interaction framework: Interactable base, event-driven InteractionManager, `interact` input on E, PickupItem scatter drops + Pickup migration, chest loot wiring, headless smoke test (7c37b7e).
 - 2026-09-04 | feat | Sorceress parry-stagger: parried melee/slide freezes her on the yellow pulse with doubled damage (boss_stagger state, stun() override, attack-surface shutdown on interrupt/death); beam recovery unchanged (04168fb).
+- 2026-09-04 | feat | Aim-locked arcing homing reflects: PlayerCombat aim API (aim_direction + cursor-snap get_aim_target over EnemyHurtbox shape queries), missiles launch ±75° wide and re-lock persistently, single-Hitbox projectiles, no-pierce reflect (1ee97d4).
+- 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish effect via the shared EnemySummon state; dead summoners cancel pending spawns (6897d87).
