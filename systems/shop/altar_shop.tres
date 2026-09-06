@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ShopData" format=3 uid="uid://b47gdcn8umag8"]
+
+[ext_resource type="Script" uid="uid://dvh0kppjgiu3p" path="res://systems/shop/shop_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://r3nmuf3ssi0y" path="res://systems/shop/shop_item.gd" id="1_vjqds"]
+[ext_resource type="Script" uid="uid://b15gouirs4j55" path="res://systems/shop/items/max_hp_item.gd" id="2_maxhp"]
+[ext_resource type="Texture2D" uid="uid://dl3rfaq5der53" path="res://assets/hud/plus.png" id="3_hptex"]
+
+[sub_resource type="Resource" id="Resource_maxhp"]
+script = ExtResource("2_maxhp")
+display_name = "Max HP+"
+cost = 3
+icon = ExtResource("3_hptex")
+max_purchases = 6
+
+[resource]
+script = ExtResource("1_data")
+title = "Shrine"
+entries = Array[ExtResource("1_vjqds")]([SubResource("Resource_maxhp")])

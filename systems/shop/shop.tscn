@@ -1,0 +1,117 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://systems/shop/shop.gd" id="1_shop"]
+[ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_1.png" id="3_coin"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.24, 0.19, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.075, 0.055, 0.075, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_coinbar"]
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+bg_color = Color(0.24, 0.19, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.075, 0.055, 0.075, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
+
+[node name="Shop" type="CanvasLayer"]
+visible = false
+script = ExtResource("1_shop")
+
+[node name="Dim" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0.043, 0.024, 0.043, 0.3)
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Margin" type="MarginContainer" parent="Root/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="VBox" type="VBoxContainer" parent="Root/Panel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Root/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 40
+text = "Shop"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Root/Panel/Margin/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 8
+
+[node name="CoinBar" type="PanelContainer" parent="Root/Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_coinbar")
+
+[node name="CoinRow" type="HBoxContainer" parent="Root/Panel/Margin/VBox/CoinBar"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CoinIcon" type="TextureRect" parent="Root/Panel/Margin/VBox/CoinBar/CoinRow"]
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("3_coin")
+
+[node name="Count" type="Label" parent="Root/Panel/Margin/VBox/CoinBar/CoinRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 32
+text = "0"

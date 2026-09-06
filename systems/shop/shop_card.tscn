@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://systems/shop/shop_card.gd" id="1_card"]
+[ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_1.png" id="3_coin"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.24, 0.19, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.075, 0.055, 0.075, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
+
+[node name="Card" type="Panel"]
+custom_minimum_size = Vector2(260, 360)
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+script = ExtResource("1_card")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Name" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 28
+text = "Item"
+horizontal_alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/VBox"]
+custom_minimum_size = Vector2(0, 170)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CostRow" type="HBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CoinIcon" type="TextureRect" parent="Margin/VBox/CostRow"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("3_coin")
+
+[node name="Cost" type="Label" parent="Margin/VBox/CostRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_font_sizes/font_size = 28
+text = "0"
+
+[node name="Max" type="Label" parent="Margin/VBox"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.4, 0.32, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 26
+text = "MAX"
+horizontal_alignment = 1
+

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ShopData" format=3 uid="uid://dj17kxgt3nky5"]
+
+[ext_resource type="Script" uid="uid://dvh0kppjgiu3p" path="res://systems/shop/shop_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://r3nmuf3ssi0y" path="res://systems/shop/shop_item.gd" id="1_dfm6m"]
+[ext_resource type="Script" uid="uid://dlt5hmt23nklh" path="res://systems/shop/items/potion_item.gd" id="2_potion"]
+[ext_resource type="Texture2D" uid="uid://dhcuo8omhfujn" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/flasks/flasks_1_1.png" id="4_potiontex"]
+
+[sub_resource type="Resource" id="Resource_potion"]
+script = ExtResource("2_potion")
+display_name = "Potion"
+cost = 2
+icon = ExtResource("4_potiontex")
+
+[resource]
+script = ExtResource("1_data")
+title = "Potion Seller"
+entries = Array[ExtResource("1_dfm6m")]([SubResource("Resource_potion")])
