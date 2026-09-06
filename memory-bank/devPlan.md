@@ -29,3 +29,6 @@
 
 ## D-7 Audio pass
 - Complete sound and music design pass
+
+## D-8 Lighting & VFX pass
+- Ambient lighting/effects pass: item glows, projectile light budget, room mood lighting (a boss-key glow was explored and shelved 2026-09-06)

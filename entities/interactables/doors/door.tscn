@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://bcqpocv0rfv4o"]
+[gd_scene load_steps=10 format=3 uid="uid://bcqpocv0rfv4o"]
 
 [ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_f2rq2"]
 [ext_resource type="Texture2D" uid="uid://d1js6tpem4pbu" path="res://assets/objects/door_open_animation.png" id="2_ajgvw"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="2_wsfaa"]
+[ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_sfx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ncsu4"]
 size = Vector2(32, 33)
@@ -63,6 +64,20 @@ tracks/1/keys = {
 "update": 1,
 "values": [true, false]
 }
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.8),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_set_passable"
+}]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_7ykm2"]
 _data = {
@@ -97,3 +112,6 @@ shape = SubResource("RectangleShape2D_nodh8")
 libraries = {
 "": SubResource("AnimationLibrary_7ykm2")
 }
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_sfx")

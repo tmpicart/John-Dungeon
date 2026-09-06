@@ -8,11 +8,14 @@ signal potions_changed
 signal bombs_changed
 signal coins_changed
 signal keys_changed
+signal boss_key_changed
 
 @export var coins: int = 0
 @export var bombs: int = 3
 @export var potions: int = 3
 @export var keys: int = 0
+
+var has_boss_key := false
 
 @onready var bomb_scene = preload("res://entities/projectiles/bomb.tscn")
 @onready var combat = $"../PlayerCombat"
@@ -44,6 +47,21 @@ func consume_key() -> bool:
 		return false
 	keys -= 1
 	keys_changed.emit(keys)
+	return true
+
+
+## Grants the floor's boss key (at most one exists).
+func give_boss_key() -> void:
+	has_boss_key = true
+	boss_key_changed.emit(has_boss_key)
+
+
+## Consumes the boss key atomically; returns false when not held.
+func use_boss_key() -> bool:
+	if not has_boss_key:
+		return false
+	has_boss_key = false
+	boss_key_changed.emit(has_boss_key)
 	return true
 
 ## Adds coins (pickups, rewards).

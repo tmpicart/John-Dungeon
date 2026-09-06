@@ -39,3 +39,4 @@
 - 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish effect via the shared EnemySummon state; dead summoners cancel pending spawns (6897d87).
 - 2026-09-04 | fix | Boss phase-2 playtest: intervention warning 3.0s→1.5s; stars spawn at chest height, wall-bounce via collision_mask 4 (exception loops dropped), contact-kill on PlayerHurtbox (f1143d2).
 - 2026-09-05 | fix | Boss parry-stagger flush violation: stagger pauses mid-action, exit stops (dc71bf7); necromancer summon/cast swap poses and share the purple attack strobe, no more baked white flicker (46986e1).
+- 2026-09-06 | refactor | R-31 unified doors: LockType door script with animation Call Method unlock timing (4 scenes on one script, plain doors gain SFX); boolean boss key on PlayerInventory + HUD icon box, prompted pickup; stale door/chest scripts retired, chest_no_key.gd -> chest.gd; floor_1 test doors + chest2 drop fix (squashed single commit).

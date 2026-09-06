@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://beu7po4d0rpog"]
+[gd_scene load_steps=8 format=3 uid="uid://beu7po4d0rpog"]
 
 [ext_resource type="Script" uid="uid://bn6opqv8amnst" path="res://ui/item_hud.gd" id="1_2igkr"]
 [ext_resource type="PackedScene" uid="uid://bgfv24qsybs1e" path="res://ui/item_box.tscn" id="1_355cn"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c1l5p8j5vufua" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/coin/coin_1.png" id="3_2oiq6"]
 [ext_resource type="Texture2D" uid="uid://ddrtt14rnkv4p" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/keys/keys_1_1.png" id="3_wqh8v"]
 [ext_resource type="Texture2D" uid="uid://dhcuo8omhfujn" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/flasks/flasks_1_1.png" id="5_4kw3d"]
+[ext_resource type="Texture2D" uid="uid://ws3ngcsd20v1" path="res://assets/items/key.png" id="6_bosskey"]
 
 [node name="VBoxContainer" type="VBoxContainer"]
 anchors_preset = 1
@@ -15,16 +16,21 @@ offset_left = -40.0
 offset_bottom = 56.0
 grow_horizontal = 0
 script = ExtResource("1_2igkr")
-BombSprite = ExtResource("2_3gq1c")
-KeySprite = ExtResource("3_wqh8v")
-CoinSprite = ExtResource("3_2oiq6")
-PotionSprite = ExtResource("5_4kw3d")
+bomb_sprite = ExtResource("2_3gq1c")
+key_sprite = ExtResource("3_wqh8v")
+coin_sprite = ExtResource("3_2oiq6")
+potion_sprite = ExtResource("5_4kw3d")
+boss_key_sprite = ExtResource("6_bosskey")
 
 [node name="Bomb" parent="." instance=ExtResource("1_355cn")]
 layout_mode = 2
 
 [node name="Key" parent="." instance=ExtResource("1_355cn")]
 layout_mode = 2
+
+[node name="BossKey" parent="." instance=ExtResource("1_355cn")]
+layout_mode = 2
+visible = false
 
 [node name="Coin" parent="." instance=ExtResource("1_355cn")]
 layout_mode = 2

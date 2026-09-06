@@ -12,7 +12,7 @@
 ## Autoloads
 | Name | Path | Role |
 |---|---|---|
-| `Global` | `systems/global/global.gd` | player/door references (property-backed; re-resolves freed/missing refs), `Direction` enum, `has_boss_key` flag |
+| `Global` | `systems/global/global.gd` | player reference (property-backed; re-resolves freed/missing refs), `Direction` enum |
 | `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + binding-derived "…" prompt |
 
 ## Physics Layers

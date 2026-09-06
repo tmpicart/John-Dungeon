@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://rvpiujtilw1o"]
 
-[ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://entities/interactables/chests/chest_no_key.gd" id="1_5bdnu"]
+[ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://entities/interactables/chests/chest.gd" id="1_5bdnu"]
 [ext_resource type="Texture2D" uid="uid://bs30ohxi52fd2" path="res://assets/objects/chest.png" id="2_x4dhw"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_wswgy"]
 [ext_resource type="Resource" path="res://systems/loot/loot_table_tier_1.tres" id="4_loot"]
