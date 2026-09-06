@@ -14,8 +14,7 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 ## Phase R3 — Interaction & UI systems (after R2)
 | ID | Task | Notes |
 |---|---|---|
-| R-32 | Shop rework | Mouse cards (hover + click), N items via `ShopData` resource, purchases through `PlayerInventory`; close on Esc/walk-away; retire legacy shop scenes; freeze player input while open |
-| R-33 | Dialogue system | JSON dialogue (pages, stage transitions); `PlayerProgress` on player (flags + per-NPC stages); correct stale Tutorial text (Tab → Shift); freeze player input during dialogue; one-time "what to do with the boss key" message box |
+| R-33 | Dialogue system | JSON dialogue (pages, stage transitions); `PlayerProgress` on player (flags + per-NPC stages); correct stale Tutorial text (Tab → Shift); freeze player input during dialogue (reuse the R-32 modal-freeze pattern); one-time "what to do with the boss key" message box |
 
 ## Phase R4 — World & content (after R2–R3)
 | ID | Task | Notes |
