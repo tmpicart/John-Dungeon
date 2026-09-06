@@ -33,9 +33,14 @@ Autoload `InteractionManager` (registry + world-space prompt) and `Interactable`
 ### HUD
 Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and `item_hud`; no polling.
 
-### Dialogue & Shop
-- `npc_dialog` paginates lines from text files; NPC scenes embed dialog + shop child nodes and configure costs/items in `_ready`
-- Shop UI is CanvasLayer-based; item effects currently route through NPC scripts (pending rewiring onto the inventory API — see `migrationMap.md`)
+### Shop
+- `ShopData` resource (`title`, `entries: Array[ShopItem]`) attached by any `Interactable` owner — NPC or inanimate (altar); `ShopItem` subclasses (`systems/shop/items/`) own `grant(player)` with data fields (`display_name`/`cost`/`icon`/`max_purchases`); stock lives in `.tres` files authored in the Inspector
+- Shared `shop.tscn` (per-owner instance) builds one card per entry at open: hover highlight, click buys via atomic `spend_coins` → `grant`, live coin bar, MAX/greyed states; purchase caps are session-scoped
+- Modal freeze: open calls `Global.player.set_input_locked(true)` + `InteractionManager.set_locked(true)`; the player gate stops state input routing and disables combat (invulnerable while open) — movement stays live so walk-away closing works; restore both on close. R-33 dialogue reuses this
+- Closes on Esc (`quit` action) or walking 140 px from the owner; dark flat-slab theme (StyleBoxFlat, parchment text, 0.3 world dim); modal layers default hidden in scenes so the level editor stays clean
+
+### Dialogue
+- `npc_dialog` paginates non-empty lines from text files; talk-first gates the shop (`spoke`); closes on walk-away; R-33 replaces this with JSON pages + `PlayerProgress` stages
 
 ## Adopted Conventions
 | Area | Convention |
