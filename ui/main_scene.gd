@@ -19,11 +19,13 @@ func _ready():
 	# Update item bar with initial values
 	item_bar.update_bombs(player.inventory.bombs)
 	item_bar.update_keys(player.inventory.keys)
+	item_bar.update_boss_key(player.inventory.has_boss_key)
 	item_bar.update_potions(player.inventory.potions)
 	item_bar.update_coins(player.inventory.coins)
 	
 	# Connect signals for item changes
 	player.inventory.bombs_changed.connect(item_bar.update_bombs)
 	player.inventory.keys_changed.connect(item_bar.update_keys)
+	player.inventory.boss_key_changed.connect(item_bar.update_boss_key)
 	player.inventory.potions_changed.connect(item_bar.update_potions)
 	player.inventory.coins_changed.connect(item_bar.update_coins)

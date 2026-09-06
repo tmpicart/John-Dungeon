@@ -1,38 +1,49 @@
 extends VBoxContainer
 
-# Exported variables for item sprites
-@export var BombSprite: CompressedTexture2D = null
-@export var KeySprite: CompressedTexture2D = null
-@export var CoinSprite: CompressedTexture2D = null
-@export var PotionSprite: CompressedTexture2D = null
+## Item HUD: count boxes for bombs/keys/coins/potions and a boss-key box that
+## is visible only while the key is held.
 
-# Onready variables to get references to the item containers
-@onready var Bomb = $Bomb
-@onready var Key = $Key
-@onready var Coin = $Coin
-@onready var Potion = $Potions
+@export var bomb_sprite: Texture2D = null
+@export var key_sprite: Texture2D = null
+@export var coin_sprite: Texture2D = null
+@export var potion_sprite: Texture2D = null
+@export var boss_key_sprite: Texture2D = null
 
-# Helper function to change sprite textures
-func change_sprite(sprite2D: Sprite2D, sprite: CompressedTexture2D):
-	sprite2D.texture = sprite
+@onready var _bomb = $Bomb
+@onready var _key = $Key
+@onready var _coin = $Coin
+@onready var _potion = $Potions
+@onready var _boss_key = $BossKey
 
-# Called when the node is ready
-func _ready(): 
-	# Change sprites for each item (Bomb, Key, Coin, Potion)
-	change_sprite(Bomb.get_node("Sprite2D"), BombSprite)
-	change_sprite(Key.get_node("Sprite2D"), KeySprite)
-	change_sprite(Coin.get_node("Sprite2D"), CoinSprite)
-	change_sprite(Potion.get_node("Sprite2D"), PotionSprite)
 
-# Update functions to reflect the current number of items
-func update_coins(num: int):
-	Coin.get_node("Label").text = "x" + str(num)
+func _ready() -> void:
+	_set_icon(_bomb, bomb_sprite)
+	_set_icon(_key, key_sprite)
+	_set_icon(_coin, coin_sprite)
+	_set_icon(_potion, potion_sprite)
+	_set_icon(_boss_key, boss_key_sprite)
+	_boss_key.get_node("Label").visible = false
 
-func update_bombs(num: int):
-	Bomb.get_node("Label").text = "x" + str(num)
 
-func update_keys(num: int):
-	Key.get_node("Label").text = "x" + str(num)
+func update_coins(amount: int) -> void:
+	_coin.get_node("Label").text = "x" + str(amount)
 
-func update_potions(num: int):
-	Potion.get_node("Label").text = "x" + str(num)
+
+func update_bombs(amount: int) -> void:
+	_bomb.get_node("Label").text = "x" + str(amount)
+
+
+func update_keys(amount: int) -> void:
+	_key.get_node("Label").text = "x" + str(amount)
+
+
+func update_potions(amount: int) -> void:
+	_potion.get_node("Label").text = "x" + str(amount)
+
+
+func update_boss_key(has_key: bool) -> void:
+	_boss_key.visible = has_key
+
+
+func _set_icon(box, texture: Texture2D) -> void:
+	box.get_node("Sprite2D").texture = texture

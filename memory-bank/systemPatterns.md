@@ -8,7 +8,7 @@
 Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a state machine.
 - `PlayerMovement` — acceleration/friction movement, dash with cooldown timer
 - `PlayerCombat` — HP, attack/block execution, damage intake, `upgrade_weapon()` (resyncs cached damage); signals `hp_changed`, `max_hp_changed`
-- `PlayerInventory` — coins/bombs/potions/keys; public API `add_coin`/`spend_coins`/`add_key`/`consume_key`/`add_potion`/`add_bomb`/`use_potion`/`use_bomb` — atomic spend/consume return `bool`; every mutation emits its `*_changed` signal; callers never write the count fields directly
+- `PlayerInventory` — coins/bombs/potions/keys plus the boolean `has_boss_key` (floor progression, at most one); public API `add_coin`/`spend_coins`/`add_key`/`consume_key`/`add_potion`/`add_bomb`/`use_potion`/`use_bomb`/`give_boss_key`/`use_boss_key` — atomic spend/consume return `bool`; every mutation emits its `*_changed` signal; callers never write the count fields directly
 - `PlayerAnimation` — 4-direction mouse-facing animation routing, equipment layering (weapon/shield foreground vs background)
 - `State Control` — generic state machine (`systems/state_core/state.gd`, `state_control.gd`): states call `transition_to(target)` — typed `State` refs on the player, node-name strings bridged until R-23; the control injects `actor` (the owning entity) into every state and validates exported refs at startup
 
@@ -56,6 +56,7 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 | Non-interruptible bosses | `interruptible = false`: hits flash + damage only; a parried body hitbox staggers via the boss `stun()` override (`boss_stagger` state: freeze-frame + exposure, doubled damage); attack surfaces are animation-track- or code-driven, so interrupts and death must kill them (`disable_attack_surfaces()` + slide `exit()` cleanups); summon placement needs `is_summonable`-painted tiles and skips cleanly without |
 | Animation interrupts | Interrupt states freeze mid-action with `animation_player.pause()` (holds the frame, applies no track values); `stop()` seeks to 0 and applies first-frame keys, so it is illegal inside area-signal flushes and pairs with an `exit()` stop to reset position for repeat attacks (boss_stagger) |
 | Reflectable projectiles | one Area2D (`Hitbox`): `collision_layer` swaps at reflect (8→6) for victim-side damage pairing; `collision_mask` carries lifetime — Player + Environment pre, Enemies + Environment post (no piercing); `body_entered` self-frees; missiles launch `reflect_arc_deg` wide and re-lock `get_aim_target()` whenever targetless |
+| Doors | One script (`entities/interactables/doors/door.gd`) with a `lock_type` export (none/key/boss_key); each scene's "open" animation Call Method track calls `_set_passable()` to drop the blocking collision — no timer constants in code; `Label`/SFX nodes optional per scene; the boss key is a prompted interact pickup (auto_pickup off — the R-33 message box will key off the same `interacted`) |
 | Animation coupling | Signal-driven flow (`await animation_finished` + interrupt flow tokens, Call Method Tracks for hit windows/sfx); polling waits removed (R-22) |
 
 ## Known Trade-offs (accepted for now)

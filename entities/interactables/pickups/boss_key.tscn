@@ -24,16 +24,3 @@ auto_pickup = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_daybg")
-
-[node name="Label" type="Label" parent="."]
-z_index = 100
-offset_left = -47.0
-offset_top = -35.0
-offset_right = 270.0
-offset_bottom = 40.0
-scale = Vector2(0.3, 0.3)
-theme_override_font_sizes/font_size = 16
-text = "You Picked Up the Boss Key Go Back To Where You Came and Find The Purple Door"
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3

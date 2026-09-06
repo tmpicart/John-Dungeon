@@ -7,8 +7,6 @@ enum Direction {
 	UP
 }
 
-var has_boss_key := false
-
 ## Service-locator access. Re-resolves from the group when the cached reference
 ## is missing or freed (the autoload ready() runs before the main scene loads).
 var player: Node:

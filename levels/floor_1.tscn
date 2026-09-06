@@ -8,7 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://rvpiujtilw1o" path="res://entities/interactables/chests/chest_no_key.tscn" id="7_vnypl"]
 [ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://entities/interactables/pickups/key.tscn" id="8_i8g4k"]
 [ext_resource type="PackedScene" uid="uid://cqbfd3ribv0bg" path="res://entities/interactables/pickups/coin.tscn" id="8_xat2l"]
-[ext_resource type="PackedScene" uid="uid://rhhukbmueh53" path="res://entities/boss/the_sorceress/the_sorceress.tscn" id="9_xgdhf"]
+[ext_resource type="PackedScene" uid="uid://bcqpocv0rfv4o" path="res://entities/interactables/doors/door.tscn" id="10_tdoor"]
+[ext_resource type="PackedScene" uid="uid://06fson1afemk" path="res://entities/interactables/doors/key_door.tscn" id="11_tkdoor"]
+[ext_resource type="PackedScene" uid="uid://bxbick14tkq7a" path="res://entities/interactables/doors/boss_door.tscn" id="12_tbdoor"]
+[ext_resource type="PackedScene" uid="uid://dyxkbx71d8tuv" path="res://entities/interactables/pickups/boss_key.tscn" id="13_tbkey"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egfvc"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -344,7 +347,7 @@ position = Vector2(202, 167)
 
 [node name="chest2" parent="." unique_id=376841096 instance=ExtResource("7_vnypl")]
 position = Vector2(243, 191)
-Path = ExtResource("8_i8g4k")
+drop_scene = ExtResource("8_i8g4k")
 
 [node name="Key" parent="." unique_id=2006065778 instance=ExtResource("8_i8g4k")]
 position = Vector2(121.99999, 168.99997)
@@ -358,5 +361,14 @@ position = Vector2(167, 199)
 [node name="Coin3" parent="." unique_id=1797151701 instance=ExtResource("8_xat2l")]
 position = Vector2(152, 198)
 
-[node name="The Sorceress" parent="." unique_id=1876393553 instance=ExtResource("9_xgdhf")]
-position = Vector2(128, 140)
+[node name="TestDoor" parent="." unique_id=1114031089 instance=ExtResource("10_tdoor")]
+position = Vector2(300, 167)
+
+[node name="TestKeyDoor" parent="." unique_id=971374607 instance=ExtResource("11_tkdoor")]
+position = Vector2(300, 200)
+
+[node name="TestBossDoor" parent="." unique_id=521805067 instance=ExtResource("12_tbdoor")]
+position = Vector2(300, 133)
+
+[node name="TestBossKey" parent="." unique_id=819678699 instance=ExtResource("13_tbkey")]
+position = Vector2(250, 155)

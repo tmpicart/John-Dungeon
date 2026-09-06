@@ -3,34 +3,36 @@
 > **Purpose:** Where work stands right now. Rewritten each session (≤60 lines) — history goes to `progress.md`, not here.
 
 ## Phase
-R3 shipped. Combat pass shipped: boss parry-stagger (04168fb), aim-locked arcing homing reflects (1ee97d4), summon telegraph (6897d87). Boss phase-2 playtest fixes in (f1143d2): pillar telegraph 1.5 s, star chest spawn + wall bounce + contact kill. Follow-ups in: flush-safe stagger freeze (dc71bf7), necromancer summon/cast purple strobe on swapped poses (46986e1). Next: R-31 unified doors or R-32 shop rework.
+R-31 shipped (74f9b2a): one `lock_type` door script with animation-owned unlock timing, boolean boss key on `PlayerInventory` with a HUD icon, stale door/chest scripts retired, floor_1 carries test doors. Next: R-32 shop rework or R-33 dialogue.
 
 ## Conventions
-- Player aim API (`PlayerCombat`): `aim_direction()` (player→cursor; feeds the parry cone + reflect launches) and `get_aim_target()` (EnemyHurtbox shape query centered on the cursor within `aim_snap_radius`, nearest surface wins; physics-step only, no group scans). The facing direction is the input-agnostic aim primitive; the controller model is an open decision (reticle vs direction + soft lock).
-- Reflectable projectiles: one Area2D (`Hitbox`) — `collision_layer` swaps at reflect (8→6) for victim-side damage pairing, `collision_mask` carries lifetime (Player + Environment pre; Enemies + Environment post, no piercing); `body_entered` self-frees. Missiles launch `reflect_arc_deg` wide, re-lock the aim whenever targetless, and settle onto the aim line between locks; arrows unchanged behaviorally.
-- Boss parry-stagger: parried boss body hitboxes (melee/slide) route `stun()` → `boss_stagger` — freeze-frame + Vulnerable pulse + doubled damage (3 s, returns to Engage); `interruptible = false` keeps hits flinch-free; attack surfaces are killed on interrupt/death (`disable_attack_surfaces()` + slide `exit()` cleanups); beam recovery stays exposure-only (unparriable, direct-damage raycast).
-- Summoning (shared `EnemySummon`): flood-fill placement on `is_summonable` tiles; the flourish effect is the telegraph — creatures materialize `spawn_delay` (0.5 s) after it; a dead summoner cancels pending spawns.
-- Interaction: `Interactable` (Area2D — prompt/enabled/one_shot/auto_pickup + `interacted` signal); InteractionManager is event-driven. Prompts derive from the `interact` binding ("[E] …").
-- Pickups: `PickupItem` root (scatter/bounce, settle-gated collection, loot exports) + `Pickup` area (`pickup.tscn` bakes auto + one-shot). Toggle `enabled`; never poke collision shapes.
-- Loot: `LootTable.roll(budget)` exact-sum rolls; item scenes own tier/value; keys/boss keys are progression (tier −1).
-- Input: single `interact` action (E physical); controller support later = adding an event to it.
+- Doors: one script (`entities/interactables/doors/door.gd`) with `lock_type` (none/key/boss_key); each scene's "open" animation Call Method track calls `_set_passable()` — no timer constants; `Label`/SFX optional per scene (plain doors now play the shared open SFX).
+- Boss key: boolean on `PlayerInventory` (`give/use_boss_key` + `boss_key_changed`); prompted interact pickup ("Pick Up", `auto_pickup` off) — the `interacted` signal is the future R-33 message-box trigger; HUD icon box shows possession. Item lighting deferred to D-8.
+- Regular keys stay counted (`add_key`/`consume_key`); keys/boss keys are progression (tier −1).
+- Player aim API (`PlayerCombat`): `aim_direction()` + `get_aim_target()` (EnemyHurtbox shape query, `aim_snap_radius`); facing is the input-agnostic aim primitive; controller model open (reticle vs direction + soft lock).
+- Reflectable projectiles: one `Hitbox` Area2D — `collision_layer` swaps 8→6 at reflect, `collision_mask` carries lifetime; missiles re-lock the aim when targetless.
+- Boss parry-stagger: parried body hitboxes route `stun()` → `boss_stagger` (freeze-frame, Vulnerable pulse, doubled damage); attack surfaces killed on interrupt/death; beam recovery stays exposure-only.
+- Summoning (shared `EnemySummon`): flood-fill on `is_summonable` tiles; flourish effect is the telegraph; dead summoner cancels pending spawns.
+- Interaction: `Interactable` (Area2D — prompt/enabled/one_shot/auto_pickup + `interacted`); event-driven InteractionManager; prompts derive from the `interact` binding.
+- Loot: `LootTable.roll(budget)` exact-sum rolls; item scenes own tier/value.
+- Input: single `interact` action (E physical); `buy1`/`buy2` are temporary until R-32.
 - gdlint is a scoped gate: rewritten files pass clean; untouched findings ride migrationMap.
 
 ## In Flight
-- Playtest verification: boss parry-stagger freeze (no flush errors, clean resume, repeat attacks restart) and necromancer summon/cast purple strobes.
-- `levels/floor_1.tscn` holds the user's uncommitted editor changes — pending a user level-content commit.
+- Playtest verification of R-31 in the editor: door locks/warnings, boss-key HUD icon appear/consume, chest2 key drop, SFX on plain doors. Reposition the floor_1 TestDoor/TestKeyDoor/TestBossDoor/TestBossKey instances freely.
 
 ## Verification Gates
 - gdlint on touched files (clean); baseline in `migrationMap.md`.
-- `tests/interaction_smoke.tscn` headless — 32 assertions, exit 0 = pass.
-- `--headless --import` before headless runs (new `class_name` scripts); scene boots `--quit-after 5` (ObjectDB warnings = engine noise). Boss/arrow scenes boot clean headless.
+- `tests/interaction_smoke.tscn` headless — 32 assertions, exit 0 = pass; it writes `smoke_result.txt` to the repo root — delete it, never commit it.
+- `--headless --import` before headless runs; scene boots `--quit-after 5`.
 
 ## Next Up
-1. R-31 unified doors (retire door script duplicates) or R-32 shop rework.
-2. D-plan hooks: monster coin drops, pickup animation, bomb pickup scene; D-5 allies will force the faction/targeting registry decision (see migrationMap).
+1. R-32 shop rework (mouse cards, `ShopData`, input freeze) or R-33 dialogue system (JSON pages, `PlayerProgress`, boss-key message box).
+2. HUD restyle requested (user: current HUD "looks awful") — fold into the HUD consolidation (R-40) or a dedicated pass.
+3. D-plan hooks: monster coin drops, pickup animation, bomb pickup scene; D-5 allies force the faction/targeting registry decision.
 
 ## Open Decisions
-- Controller aim model (when pad support lands): virtual reticle vs direction + soft lock — direction favored; both plug into the PlayerCombat aim API.
+- Controller aim model (when pad support lands): direction + soft lock favored; both plug into the PlayerCombat aim API.
 
 ## Working Agreements (quick recall)
 - Commits: agent drafts → user approves → commit; memory bank follows as `docs(memory)`. Push only when instructed.
