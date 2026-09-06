@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" uid="uid://06fson1afemk" path="res://entities/interactables/doors/key_door.tscn" id="11_tkdoor"]
 [ext_resource type="PackedScene" uid="uid://bxbick14tkq7a" path="res://entities/interactables/doors/boss_door.tscn" id="12_tbdoor"]
 [ext_resource type="PackedScene" uid="uid://dyxkbx71d8tuv" path="res://entities/interactables/pickups/boss_key.tscn" id="13_tbkey"]
+[ext_resource type="PackedScene" path="res://entities/interactables/altar/altar.tscn" id="14_taltar"]
+[ext_resource type="PackedScene" uid="uid://bji7ka5w8l7k" path="res://entities/npcs/blacksmith.tscn" id="15_blacksmith"]
+[ext_resource type="PackedScene" uid="uid://cmf7qxlp6g8rc" path="res://entities/npcs/potion_seller.tscn" id="16_potionseller"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egfvc"]
 vertices = PackedVector2Array(8, 8, -8, 8, -8, -8, 8, -8)
@@ -348,6 +351,7 @@ position = Vector2(202, 167)
 [node name="chest2" parent="." unique_id=376841096 instance=ExtResource("7_vnypl")]
 position = Vector2(243, 191)
 drop_scene = ExtResource("8_i8g4k")
+loot_value = 75
 
 [node name="Key" parent="." unique_id=2006065778 instance=ExtResource("8_i8g4k")]
 position = Vector2(121.99999, 168.99997)
@@ -372,3 +376,12 @@ position = Vector2(300, 133)
 
 [node name="TestBossKey" parent="." unique_id=819678699 instance=ExtResource("13_tbkey")]
 position = Vector2(250, 155)
+
+[node name="TestAltar" parent="." unique_id=44022878 instance=ExtResource("14_taltar")]
+position = Vector2(138, 116)
+
+[node name="Blacksmith" parent="." unique_id=1738176239 instance=ExtResource("15_blacksmith")]
+position = Vector2(202, 97)
+
+[node name="PotionSeller" parent="." unique_id=300713618 instance=ExtResource("16_potionseller")]
+position = Vector2(78, 94)

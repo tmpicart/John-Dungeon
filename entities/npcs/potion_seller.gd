@@ -1,31 +1,21 @@
 extends Node2D
 
+## Potion seller: opens their dialogue first, then their shop.
+
+@export var shop_data: ShopData
+
 @onready var interaction_area: Interactable = $InteractionArea
-@onready var player = get_tree().get_first_node_in_group("Player")
+@onready var shop = $Shop
 
 
 func _ready() -> void:
 	interaction_area.interacted.connect(_on_interact)
 	get_node("NPC Dialog").textFile = "res://systems/dialogue/heal_dialog_1.txt"
-	get_node("Shop2").cost1 = 2
-	get_node("Shop2").cost2 = 3
-	get_node("Shop2").item1 = "Potion"
-	get_node("Shop2").item2 = "Max HP+"
-	get_node("Shop2").imgfile = "res://assets/2d_pixel_dungeon_asset_pack/" \
-			+ "items_and_trap_animation/flasks/flasks_1_1.png"
-	get_node("Shop2").imgfile2 = "res://assets/hud/plus.png"
-	get_node("Shop2").max1 = 7
-
-func items1() -> void:
-	player.inventory.add_potion(1)
-
-
-func items2() -> void:
-	player.combat.max_hp += 1
 
 
 func _on_interact() -> void:
-	if get_node("NPC Dialog").spoke == false:
-		get_node("NPC Dialog").talk()
+	var dialog = get_node("NPC Dialog")
+	if not dialog.spoke:
+		dialog.talk()
 	else:
-		get_node("Shop2").openShop()
+		shop.open(shop_data, global_position)

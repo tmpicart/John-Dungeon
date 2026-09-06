@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ShopData" format=3 uid="uid://8awfcjt77tur"]
+
+[ext_resource type="Script" uid="uid://r3nmuf3ssi0y" path="res://systems/shop/shop_item.gd" id="1_banp3"]
+[ext_resource type="Script" uid="uid://dvh0kppjgiu3p" path="res://systems/shop/shop_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://dcoils6lgoula" path="res://systems/shop/items/bomb_item.gd" id="2_bomb"]
+[ext_resource type="Script" uid="uid://ds42x8ekv6snp" path="res://systems/shop/items/sword_upgrade_item.gd" id="3_sword"]
+[ext_resource type="Texture2D" uid="uid://dooyv6iwtkcqw" path="res://assets/items/bomb_placeholder.png" id="4_bombtex"]
+[ext_resource type="Texture2D" uid="uid://cpxo8yur1wbhq" path="res://assets/items/weapons.png" id="5_weapontex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bomb"]
+atlas = ExtResource("4_bombtex")
+region = Rect2(25, 0, 25, 25)
+
+[sub_resource type="Resource" id="Resource_bomb"]
+script = ExtResource("2_bomb")
+display_name = "Bomb"
+icon = SubResource("AtlasTexture_bomb")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sword"]
+atlas = ExtResource("5_weapontex")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="Resource" id="Resource_sword"]
+script = ExtResource("3_sword")
+display_name = "Sword lvl+"
+cost = 5
+icon = SubResource("AtlasTexture_sword")
+max_purchases = 3
+
+[resource]
+script = ExtResource("1_data")
+title = "Blacksmith"
+entries = Array[ExtResource("1_banp3")]([SubResource("Resource_bomb"), SubResource("Resource_sword")])
