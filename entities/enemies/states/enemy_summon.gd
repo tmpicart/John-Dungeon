@@ -4,10 +4,17 @@ class_name EnemySummon
 ## Shared summon state: plays the summoner's action animation, then spawns
 ## creatures on summonable tiles connected to the summoner's position
 ## (flood-fill bounded by summon_radius, so summons stay in the same room).
-## Composition — creature, effect, counts, cooldown, animation, sfx — is
-## configured per summoner. R-43 room markers supersede tile scanning.
+## Candidate cells are occupancy-checked against bodies and areas, so spawns
+## never land inside props, entities, or the player. Composition — creature,
+## effect, counts, cooldown, animation, sfx — is configured per summoner.
+## R-43 room markers supersede tile scanning.
 
 const CELL_NEIGHBORS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]
+## Physics layers blocked for spawn placement: Player, Enemies, Environment,
+## Interactables (areas cover door/chest/prop interaction surfaces).
+const OCCUPANCY_MASK := 23
+## Clearance radius checked around a spawn point, in px.
+const OCCUPANCY_RADIUS := 8.0
 
 @export var chase_state: State
 @export var summoned_creature: PackedScene
@@ -27,12 +34,21 @@ const CELL_NEIGHBORS: Array[Vector2i] = [Vector2i.LEFT, Vector2i.RIGHT, Vector2i
 
 var enemy: BaseEnemy
 var _summon_cooldown: Timer
+var _occupancy_query: PhysicsShapeQueryParameters2D
 
 func _ready() -> void:
 	enemy = actor
 	_summon_cooldown = Timer.new()
 	_summon_cooldown.one_shot = true
 	add_child(_summon_cooldown)
+	_occupancy_query = PhysicsShapeQueryParameters2D.new()
+	var occupancy_shape := CircleShape2D.new()
+	occupancy_shape.radius = OCCUPANCY_RADIUS
+	_occupancy_query.shape = occupancy_shape
+	_occupancy_query.collision_mask = OCCUPANCY_MASK
+	_occupancy_query.collide_with_bodies = true
+	_occupancy_query.collide_with_areas = true
+	_occupancy_query.exclude = [enemy.get_rid()]
 
 func validate_exports() -> void:
 	# summon_sfx is optional; the rest is mandatory, checked here because the
@@ -80,6 +96,9 @@ func _spawn_summon(position: Vector2, creature: PackedScene) -> void:
 	await get_tree().create_timer(spawn_delay).timeout
 	if enemy.is_dead:
 		return
+	# The telegraph window lets others move in; skip rather than overlap.
+	if not _is_position_clear(position):
+		return
 
 	var instance = creature.instantiate()
 	get_tree().current_scene.add_child(instance)
@@ -101,13 +120,16 @@ func _get_valid_summon_positions(max_count: int, tilemap: TileMapLayer) -> Array
 			var cell_world_pos: Vector2 = tilemap.map_to_local(cell)
 			if enemy.global_position.distance_squared_to(cell_world_pos) <= radius_sq:
 				valid_positions.append(cell_world_pos)
-				_enqueue_neighbors(cell, visited, frontier)
+			# Occupied cells still connect the region; the spawn list is
+			# occupancy-filtered below.
+			_enqueue_neighbors(cell, visited, frontier)
 		elif cell == start:
 			# The summoner may stand on a non-summonable cell; explore outward anyway.
 			_enqueue_neighbors(cell, visited, frontier)
 
 	valid_positions.shuffle()
-	return valid_positions.slice(0, mini(max_count, valid_positions.size()))
+	var clear_positions := valid_positions.filter(_is_position_clear)
+	return clear_positions.slice(0, mini(max_count, clear_positions.size()))
 
 func _enqueue_neighbors(cell: Vector2i, visited: Dictionary, frontier: Array[Vector2i]) -> void:
 	for offset in CELL_NEIGHBORS:
@@ -115,6 +137,14 @@ func _enqueue_neighbors(cell: Vector2i, visited: Dictionary, frontier: Array[Vec
 		if not visited.has(next):
 			visited[next] = true
 			frontier.append(next)
+
+## True when no body/area on the occupancy layers overlaps the spawn point.
+## Runs after the animation/timer resumes (outside the physics flush), so a
+## direct space query is legal here.
+func _is_position_clear(position: Vector2) -> bool:
+	_occupancy_query.transform = Transform2D(0.0, position)
+	var hits := enemy.get_world_2d().direct_space_state.intersect_shape(_occupancy_query, 1)
+	return hits.is_empty()
 
 func _is_summonable_cell(cell: Vector2i, tilemap: TileMapLayer) -> bool:
 	# Tilesets without the layer (e.g. the boss room until its remake) skip cleanly.
