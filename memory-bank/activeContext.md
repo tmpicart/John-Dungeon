@@ -8,13 +8,13 @@ Test room is the default level (main menu -> test_room; floor_1 deleted) on the 
 ## Conventions
 - Tile room stack: Ground (z -1, nav + is_summonable), Decals (z -1, collision+nav off), Walls (z 0, physics), Overhead (z 10, collision optional - only tiles with painted polygons go solid, nav off); room root y-sorted; entities z 0, player root z 3
 - Door family: key_door.tscn (locked, `key_door_sheet.png`) / door_red.tscn (no-lock, eli art, rotate the instance for wall sides) / no_open.tscn (decorative sealed) / door.tscn + door_2.tscn (kept, unused). Labels retired - locked feedback flashes the world-space prompt "You Need a Key To Open!" for 1s via `InteractionManager.refresh_prompt`
-- Chest family: chest.tscn = key chest (red sheet frame 1 locked -> frame 2 open; `requires_key` consumes a key, prompt flash on failure) / chest_no_key.tscn = free chest; key-drop behavior retired
+- Chest family: chest.tscn = key chest (red sheet frame 1 locked -> frame 2 open; `requires_key` consumes a key, prompt flash on failure) / chest_no_key.tscn = free chest; key-drop behavior retired; loot spawns at chest origin (no offset), `scatter()` displaces
 - Summon placement: the `is_summonable` flood-fill now occupancy-guards every candidate (8px circle vs Player/Enemies/Environment/Interactables, excludes the summoner) and re-checks at materialize after the telegraph
 - Doors/boss key/aim/reflect/parry/summon/interaction/loot/shop conventions unchanged (see `systemPatterns.md`)
 - gdlint scoped gate: rewritten files pass clean; baseline in `migrationMap.md`
 
 ## In Flight
-- Playtest confirmation in the editor: red door animation + rotation on wall sides, locked chest consume/fail flow, prompt flashes, summon placement avoiding chests/player, Overhead depth
+- Playtest confirmation in the editor: red door animation + rotation on wall sides, locked chest consume/fail flow, prompt flashes, summon placement avoiding chests/player, Overhead depth, chest loot scatter from origin (user-tuned in editor)
 
 ## Verification Gates
 - gdlint on touched files (clean); repo baseline in `migrationMap.md`
