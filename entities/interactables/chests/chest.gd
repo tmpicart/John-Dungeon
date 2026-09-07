@@ -44,7 +44,7 @@ func _drop_loot() -> void:
 func _spawn(scene: PackedScene) -> void:
 	var item: PickupItem = scene.instantiate()
 	owner.add_child(item)
-	item.global_position = global_position + Vector2(0, 15)
+	item.global_position = global_position
 	item.scatter(scatter_strength)
 
 
