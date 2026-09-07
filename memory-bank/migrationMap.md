@@ -14,6 +14,7 @@
 | Group-scan/exception discovery: `beam.gd` add_exception loop over `Enemies` (likely a no-op under its Player+Environment mask), `energy_star.gd` group loops, projectile `Enemies` membership | D-5 faction pass |
 | Per-room duplicated HUD in room blocks | R-40 |
 | Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |
+| `torch.tscn` renders its sprite through an embedded legacy `TileMap` (same wrapper family as room blocks) — replace with a plain `Sprite2D` on the candle/prop pass | R-40 |
 | No player input freeze during dialogue (shop freeze done R-32) | R-33 |
 
 ## gdlint Baseline (repo-wide, measured 2026-09-06 after R-32)
