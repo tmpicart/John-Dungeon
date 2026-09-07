@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://06fson1afemk"]
 
 [ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_jb23n"]
-[ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://assets/objects/image.png" id="2_34n7f"]
+[ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://assets/objects/key_door_sheet.png" id="2_34n7f"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_eki16"]
 [ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_5ta5b"]
 
@@ -95,15 +95,6 @@ position = Vector2(-1, -1)
 texture = ExtResource("2_34n7f")
 hframes = 3
 vframes = 4
-
-[node name="Label" type="Label" parent="."]
-offset_left = -29.0
-offset_top = -19.0
-offset_right = 161.0
-offset_bottom = 4.0
-scale = Vector2(0.3, 0.3)
-text = "You Need a Key To Open!"
-horizontal_alignment = 1
 
 [node name="InteractionArea" parent="." instance=ExtResource("3_eki16")]
 prompt = "Open Door"

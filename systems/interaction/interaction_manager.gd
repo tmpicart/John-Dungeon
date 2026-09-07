@@ -35,6 +35,12 @@ func set_locked(value: bool) -> void:
 	_update_prompt()
 
 
+## Re-renders the world-space prompt when an active Interactable changes its
+## `prompt` outside a registry event (e.g. a door flashing a locked message).
+func refresh_prompt() -> void:
+	_update_prompt()
+
+
 func _select_best() -> void:
 	_active_areas = _active_areas.filter(is_instance_valid)
 	_best_area = null

@@ -2,11 +2,13 @@ extends Node2D
 
 ## Unified door. `lock_type` selects the lock behavior; the "open" animation
 ## drives the flow and its Call Method track calls `_set_passable()` to drop
-## the blocking collision at the authored frame.
+## the blocking collision at the authored frame. A failed unlock flashes the
+## world-space interaction prompt with the locked message.
 
 enum LockType { NONE, KEY, BOSS_KEY }
 
 const MESSAGE_TIME := 1.0
+const LOCKED_PROMPT := "You Need a Key To Open!"
 
 @export var lock_type: LockType = LockType.NONE
 
@@ -15,14 +17,11 @@ var _open := false
 @onready var interaction_area: Interactable = $InteractionArea
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var static_collision: CollisionShape2D = $StaticBody2D/CollisionShape2D
-@onready var warning: Label = get_node_or_null("Label")
 @onready var open_sfx: AudioStreamPlayer2D = get_node_or_null("AudioStreamPlayer2D")
 
 
 func _ready() -> void:
 	interaction_area.interacted.connect(_on_interact)
-	if warning:
-		warning.hide()
 
 
 ## Call Method track target in the "open" animation.
@@ -51,8 +50,12 @@ func _on_interact() -> void:
 
 
 func _show_warning() -> void:
-	if warning == null:
-		return
-	warning.show()
+	var prompt := interaction_area.prompt
+	interaction_area.prompt = LOCKED_PROMPT
+	InteractionManager.refresh_prompt()
 	await get_tree().create_timer(MESSAGE_TIME).timeout
-	warning.hide()
+	# A second failed attempt inside the window already re-flashed; only clear
+	# while the message is still showing.
+	if interaction_area.prompt == LOCKED_PROMPT:
+		interaction_area.prompt = prompt
+		InteractionManager.refresh_prompt()

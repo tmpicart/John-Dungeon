@@ -1,12 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://bxbick14tkq7a"]
+[gd_scene load_steps=10 format=3 uid="uid://doorredkey01"]
 
-[ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_4kna6"]
-[ext_resource type="Texture2D" uid="uid://bp2uakrp73hja" path="res://assets/objects/boss_door.png" id="2_8b1q1"]
-[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_825ch"]
-[ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_qbe6s"]
+[ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_red"]
+[ext_resource type="Texture2D" uid="uid://cj8vn420xqnre" path="res://assets/objects/eli_door_open.png" id="2_red"]
+[ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_red"]
+[ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_red"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xqm0d"]
-size = Vector2(20, 45)
+size = Vector2(20, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_he8pr"]
 size = Vector2(14, 6)
@@ -74,6 +74,7 @@ tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0.6),
 "transitions": PackedFloat32Array(1),
+"update": 1,
 "values": [{
 "args": [],
 "method": &"_set_passable"
@@ -86,32 +87,33 @@ _data = {
 &"open": SubResource("Animation_tdb0i")
 }
 
-[node name="KeyDoor" type="Node2D"]
-script = ExtResource("1_4kna6")
-lock_type = 2
+[node name="Door" type="Node2D"]
+script = ExtResource("1_red")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-1, -1)
-texture = ExtResource("2_8b1q1")
+position = Vector2(0, -8)
+texture = ExtResource("2_red")
 hframes = 3
 
-[node name="InteractionArea" parent="." instance=ExtResource("3_825ch")]
+[node name="InteractionArea" parent="." instance=ExtResource("3_red")]
 prompt = "Open Door"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
-position = Vector2(-1, -2.5)
+position = Vector2(0, -8)
 shape = SubResource("RectangleShape2D_xqm0d")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-1, 4)
+position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_he8pr")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ar63u")
+&"": SubResource("AnimationLibrary_ar63u")
 }
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("4_qbe6s")
+stream = ExtResource("4_red")

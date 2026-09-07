@@ -1,8 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://cghx8ibvkewpx"]
+[gd_scene format=3 uid="uid://cghx8ibvkewpx"]
 
 [ext_resource type="Script" uid="uid://b57chaurn4ijm" path="res://entities/interactables/chests/chest.gd" id="1_fwwkf"]
-[ext_resource type="Texture2D" uid="uid://co3p8g8khbhap" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/box_1/box_1_1.png" id="1_rwhoh"]
-[ext_resource type="PackedScene" uid="uid://mijfb7acl1x1" path="res://entities/interactables/pickups/key.tscn" id="2_85n7e"]
+[ext_resource type="Texture2D" uid="uid://bs30ohxi52fd2" path="res://assets/objects/chest.png" id="1_rwhoh"]
 [ext_resource type="PackedScene" uid="uid://dhajlijwh6uy4" path="res://systems/interaction/interactable.tscn" id="3_c47yh"]
 [ext_resource type="Resource" path="res://systems/loot/loot_table_tier_1.tres" id="5_loot"]
 
@@ -10,31 +9,30 @@
 size = Vector2(120, 120)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uvggd"]
-radius = 284.605
+radius = 230.868
 
-[node name="chest" type="Node2D"]
-scale = Vector2(0.1, 0.1)
+[node name="chest" type="Node2D" unique_id=2010586381]
+scale = Vector2(0.06, 0.06)
 script = ExtResource("1_fwwkf")
-drop_scene = ExtResource("2_85n7e")
+requires_key = true
 loot_table = ExtResource("5_loot")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1100632594]
 scale = Vector2(10, 10)
 texture = ExtResource("1_rwhoh")
+hframes = 3
+frame = 1
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-collision_layer = 3
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=221053483]
+collision_layer = 4
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=374051720]
 position = Vector2(-9.53674e-06, -9.53674e-06)
 shape = SubResource("RectangleShape2D_sh3du")
 
-[node name="InteractionArea" parent="." instance=ExtResource("3_c47yh")]
-collision_layer = 16
-collision_mask = 1
+[node name="InteractionArea" parent="." unique_id=1335985296 instance=ExtResource("3_c47yh")]
 prompt = "Open"
-one_shot = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=1579972599]
 shape = SubResource("CircleShape2D_uvggd")
