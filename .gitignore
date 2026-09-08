@@ -8,3 +8,6 @@
 
 # Editor folders
 .vscode/
+
+# Test artifacts
+smoke_result.txt
