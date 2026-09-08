@@ -7,6 +7,8 @@ extends Node2D
 
 const PROMPT_FALLBACK := "[?] "
 const INTERACT_ACTION := "interact"
+## Visual gap between the anchored art (or area origin) and the prompt.
+const PROMPT_MARGIN := 4.0
 
 var _active_areas: Array[Interactable] = []
 var _best_area: Interactable = null
@@ -62,8 +64,16 @@ func _update_prompt() -> void:
 		label.hide()
 		return
 	label.text = _prompt_prefix() + _best_area.prompt
-	label.global_position = _best_area.global_position \
-			+ Vector2(-label.size.x * label.scale.x / 2.0, -15)
+	# The anchor floats above the interactable's visible art (see
+	# Interactable); the label's bottom edge is raised by the gap above it,
+	# centered on the anchor x, and nudged by the area's screen-space
+	# offset. (Labels grow down from their origin.)
+	label.global_position = _best_area.prompt_anchor_position() \
+			+ Vector2(
+				-label.size.x * label.scale.x / 2.0,
+				-PROMPT_MARGIN - label.size.y * label.scale.y,
+			) \
+			+ _best_area.prompt_offset
 	label.show()
 
 
