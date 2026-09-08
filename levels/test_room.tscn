@@ -13,6 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://cmf7qxlp6g8rc" path="res://entities/npcs/potion_seller.tscn" id="11_o3jvf"]
 [ext_resource type="PackedScene" uid="uid://c5keinhto18dy" path="res://entities/npcs/tutorial_npc.tscn" id="12_6eehy"]
 [ext_resource type="PackedScene" uid="uid://dyxkbx71d8tuv" path="res://entities/interactables/pickups/boss_key.tscn" id="13_o3jvf"]
+[ext_resource type="PackedScene" uid="uid://bqbgrqlrxc8io" path="res://entities/props/wall_torch.tscn" id="15_8i8ys"]
+[ext_resource type="PackedScene" uid="uid://beu4tonghucdd" path="res://entities/props/candlestick.tscn" id="15_y0nbg"]
+[ext_resource type="PackedScene" uid="uid://hwkv1up2kvdu" path="res://entities/props/candlestick_2.tscn" id="16_ot4tr"]
 
 [node name="TestRoom" type="Node2D" unique_id=1237626728]
 y_sort_enabled = true
@@ -120,3 +123,12 @@ position = Vector2(78, 60)
 
 [node name="BossKey" parent="." unique_id=1259377176 instance=ExtResource("13_o3jvf")]
 position = Vector2(158, 95)
+
+[node name="WallTorch" parent="." unique_id=47095302 instance=ExtResource("15_8i8ys")]
+position = Vector2(209, 14)
+
+[node name="Candlestick" parent="." unique_id=1741527432 instance=ExtResource("15_y0nbg")]
+position = Vector2(45, 29)
+
+[node name="Candlestick2" parent="." unique_id=418511228 instance=ExtResource("16_ot4tr")]
+position = Vector2(129, 26)

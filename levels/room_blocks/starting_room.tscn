@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://beu7po4d0rpog" path="res://ui/item_hud.tscn" id="2_r5lyr"]
 [ext_resource type="PackedScene" uid="uid://bcqpocv0rfv4o" path="res://entities/interactables/doors/door.tscn" id="5_jvll2"]
 [ext_resource type="PackedScene" uid="uid://1ybnqh3qmc78" path="res://levels/room_blocks/door_path_cover.tscn" id="6_08jhn"]
-[ext_resource type="PackedScene" uid="uid://bqbgrqlrxc8io" path="res://levels/room_blocks/torch_wall.tscn" id="7_6a5vh"]
+[ext_resource type="PackedScene" uid="uid://bqbgrqlrxc8io" path="res://entities/props/wall_torch.tscn" id="7_6a5vh"]
 [ext_resource type="PackedScene" uid="uid://bxbick14tkq7a" path="res://entities/interactables/doors/boss_door.tscn" id="7_e0a6t"]
 [ext_resource type="PackedScene" uid="uid://c5keinhto18dy" path="res://entities/npcs/tutorial_npc.tscn" id="8_ax6jy"]
 [ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://entities/player/character.tscn" id="8_vdcoy"]

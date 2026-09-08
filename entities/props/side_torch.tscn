@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://cuibmcb6zztbgk9"]
+
+[ext_resource type="Texture2D" uid="uid://hbqwrtia8k1j" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/torch/side_torch_1.png" id="1_f1"]
+[ext_resource type="Texture2D" uid="uid://pk2pv386urxg" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/torch/side_torch_2.png" id="2_f2"]
+[ext_resource type="Texture2D" uid="uid://j2vwis1mq3yr" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/torch/side_torch_3.png" id="3_f3"]
+[ext_resource type="Texture2D" uid="uid://c0071dpcxr28c" path="res://assets/2d_pixel_dungeon_asset_pack/items_and_trap_animation/torch/side_torch_4.png" id="4_f4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_flicker"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_f1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_f2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_f3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_f4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.7
+}]
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+fill = 1
+fill_from = Vector2(0.5, 0.527523)
+fill_to = Vector2(0.830275, 0.169725)
+
+[node name="SideTorch" type="Node2D"]
+z_index = 10
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_flicker")
+autoplay = "default"
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(0, -2)
+color = Color(1, 0.490196, 0.105882, 1)
+texture = SubResource("GradientTexture2D_glow")
