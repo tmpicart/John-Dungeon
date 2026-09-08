@@ -13,6 +13,7 @@ var input_locked := false
 @onready var combat = $PlayerCombat
 @onready var inventory = $PlayerInventory
 @onready var animation = $PlayerAnimation
+@onready var progress = $PlayerProgress
 
 # --- Optional HUD or Death Indicator ---
 @onready var death_label = $Label

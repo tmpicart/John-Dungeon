@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dyxkbx71d8tuv"]
+[gd_scene load_steps=6 format=3 uid="uid://dyxkbx71d8tuv"]
 
 [ext_resource type="Script" uid="uid://dw4lmk58x05ck" path="res://entities/interactables/pickups/boss_key.gd" id="1_uhj3g"]
 [ext_resource type="Texture2D" uid="uid://ws3ngcsd20v1" path="res://assets/items/key.png" id="2_xn8gs"]
 [ext_resource type="PackedScene" path="res://entities/interactables/pickups/pickup.tscn" id="3_aq0md"]
+[ext_resource type="Resource" uid="uid://cvrlf1y4vw42q" path="res://systems/dialogue/boss_taunt_sorceress.tres" id="4_taunt"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_daybg"]
 radius = 20.025
@@ -12,6 +13,7 @@ z_index = 100
 script = ExtResource("1_uhj3g")
 sprite_path = NodePath("Sprite2D")
 loot_tier = -1
+boss_taunt = ExtResource("4_taunt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_xn8gs")

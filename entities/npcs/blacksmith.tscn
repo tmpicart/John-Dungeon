@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=3 uid="uid://bji7ka5w8l7k"]
+[gd_scene format=3 uid="uid://bji7ka5w8l7k"]
 
 [ext_resource type="Texture2D" uid="uid://b1ts73o00mqe0" path="res://assets/npc/npc_shopkeeper.png" id="1_b07xd"]
-[ext_resource type="Script" uid="uid://fi7vnc3elj4f" path="res://entities/npcs/blacksmith.gd" id="1_ysehu"]
+[ext_resource type="Script" uid="uid://cbntrucb0qbx" path="res://entities/npcs/npc.gd" id="1_ysehu"]
 [ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://systems/interaction/interactable.gd" id="2_lbeyw"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://systems/dialogue/npc_dialog.tscn" id="3_54wft"]
 [ext_resource type="PackedScene" path="res://systems/shop/shop.tscn" id="4_shop"]
-[ext_resource type="Resource" path="res://systems/shop/blacksmith_shop.tres" id="5_bshop"]
+[ext_resource type="Resource" uid="uid://8awfcjt77tur" path="res://systems/shop/blacksmith_shop.tres" id="5_bshop"]
+[ext_resource type="Resource" uid="uid://co71g4p1iueoq" path="res://systems/dialogue/blacksmith.tres" id="6_dlg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rfcwn"]
 radius = 6.0
@@ -14,34 +15,33 @@ height = 18.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uixec"]
 size = Vector2(12, 18)
 
-[node name="Blacksmith" type="Node2D"]
+[node name="Blacksmith" type="Node2D" unique_id=1712758499]
 script = ExtResource("1_ysehu")
+dialogue = ExtResource("6_dlg")
 shop_data = ExtResource("5_bshop")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2100851804]
 position = Vector2(0, -5)
 scale = Vector2(0.77, 0.77)
 texture = ExtResource("1_b07xd")
 hframes = 3
 frame = 1
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=68220187]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=971314933]
 position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_rfcwn")
 
-[node name="InteractionArea" type="Area2D" parent="."]
+[node name="InteractionArea" type="Area2D" parent="." unique_id=1691717246]
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("2_lbeyw")
 prompt = "Talk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=901611036]
 position = Vector2(0, 13)
 shape = SubResource("RectangleShape2D_uixec")
 
-[node name="NPC Dialog" parent="." instance=ExtResource("3_54wft")]
+[node name="NPC Dialog" parent="." unique_id=1580255564 instance=ExtResource("3_54wft")]
 
-[node name="Shop" parent="." instance=ExtResource("4_shop")]
-
+[node name="Shop" parent="." unique_id=597853963 instance=ExtResource("4_shop")]

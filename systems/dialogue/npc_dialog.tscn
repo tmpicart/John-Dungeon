@@ -1,30 +1,63 @@
-[gd_scene load_steps=3 format=3 uid="uid://bh78n0fysivyr"]
+[gd_scene format=3 uid="uid://bh78n0fysivyr"]
 
 [ext_resource type="Script" uid="uid://1r8tupv0qxni" path="res://systems/dialogue/npc_dialog.gd" id="1_nqmqu"]
-[ext_resource type="Texture2D" uid="uid://72cf32qqgdgy" path="res://assets/hud/dialogue_box.png" id="2_0vsf6"]
+[ext_resource type="FontFile" uid="uid://ctfvsrjuoyfl4" path="res://assets/fonts/VT323-Regular.ttf" id="2_font"]
 
-[node name="NPC Dialog" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_box"]
+bg_color = Color(0.24, 0.19, 0.24, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.075, 0.055, 0.075, 1)
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 6
+
+[node name="NPC Dialog" type="CanvasLayer" unique_id=655630804]
 script = ExtResource("1_nqmqu")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="."]
+[node name="Box" type="Panel" parent="." unique_id=750404091]
 visible = false
 offset_left = 386.0
-offset_top = 82.0
+offset_top = 712.0
 offset_right = 1512.0
-offset_bottom = 368.0
-texture = ExtResource("2_0vsf6")
-region_rect = Rect2(-5, -5, 42, 42)
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 11
-patch_margin_bottom = 10
+offset_bottom = 998.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_box")
 
-[node name="text" type="RichTextLabel" parent="NinePatchRect"]
+[node name="portrait" type="TextureRect" parent="Box" unique_id=324779022]
 layout_mode = 0
-offset_left = 17.0
-offset_top = 19.0
-offset_right = 1107.0
-offset_bottom = 265.0
-theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/normal_font_size = 60
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 232.0
+offset_bottom = 232.0
+expand_mode = 1
+stretch_mode = 6
+
+[node name="text" type="RichTextLabel" parent="Box" unique_id=1832980016]
+layout_mode = 0
+offset_left = 256.0
+offset_top = 20.0
+offset_right = 1102.0
+offset_bottom = 240.0
+theme_override_colors/default_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = 2
+theme_override_constants/outline_size = 3
+theme_override_fonts/normal_font = ExtResource("2_font")
+theme_override_font_sizes/normal_font_size = 40
 text = "Dialog"
+
+[node name="hint" type="Label" parent="Box" unique_id=1231374100]
+visible = false
+layout_mode = 0
+offset_left = 950.0
+offset_top = 240.0
+offset_right = 1102.0
+offset_bottom = 286.0
+theme_override_colors/font_color = Color(0.93, 0.88, 0.78, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 3
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "[E]"
+horizontal_alignment = 2

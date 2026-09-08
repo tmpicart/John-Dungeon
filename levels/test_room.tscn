@@ -9,6 +9,10 @@
 [ext_resource type="PackedScene" uid="uid://beu7po4d0rpog" path="res://ui/item_hud.tscn" id="7_item"]
 [ext_resource type="PackedScene" uid="uid://doorredkey01" path="res://entities/interactables/doors/door_red.tscn" id="8_door"]
 [ext_resource type="PackedScene" uid="uid://cghx8ibvkewpx" path="res://entities/interactables/chests/chest.tscn" id="9_77pwf"]
+[ext_resource type="PackedScene" uid="uid://bji7ka5w8l7k" path="res://entities/npcs/blacksmith.tscn" id="10_lapnv"]
+[ext_resource type="PackedScene" uid="uid://cmf7qxlp6g8rc" path="res://entities/npcs/potion_seller.tscn" id="11_o3jvf"]
+[ext_resource type="PackedScene" uid="uid://c5keinhto18dy" path="res://entities/npcs/tutorial_npc.tscn" id="12_6eehy"]
+[ext_resource type="PackedScene" uid="uid://dyxkbx71d8tuv" path="res://entities/interactables/pickups/boss_key.tscn" id="13_o3jvf"]
 
 [node name="TestRoom" type="Node2D" unique_id=1237626728]
 y_sort_enabled = true
@@ -104,3 +108,15 @@ offset_bottom = 76.3333
 scale = Vector2(0.5, 0.5)
 alignment = 2
 metadata/_edit_use_anchors_ = true
+
+[node name="Blacksmith" parent="." unique_id=328588 instance=ExtResource("10_lapnv")]
+position = Vector2(43, 63)
+
+[node name="Potion Seller" parent="." unique_id=1419545166 instance=ExtResource("11_o3jvf")]
+position = Vector2(112, 60)
+
+[node name="TutorialNPC" parent="." unique_id=269746649 instance=ExtResource("12_6eehy")]
+position = Vector2(78, 60)
+
+[node name="BossKey" parent="." unique_id=1259377176 instance=ExtResource("13_o3jvf")]
+position = Vector2(158, 95)

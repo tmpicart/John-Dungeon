@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://cvrlf1y4vw42q"]
+
+[ext_resource type="Script" uid="uid://d2qbpupnncuet" path="res://systems/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://by4sal2n63aug" path="res://systems/dialogue/dialogue_stage.gd" id="2_stage"]
+[ext_resource type="Texture2D" uid="uid://bsmans2qdxlc5" path="res://assets/enemies/boss_shadow.png" id="3_tex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portrait"]
+atlas = ExtResource("3_tex")
+region = Rect2(44.31414, 50.565426, 22.638882, 22.484379)
+
+[sub_resource type="Resource" id="Resource_taunt"]
+script = ExtResource("2_stage")
+pages = Array[String](["So... the little knight has come crawling for my key.", "Take it. Meet me at the altar - your world ends there either way."])
+
+[resource]
+script = ExtResource("1_data")
+npc_id = &"sorceress_taunt"
+portrait = SubResource("AtlasTexture_portrait")
+stages = Array[ExtResource("2_stage")]([SubResource("Resource_taunt")])

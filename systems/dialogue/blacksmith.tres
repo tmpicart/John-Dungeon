@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://co71g4p1iueoq"]
+
+[ext_resource type="Script" uid="uid://d2qbpupnncuet" path="res://systems/dialogue/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://by4sal2n63aug" path="res://systems/dialogue/dialogue_stage.gd" id="2_stage"]
+[ext_resource type="Texture2D" uid="uid://b1ts73o00mqe0" path="res://assets/npc/npc_shopkeeper.png" id="3_tex"]
+
+[sub_resource type="Resource" id="Resource_greeting"]
+script = ExtResource("2_stage")
+pages = Array[String](["I sell bombs and Upgrade yer sword, that's about it:"])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portrait"]
+atlas = ExtResource("3_tex")
+region = Rect2(25, 5, 21, 16)
+
+[sub_resource type="Resource" id="Resource_intro"]
+script = ExtResource("2_stage")
+pages = Array[String](["I'm the blacksmith down here", "I sell bombs and Upgrade yer sword, that's about it:"])
+
+[resource]
+script = ExtResource("1_data")
+npc_id = &"blacksmith"
+portrait = SubResource("AtlasTexture_portrait")
+stages = Array[ExtResource("2_stage")]([SubResource("Resource_intro")])
+greeting = SubResource("Resource_greeting")

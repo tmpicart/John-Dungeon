@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5keinhto18dy"]
+[gd_scene format=3 uid="uid://c5keinhto18dy"]
 
-[ext_resource type="Script" uid="uid://chyde3qbuba2q" path="res://entities/npcs/tutorial_npc.gd" id="1_dvvii"]
+[ext_resource type="Script" uid="uid://cbntrucb0qbx" path="res://entities/npcs/npc.gd" id="1_dvvii"]
 [ext_resource type="Texture2D" uid="uid://crf32w5xu0ss1" path="res://assets/npc/npc.png" id="2_bl230"]
 [ext_resource type="Script" uid="uid://cf2nc2svds67j" path="res://systems/interaction/interactable.gd" id="3_lwwwf"]
 [ext_resource type="PackedScene" uid="uid://bh78n0fysivyr" path="res://systems/dialogue/npc_dialog.tscn" id="4_3l3jg"]
+[ext_resource type="Resource" uid="uid://c8ue7p2gpr1ft" path="res://systems/dialogue/tutorial.tres" id="5_dlg"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5vtg3"]
 radius = 6.0
@@ -12,30 +13,30 @@ height = 18.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j1cut"]
 size = Vector2(12, 18)
 
-[node name="TutorialNPC" type="Node2D"]
+[node name="TutorialNPC" type="Node2D" unique_id=920846700]
 script = ExtResource("1_dvvii")
+dialogue = ExtResource("5_dlg")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1224330103]
 position = Vector2(0, -5)
 scale = Vector2(0.77, 0.77)
 texture = ExtResource("2_bl230")
 hframes = 4
 frame = 3
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1981183516]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1683781765]
 position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_5vtg3")
 
-[node name="InteractionArea" type="Area2D" parent="."]
+[node name="InteractionArea" type="Area2D" parent="." unique_id=1891386601]
 collision_layer = 16
-collision_mask = 1
 script = ExtResource("3_lwwwf")
+prompt = "Talk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=1580519658]
 position = Vector2(0, 13)
 shape = SubResource("RectangleShape2D_j1cut")
 
-[node name="NPC Dialog" parent="." instance=ExtResource("4_3l3jg")]
-
+[node name="NPC Dialog" parent="." unique_id=1633417663 instance=ExtResource("4_3l3jg")]

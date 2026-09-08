@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://3gg6yug5rv0q" path="res://entities/player/player_combat.gd" id="13_60mpi"]
 [ext_resource type="Script" uid="uid://qbrd2jx5rhwl" path="res://entities/player/player_animation.gd" id="14_7ujsu"]
 [ext_resource type="Script" uid="uid://dy831e1gd1wpo" path="res://entities/player/camera_2d.gd" id="15_8qfbe"]
+[ext_resource type="Script" path="res://entities/player/player_progress.gd" id="16_prog"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dqhrg"]
 shader = ExtResource("2_mrv5d")
@@ -764,6 +765,9 @@ one_shot = true
 
 [node name="PlayerInventory" type="Node2D" parent="." unique_id=457439721]
 script = ExtResource("7_8qfbe")
+
+[node name="PlayerProgress" type="Node" parent="."]
+script = ExtResource("16_prog")
 
 [node name="PlayerAnimation" type="Node2D" parent="." unique_id=1452781179]
 script = ExtResource("14_7ujsu")

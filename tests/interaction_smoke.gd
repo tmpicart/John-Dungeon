@@ -5,6 +5,7 @@ extends Node
 ## Exits 0 on pass, 1 on failure.
 
 const TierOneTable: LootTable = preload("res://systems/loot/loot_table_tier_1.tres")
+const AreaScene: PackedScene = preload("res://systems/interaction/interactable.tscn")
 
 var _failures := 0
 var _signal_fired := false
@@ -38,7 +39,7 @@ func _check(condition: bool, test_name: String) -> void:
 
 
 func _make_area(prompt_text: String, offset: Vector2) -> Interactable:
-	var area: Interactable = preload("res://systems/interaction/interactable.tscn").instantiate()
+	var area: Interactable = AreaScene.instantiate()
 	area.prompt = prompt_text
 	area.position = offset
 	add_child(area)
@@ -106,6 +107,56 @@ func _run() -> void:
 	_check(absf(manager.label.global_position.x - expected_x) < 0.01,
 			"prompt centered over the target area")
 
+	# Prompt anchoring: sprite-less areas fall back to the offset rotated
+	# with the area; parent-chain scale (chests at 0.06) never applies.
+	var scaled := Node2D.new()
+	scaled.scale = Vector2(0.06, 0.06)
+	scaled.rotation = 0.5
+	scaled.position = Vector2(2, 0)
+	add_child(scaled)
+	var shrunk: Interactable = AreaScene.instantiate()
+	shrunk.prompt = "Scaled"
+	shrunk.prompt_offset = Vector2(0, -15)
+	scaled.add_child(shrunk)
+	manager.register_area(shrunk)
+	_check(manager._best_area == shrunk, "sanity: scaled area is nearest")
+	_check(absf(manager.label.global_position.y
+			- (shrunk.global_position.y + shrunk.prompt_offset.y
+			- manager.PROMPT_MARGIN
+			- manager.label.size.y * manager.label.scale.y)) < 0.01,
+			"sprite-less prompt uses the area origin plus offset")
+
+	# With visible art the anchor floats above the OPAQUE pixels (sheets
+	# carry transparent headroom), regardless of parent scale/rotation.
+	var art := Sprite2D.new()
+	var image := Image.create(4, 4, false, Image.FORMAT_RGBA8)
+	image.fill(Color(0, 0, 0, 0))
+	image.fill_rect(Rect2i(1, 2, 2, 2), Color.WHITE)
+	art.texture = ImageTexture.create_from_image(image)
+	art.position = Vector2(0, -6)
+	scaled.add_child(art)
+	shrunk.prompt_offset = Vector2.ZERO
+	manager._update_prompt()
+	# Opaque block at rows 2-3, cols 1-2 of the centered 4x4 frame: in
+	# sprite-local space that rect is (-1, 0, 2, 2) (to_global adds the
+	# node position and parent transform).
+	var local_used := Rect2(-1.0, 0.0, 2.0, 2.0)
+	var top := INF
+	for corner in [local_used.position, local_used.position + Vector2(2, 0),
+			local_used.position + Vector2(0, 2), local_used.end]:
+		top = minf(top, art.to_global(corner).y)
+	var expected := Vector2(
+		art.to_global(local_used.get_center()).x
+				- manager.label.size.x * manager.label.scale.x / 2.0,
+		top - manager.PROMPT_MARGIN
+				- manager.label.size.y * manager.label.scale.y,
+	)
+	_check(manager.label.global_position.distance_to(expected) < 0.01,
+			"prompt anchors above visible art automatically")
+	manager.unregister_area(shrunk)
+	scaled.free()
+	_check(manager._best_area == near, "selection restored after scaled area")
+
 	# Ejection gates collection until the item settles.
 	var CoinScene: PackedScene = preload("res://entities/interactables/pickups/coin.tscn")
 	var flier: PickupItem = CoinScene.instantiate()
@@ -165,6 +216,102 @@ func _run() -> void:
 	_check(not manager.label.visible, "locked hides the prompt")
 	manager.set_locked(false)
 	_check(manager.label.visible, "unlock restores the prompt")
+
+	# Dialogue: stage selection prefers unlocked one-shots, consumes them
+	# once, falls back to the greeting, and pairs the modal freeze.
+	var stub: Node2D = preload("res://tests/stub_player.gd").new()
+	var prog := PlayerProgress.new()
+	stub.progress = prog
+	stub.add_child(prog)
+	stub.add_to_group("Player")
+	add_child(stub)
+	var saved_player: Node = Global.player
+	Global.player = stub
+
+	var intro := DialogueStage.new()
+	intro.pages = ["intro line"]
+	var unlockable := DialogueStage.new()
+	unlockable.pages = ["unique line"]
+	unlockable.requires_flag = "met_smoke_boss"
+	unlockable.set_flag = "smoke_flag"
+	var greet := DialogueStage.new()
+	greet.pages = ["hello again"]
+	var convo := DialogueData.new()
+	convo.npc_id = &"smoke_npc"
+	convo.stages = [intro, unlockable]
+	convo.greeting = greet
+
+	var box: CanvasLayer = preload("res://systems/dialogue/npc_dialog.tscn").instantiate()
+	add_child(box)
+	var finished_count := [0]
+	box.finished.connect(func() -> void: finished_count[0] += 1)
+
+	_check(box.open(convo, Vector2.ZERO), "intro stage opens the box")
+	_check(stub.locked and manager._locked, "opening dialogue freezes player + interaction")
+	_check(box._pages[0] == "intro line", "unlocked one-shot stage is selected first")
+	_check(box._text.visible_characters == 0, "typing starts hidden")
+	await get_tree().create_timer(0.15).timeout
+	var partial: int = box._text.visible_characters
+	_check(partial > 0 and partial < box._text.get_total_character_count(),
+			"characters reveal progressively while typing")
+	box._advance()
+	_check(box._text.visible_characters == -1, "pressing mid-type reveals the page")
+	box._advance()
+	_check(finished_count[0] == 1, "final page emits finished")
+	_check(prog.get_stage(&"smoke_npc") == 1, "completed stage is consumed")
+	_check(not stub.locked and not manager._locked, "closing restores player + interaction")
+
+	_check(box.open(convo, Vector2.ZERO), "greeting opens before the gate unlocks")
+	_check(box._pages[0] == "hello again", "greeting is the fallback while gated")
+	box._close(false)
+	_check(finished_count[0] == 1, "aborting close does not emit finished")
+
+	prog.set_flag(&"met_smoke_boss")
+	_check(box.open(convo, Vector2.ZERO), "gated stage opens once its flag appears")
+	_check(box._pages[0] == "unique line", "unlocked unique stage takes precedence")
+	box._advance()
+	box._advance()
+	_check(finished_count[0] == 2, "unlocked stage completion emits finished")
+	_check(prog.has_flag(&"smoke_flag"), "set_flag applies on stage completion")
+
+	_check(box.open(convo, Vector2.ZERO), "greeting returns after all stages")
+	_check(box._pages[0] == "hello again", "greeting repeats once stages are done")
+	box._close(false)
+
+	# Gate-failing stages are skipped even as the only stage.
+	var locked_only := DialogueStage.new()
+	locked_only.pages = ["secret"]
+	locked_only.requires_flag = "smoke_missing"
+	var gated := DialogueData.new()
+	gated.npc_id = &"smoke_gated"
+	gated.stages = [locked_only]
+	gated.greeting = greet
+	_check(box.open(gated, Vector2.ZERO), "locked-only data still has a greeting")
+	_check(box._pages[0] == "hello again", "gate-failing stages are skipped")
+	box._close(false)
+
+	var empty := DialogueData.new()
+	empty.npc_id = &"smoke_empty"
+	_check(not box.open(empty, Vector2.ZERO), "data without stages or greeting refuses to open")
+
+	prog.set_stage(&"smoke_npc", 99)
+	_check(prog.get_stage(&"smoke_npc") == 99, "set_stage records consumption")
+	_check(prog.get_stage(&"nobody") == 0, "fresh speakers start at stage 0")
+
+	# Shipped dialogue resources stay playable (guards against editor
+	# re-saves stripping .tres properties).
+	for res_path in ["res://systems/dialogue/blacksmith.tres",
+			"res://systems/dialogue/potion_seller.tres",
+			"res://systems/dialogue/tutorial.tres",
+			"res://systems/dialogue/boss_taunt_sorceress.tres"]:
+		var shipped: DialogueData = load(res_path)
+		_check(shipped != null and box.open(shipped, Vector2.ZERO),
+				"shipped dialogue playable: " + res_path.get_file())
+		box._close(false)
+
+	Global.player = saved_player
+	box.free()
+	stub.free()
 
 
 func _on_signal() -> void:
