@@ -9,7 +9,7 @@ Hybrid folder structure · typed state transitions · shared states + config exp
 ## Phase R4 — World & content
 | ID | Task | Notes |
 |---|---|---|
-| R-40 | Room-block standard | `TileMapLayer`-only, shared navigation, door anchors, spawn markers, HUD at level root (remove per-room HUD); `test_room.tscn` is the reference stack |
+| R-40 | Room-block standard | Prop family landed (`entities/props/`); remaining: `TileMapLayer`-only stack, shared navigation, door anchors, spawn markers, HUD at level root (remove per-room HUD); `test_room.tscn` is the reference stack; author new templates on `custom_dungeon.tres` (slots + variant model) |
 | R-41 | Floor1 parity rebuild | Reassemble original content from standardized blocks: enemies, NPCs, shop, key/boss-key progression |
 | R-42 | Boss room encounter flow | Trigger, lock/unlock, victory handling; remove `Global.door` flag coupling |
 | R-43 | Procgen-ready foundations | Room metadata (exits, difficulty) + spawn markers only; generation itself is `devPlan.md` D-6 |

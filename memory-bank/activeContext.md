@@ -3,36 +3,36 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-R-33 dialogue + the screen-space prompt rework shipped (`0be07b9`). The unpushed session history was audited and rebuilt with clean messages (`6e65ec5..c63ce5d`). Next: R-40 room-block standard, then R-41 floor parity.
+R-40 in progress: prop foundation shipped (`ed4d33e`) - entities/props family (wall_torch, side_torch, candlestick, candlestick_2), key rotation, potion anim cleanup, torch_wall moved out of room_blocks. Next: the room-block standard itself, then R-41 floor parity.
 
 ## Conventions
-- Dialogue: `DialogueData`/`DialogueStage` `.tres` per speaker (systemPatterns); `PlayerProgress` on the player holds flags + per-speaker stage counters; unified `npc.gd` opens dialogue, hands off to `shop_data` on finish; boss keys taunt via a `boss_taunt` export
-- Prompts: screen-space label on the manager's `CanvasLayer` (layer 10, VT323); world anchor projected per frame; frame-relative used-rects (multi-frame sheets anchor to the displayed frame); `CanvasLayer`/`Control` subtrees excluded from bounds; `prompt_offset` = screen nudge; margin 12px screen (systemPatterns)
+- Props: scriptless scenes in `entities/props/` - AnimatedSprite2D autoplay `default` 5.7 fps, radial PointLight2D, foot blocker StaticBody2D on Environment (layer 4); wall-mounted props at z 10 (Overhead tier), floor props z 0 y-sorted; side torch is left-facing (flip H per side)
+- Pack per-frame art (torch_1..4, candlestick_1/2_*) is distinct art from the objects/ strips (wall_torch_h, torch_animation) - verified pixel-level, not interchangeable
+- Pickup animation: universal coded bob in pickup_item.gd; frame animations ride on top (coin/key rotate at 4 fps); no baked-bob sheets (potion.png frames are identical - its no-op AnimationPlayer was removed)
 - .tres data hazard: 4.7.2 editor saves strip PackedStringArray/StringName from scripted sub-resources - author pages/flags as Array[String]/String (see techContext)
-- Tile room stack / door family / chest family / summon placement: unchanged (see systemPatterns.md)
+- Tile room stack / door family / chest family / dialogue: unchanged (see systemPatterns.md)
 
 ## In Flight
-- Editor playtest of the screen-space prompts (doors all orientations, NPCs, boss-key bob, locked-door flash) - headless gates green
+- nothing - props landed clean; user to visually confirm candle flicker + blockers in a fresh editor session
 
 ## Verification Gates
-- gdlint on touched files (clean); repo baseline in `migrationMap.md`
-- `tests/interaction_smoke.tscn` headless - 66 assertions, exit 0 (dialogue, anchoring, per-frame tracking, UI exclusion, multi-frame sheets covered)
-- `--headless --import` before headless runs; scenes boot `--quit-after 5`
-- After agent disk edits with the editor open: user reloads/restarts the editor before playtesting
+- gdlint on touched files (clean); repo baseline in `migrationMap.md` (ui area now 0)
+- `tests/interaction_smoke.tscn` headless - 66 assertions, exit 0
+- `--headless --import` before headless runs; scenes boot `--quit-after 5`; boots launched immediately after an import can exit 1 silently - rerun after a short settle delay
+- After agent disk edits with the editor open: user restarts the editor before playtesting (stale in-memory scenes caused false bug reports this session)
 
 ## Next Up
-1. R-40 room-block standard (TileMapLayer-only stack, room markers, root HUD)
-2. R-41 floor parity rebuild on the test-room blocks
-3. D-3 dialogue content (new stages now that authoring is safe)
+1. R-40 room-block standard - author new templates on custom_dungeon.tres (slots + variant model; typed Door/Spawn/ChestSlot/DecorSlot markers)
+2. R-41 floor parity rebuild on the template set (old room_blocks + dungeon.tscn retire here)
+3. D-3 dialogue content
 
 ## Open Decisions
-- Optional: lock badge on locked doors for at-a-distance affordance (deferred)
-- Controller aim model (when pad support lands): direction + soft lock favored; plugs into the PlayerCombat aim API
-- Optional: upstream bug report for the 4.7.2 .tres strip (repro steps captured this session)
+- side_torch facing variants (single scene + flip vs left/right scenes) if flipping proves awkward in practice
+- standing torch removed by decision; revisit only if a floor torch is wanted (pack torch_1..4 art exists)
+- Optional: upstream bug report for the 4.7.2 .tres strip (repro steps captured)
 
 ## Working Agreements (quick recall)
 - Commits: agent drafts -> user approves -> commit; memory bank follows as `docs(memory)`. Push only when instructed.
 - Pre-flight before any commit pause: repo-wide gdlint baseline + scoped gate on touched files, both green.
 - Circuit breaker: 3 failed attempts on a step -> stop, report, defer.
-- Scene text edits surgical; editor-made changes never reverted silently.
-- New code follows `systemPatterns.md`; superseded patterns live in `migrationMap.md` only.
+- Scene text edits surgical; editor-made changes never reverted silently (editor-assigned scene uids get adopted into file headers).

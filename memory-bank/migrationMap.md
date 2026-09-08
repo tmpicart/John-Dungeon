@@ -11,9 +11,8 @@
 | Issue | Task |
 |---|---|
 | Group-scan/exception discovery: `beam.gd` add_exception loop over `Enemies` (likely a no-op under its Player+Environment mask), `energy_star.gd` group loops, projectile `Enemies` membership | D-5 faction pass |
-| Per-room duplicated HUD in room blocks | R-40 |
-| Legacy `TileMap` wrapper around `TileMapLayer` children | R-40 |
-| `torch.tscn` renders its sprite through an embedded legacy `TileMap` (same wrapper family as room blocks) — replace with a plain `Sprite2D` on the candle/prop pass | R-40 |
+| Per-room duplicated HUD in room blocks | R-41 |
+| Legacy `TileMap` wrapper around `TileMapLayer` children | R-41 |
 
 ## gdlint Baseline (repo-wide, measured 2026-09-06 after R-32)
 | Area | Findings | Cleared by |
@@ -25,5 +24,5 @@
 | entities/interactables | 0 | — (cleared R-31) |
 | entities/npcs | 0 | — (cleared R-30) |
 | systems | 0 | — (cleared R-33) |
-| ui | 4 (`main_scene.gd`) | opportunistic (R-40 HUD pass) |
+| ui | 0 | — (cleared R-40) |
 | levels | 0 | — |
