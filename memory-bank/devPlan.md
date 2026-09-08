@@ -15,7 +15,7 @@
 - Expanded shop stock, weapon tiers, consumable variety
 
 ## D-3 Dialogue & world content (after R-33)
-- Staged dialogue authored in the JSON format; new NPCs and story beats
+- More `DialogueData` stages and NPCs on the shipped resource format; new story beats
 - Boss intro cutscene/dialogue for The Sorceress (dormancy + door flow removed in R-24)
 
 ## D-4 Bestiary (after R-23 / R-24)

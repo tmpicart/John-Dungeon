@@ -4,6 +4,7 @@
 
 ## Engine
 - Godot **4.7.2 stable** (win64), Forward Plus renderer, GDScript
+- **Engine hazard (4.7.2):** editor saves omit `PackedStringArray`/`StringName` property values on scripted sub-resources in `.tres` — they silently revert to script defaults. The headless engine `ResourceSaver` is unaffected; the smoke suite's "shipped dialogue playable" canary guards this. Author shipped resource data with `String`/`Array[String]`/`int`/`Texture` fields (the ShopData pattern)
 - Editor path (VS Code setting): `c:\Users\Silent\Documents\Code\Godot_v4.7.2-stable_win64.exe`
 - Linting/formatting: `gdlint` / `gdformat` (gdtoolkit 4.5 via pip; config `gdlintrc`) — verification gate per `.clinerules/code-style.md`
 - Display: 1920×1080, `canvas_items` stretch mode, nearest texture filter (pixel art)
@@ -32,7 +33,7 @@ Render layers 1–2: Player, Enemies.
 > `interact` is the single interaction action (R-30 consolidated the old `pickup`/`Interact` pair); controller support later = adding an event to the action. Prompts derive their key label from this binding.
 
 ## Tests
-- `tests/interaction_smoke.tscn` — headless interaction-framework regression (32 assertions; exit 0 = pass): `Godot --headless --path . res://tests/interaction_smoke.tscn`
+- `tests/interaction_smoke.tscn` — headless regression suite (64 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`

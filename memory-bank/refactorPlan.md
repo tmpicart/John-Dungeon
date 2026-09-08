@@ -4,12 +4,7 @@
 > **Lifecycle:** Tasks are deleted on completion (noted in `progress.md`); keep this file under ~80 lines. Rules: `.clinerules/log-hygiene.md`.
 
 ## Adopted Decisions (summary — details in `systemPatterns.md`)
-Hybrid folder structure · typed state transitions · shared states + config exports + hooks · signal-driven animation · mouse-driven `ShopData` shop · JSON dialogue + `PlayerProgress` on player · handcrafted-first, procgen-ready · boss 1:1 migration (redesign in `devPlan.md`) · opportunistic feel fixes only.
-
-## Phase R3 — Interaction & UI systems
-| ID | Task | Notes |
-|---|---|---|
-| R-33 | Dialogue system | JSON dialogue (pages, stage transitions); `PlayerProgress` on player (flags + per-NPC stages); correct stale Tutorial text (Tab → Shift); freeze player input during dialogue (reuse the R-32 modal-freeze pattern); one-time "what to do with the boss key" message box |
+Hybrid folder structure · typed state transitions · shared states + config exports + hooks · signal-driven animation · mouse-driven `ShopData` shop · resource-authored dialogue + `PlayerProgress` on player · handcrafted-first, procgen-ready · boss 1:1 migration (redesign in `devPlan.md`) · opportunistic feel fixes only.
 
 ## Phase R4 — World & content
 | ID | Task | Notes |

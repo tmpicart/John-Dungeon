@@ -3,32 +3,31 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-Test room is the default level (main menu -> test_room; floor_1 deleted) on the shared `assets/tilesets/custom_dungeon.tres` with the Ground/Decals/Walls/Overhead stack - the R-40 room standard starts here. Next: R-33 dialogue.
+R-33 dialogue shipped (resource-driven; committed through `e01bc68`). Test room default level with all three NPCs + a boss key. Next: R-40 room-block standard, then R-41 floor parity.
 
 ## Conventions
-- Tile room stack: Ground (z -1, nav + is_summonable), Decals (z -1, collision+nav off), Walls (z 0, physics), Overhead (z 10, collision optional - only tiles with painted polygons go solid, nav off); room root y-sorted; entities z 0, player root z 3
-- Door family: key_door.tscn (locked, `key_door_sheet.png`) / door_red.tscn (no-lock, eli art, rotate the instance for wall sides) / no_open.tscn (decorative sealed) / door.tscn + door_2.tscn (kept, unused). Labels retired - locked feedback flashes the world-space prompt "You Need a Key To Open!" for 1s via `InteractionManager.refresh_prompt`
-- Chest family: chest.tscn = key chest (red sheet frame 1 locked -> frame 2 open; `requires_key` consumes a key, prompt flash on failure) / chest_no_key.tscn = free chest; key-drop behavior retired; loot spawns at chest origin (no offset), `scatter()` displaces
-- Summon placement: the `is_summonable` flood-fill now occupancy-guards every candidate (8px circle vs Player/Enemies/Environment/Interactables, excludes the summoner) and re-checks at materialize after the telegraph
-- Doors/boss key/aim/reflect/parry/summon/interaction/loot/shop conventions unchanged (see `systemPatterns.md`)
-- gdlint scoped gate: rewritten files pass clean; baseline in `migrationMap.md`
+- Dialogue: `DialogueData`/`DialogueStage` `.tres` per speaker (systemPatterns); `PlayerProgress` on the player holds flags + per-speaker stage counters; unified `npc.gd` opens dialogue, hands off to `shop_data` on finish; boss keys taunt via a `boss_taunt` export
+- .tres data hazard: 4.7.2 editor saves strip PackedStringArray/StringName from scripted sub-resources - author pages/flags as Array[String]/String (see techContext)
+- Prompts auto-anchor above the owner's opaque art (alpha-aware, rotation/scale/flip proof); manager owns the 4px margin + label height; `prompt_offset` is a screen-space nudge only
+- Tile room stack / door family / chest family / summon placement: unchanged (see systemPatterns.md)
 
 ## In Flight
-- Playtest confirmation in the editor: red door animation + rotation on wall sides, locked chest consume/fail flow, prompt flashes, summon placement avoiding chests/player, Overhead depth, chest loot scatter from origin (user-tuned in editor)
+- Editor playtest of the new prompt anchoring (doors both orientations, chests, boss key, NPCs) - headless gates green
 
 ## Verification Gates
 - gdlint on touched files (clean); repo baseline in `migrationMap.md`
-- `tests/interaction_smoke.tscn` headless - 32 assertions, exit 0
+- `tests/interaction_smoke.tscn` headless - 64 assertions, exit 0 (dialogue + anchoring covered)
 - `--headless --import` before headless runs; scenes boot `--quit-after 5`
-- After agent disk edits with the editor open: user reloads scene tabs before playtesting
+- After agent disk edits with the editor open: user reloads/restarts the editor before playtesting
 
 ## Next Up
-1. R-33 dialogue system (JSON pages, `PlayerProgress`, boss-key message box) - reuses the R-32 modal-freeze pattern
-2. R-41 floor rebuild: boss progression (boss door/key, altar, NPCs) re-instances onto test-room blocks
-3. HUD restyle (fold into R-40 or a dedicated pass)
+1. R-40 room-block standard (TileMapLayer-only stack, room markers, root HUD)
+2. R-41 floor parity rebuild on the test-room blocks
+3. D-3 dialogue content (new stages now that authoring is safe)
 
 ## Open Decisions
 - Controller aim model (when pad support lands): direction + soft lock favored; plugs into the PlayerCombat aim API
+- Optional: upstream bug report for the 4.7.2 .tres strip (repro steps captured this session)
 
 ## Working Agreements (quick recall)
 - Commits: agent drafts -> user approves -> commit; memory bank follows as `docs(memory)`. Push only when instructed.
