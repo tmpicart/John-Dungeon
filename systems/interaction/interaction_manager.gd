@@ -1,20 +1,28 @@
 extends Node2D
 
-## Interaction registry + world-space prompt. Interactables register on player
-## contact; the nearest enabled area wins and is triggered by the `interact`
-## action. Nearest is re-resolved only when the registry changes or on input —
-## no per-frame scans.
+## Interaction registry + screen-space prompt. Interactables register on
+## player contact; the nearest enabled area wins and is triggered by the
+## `interact` action. Nearest is re-resolved only when the registry changes
+## or on input — no per-frame scans. The label lives on a high CanvasLayer:
+## the active area's world anchor is re-projected every frame while shown,
+## so bobbing, animated, or rotating owners are followed and the prompt can
+## never be occluded by world rendering.
 
 const PROMPT_FALLBACK := "[?] "
 const INTERACT_ACTION := "interact"
-## Visual gap between the anchored art (or area origin) and the prompt.
-const PROMPT_MARGIN := 4.0
+## Screen-space gap between the projected anchor point and the prompt.
+const PROMPT_MARGIN := 12.0
 
 var _active_areas: Array[Interactable] = []
 var _best_area: Interactable = null
 var _locked := false
 
-@onready var label: Label = $InteractionText
+@onready var label: Label = $PromptLayer/InteractionText
+
+
+func _process(_delta: float) -> void:
+	if label.visible:
+		_position_prompt()
 
 
 func register_area(area: Interactable) -> void:
@@ -37,8 +45,8 @@ func set_locked(value: bool) -> void:
 	_update_prompt()
 
 
-## Re-renders the world-space prompt when an active Interactable changes its
-## `prompt` outside a registry event (e.g. a door flashing a locked message).
+## Re-renders the prompt when an active Interactable changes its `prompt`
+## outside a registry event (e.g. a door flashing a locked message).
 func refresh_prompt() -> void:
 	_update_prompt()
 
@@ -64,17 +72,23 @@ func _update_prompt() -> void:
 		label.hide()
 		return
 	label.text = _prompt_prefix() + _best_area.prompt
-	# The anchor floats above the interactable's visible art (see
-	# Interactable); the label's bottom edge is raised by the gap above it,
-	# centered on the anchor x, and nudged by the area's screen-space
-	# offset. (Labels grow down from their origin.)
-	label.global_position = _best_area.prompt_anchor_position() \
-			+ Vector2(
-				-label.size.x * label.scale.x / 2.0,
-				-PROMPT_MARGIN - label.size.y * label.scale.y,
-			) \
-			+ _best_area.prompt_offset
+	label.reset_size()
+	_position_prompt()
 	label.show()
+
+
+## Projects the active area's world anchor onto the screen layer and centers
+## the label above it, plus the area's screen-space nudge. Called from
+## _process while shown, so the prompt tracks its owner continuously.
+func _position_prompt() -> void:
+	if _best_area == null:
+		return
+	var screen := get_viewport().get_canvas_transform() \
+			* _best_area.prompt_anchor_position()
+	label.position = screen + Vector2(
+		-label.size.x / 2.0,
+		-PROMPT_MARGIN - label.size.y,
+	) + _best_area.prompt_offset
 
 
 func _prompt_prefix() -> String:

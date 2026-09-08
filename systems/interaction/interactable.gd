@@ -73,7 +73,7 @@ func _exit_tree() -> void:
 	InteractionManager.unregister_area(self)
 
 
-## Anchor for the world-space prompt: top-center of the owner's visible
+## World anchor for the prompt: top-center of the owner's visible
 ## sprites (rotation/scale proof), or the area origin when there is no art
 ## to measure. The manager applies its own gap and the screen-space nudge.
 func prompt_anchor_position() -> Vector2:
@@ -102,7 +102,11 @@ func _collect_sprites(root: Node, into: Array[Sprite2D]) -> void:
 	for child in root.get_children():
 		if child == self:
 			continue
-		if child is Sprite2D and child.visible:
+		if child is CanvasLayer or child is Control:
+			# UI subtrees (dialogue boxes, shops) never contribute to
+			# the world anchor, however they are parented.
+			continue
+		if child is Sprite2D and child.is_visible_in_tree():
 			into.append(child)
 		_collect_sprites(child, into)
 
@@ -141,8 +145,9 @@ func _frame_pixel_size(sprite: Sprite2D) -> Vector2i:
 	return tex_size / Vector2i(maxi(sprite.hframes, 1), maxi(sprite.vframes, 1))
 
 
-## Opaque bounds of the current frame in sheet pixels, cached per texture
-## and frame pair. Zero-size when the frame has no opaque pixels.
+## Opaque bounds of the current frame, in frame-local sheet pixels,
+## cached per texture and frame pair. Zero-size when the frame has no
+## opaque pixels.
 func _frame_used_rect(sprite: Sprite2D) -> Rect2i:
 	var texture := sprite.texture
 	var cache_key := "%s|%d|%s" % [texture.resource_path,
@@ -162,6 +167,6 @@ func _frame_used_rect(sprite: Sprite2D) -> Rect2i:
 					hi = Vector2i(maxi(hi.x, x), maxi(hi.y, y))
 	var used := Rect2i()
 	if hi.x >= 0:
-		used = Rect2i(origin + lo, hi - lo + Vector2i.ONE)
+		used = Rect2i(lo, hi - lo + Vector2i.ONE)
 	_used_rect_cache[cache_key] = used
 	return used

@@ -102,9 +102,8 @@ func _run() -> void:
 	var drop: Pickup = preload("res://entities/interactables/pickups/pickup.tscn").instantiate()
 	_check(drop.auto_pickup and drop.one_shot, "pickup defaults to auto + one-shot")
 	drop.free()
-	var expected_x: float = near.global_position.x \
-			- manager.label.size.x * manager.label.scale.x / 2.0
-	_check(absf(manager.label.global_position.x - expected_x) < 0.01,
+	var near_screen: Vector2 = _to_screen(manager, near.global_position)
+	_check(absf(manager.label.position.x - (near_screen.x - manager.label.size.x / 2.0)) < 0.01,
 			"prompt centered over the target area")
 
 	# Prompt anchoring: sprite-less areas fall back to the offset rotated
@@ -120,10 +119,11 @@ func _run() -> void:
 	scaled.add_child(shrunk)
 	manager.register_area(shrunk)
 	_check(manager._best_area == shrunk, "sanity: scaled area is nearest")
-	_check(absf(manager.label.global_position.y
-			- (shrunk.global_position.y + shrunk.prompt_offset.y
+	var shrunk_screen: Vector2 = _to_screen(manager, shrunk.global_position)
+	_check(absf(manager.label.position.y
+			- (shrunk_screen.y + shrunk.prompt_offset.y
 			- manager.PROMPT_MARGIN
-			- manager.label.size.y * manager.label.scale.y)) < 0.01,
+			- manager.label.size.y)) < 0.01,
 			"sprite-less prompt uses the area origin plus offset")
 
 	# With visible art the anchor floats above the OPAQUE pixels (sheets
@@ -141,18 +141,63 @@ func _run() -> void:
 	# sprite-local space that rect is (-1, 0, 2, 2) (to_global adds the
 	# node position and parent transform).
 	var local_used := Rect2(-1.0, 0.0, 2.0, 2.0)
+	var art_screen: Vector2 = _to_screen(manager, art.to_global(local_used.get_center()))
 	var top := INF
 	for corner in [local_used.position, local_used.position + Vector2(2, 0),
 			local_used.position + Vector2(0, 2), local_used.end]:
-		top = minf(top, art.to_global(corner).y)
+		top = minf(top, _to_screen(manager, art.to_global(corner)).y)
 	var expected := Vector2(
-		art.to_global(local_used.get_center()).x
-				- manager.label.size.x * manager.label.scale.x / 2.0,
-		top - manager.PROMPT_MARGIN
-				- manager.label.size.y * manager.label.scale.y,
+		art_screen.x - manager.label.size.x / 2.0,
+		top - manager.PROMPT_MARGIN - manager.label.size.y,
 	)
-	_check(manager.label.global_position.distance_to(expected) < 0.01,
+	_check(manager.label.position.distance_to(expected) < 0.01,
 			"prompt anchors above visible art automatically")
+
+	# The prompt tracks its anchor every frame while shown: translating the
+	# owner re-positions via _process, with no registry event involved.
+	scaled.position.y += 10.0
+	manager._process(0.016)
+	_check(manager.label.position.distance_to(expected + Vector2(0, 10)) < 0.01,
+			"prompt follows a moving anchor every frame")
+
+	# UI subtrees under the owner never contribute to the anchor.
+	var ui_layer := CanvasLayer.new()
+	scaled.add_child(ui_layer)
+	var ui_sprite := Sprite2D.new()
+	ui_sprite.texture = art.texture
+	ui_sprite.position = Vector2(5000, 5000)
+	ui_layer.add_child(ui_sprite)
+	manager._update_prompt()
+	_check(manager.label.position.distance_to(expected + Vector2(0, 10)) < 0.01,
+			"ui subtrees never contribute to the anchor")
+	ui_layer.free()
+
+	# Multi-frame sheets measure the DISPLAYED frame, not the sheet: the
+	# opaque rect is frame-relative, so a frame-1 sprite anchors above its
+	# own art rather than being pushed right by earlier frames' columns.
+	art.free()
+	var sheet := Image.create(8, 4, false, Image.FORMAT_RGBA8)
+	sheet.fill(Color(0, 0, 0, 0))
+	sheet.fill_rect(Rect2i(0, 2, 2, 2), Color.WHITE)
+	sheet.fill_rect(Rect2i(5, 2, 2, 2), Color.WHITE)
+	var framed := Sprite2D.new()
+	framed.texture = ImageTexture.create_from_image(sheet)
+	framed.hframes = 2
+	framed.frame = 1
+	scaled.add_child(framed)
+	manager._update_prompt()
+	var framed_top := INF
+	for corner in [local_used.position, local_used.position + Vector2(2, 0),
+			local_used.position + Vector2(0, 2), local_used.end]:
+		framed_top = minf(framed_top, _to_screen(manager, framed.to_global(corner)).y)
+	var framed_expected := Vector2(
+		_to_screen(manager, framed.to_global(local_used.get_center())).x
+				- manager.label.size.x / 2.0,
+		framed_top - manager.PROMPT_MARGIN - manager.label.size.y,
+	)
+	_check(manager.label.position.distance_to(framed_expected) < 0.01,
+			"multi-frame sheets anchor to the displayed frame")
+	framed.free()
 	manager.unregister_area(shrunk)
 	scaled.free()
 	_check(manager._best_area == near, "selection restored after scaled area")
@@ -312,6 +357,10 @@ func _run() -> void:
 	Global.player = saved_player
 	box.free()
 	stub.free()
+
+
+func _to_screen(manager: Node2D, world_pos: Vector2) -> Vector2:
+	return manager.get_viewport().get_canvas_transform() * world_pos
 
 
 func _on_signal() -> void:
