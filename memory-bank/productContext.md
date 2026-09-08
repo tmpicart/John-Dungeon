@@ -23,7 +23,7 @@ A tight, readable top-down action crawl: clear rooms of enemies, manage consumab
 - The original handcrafted level remains as the reference for content parity.
 
 ## NPCs & Dialogue
-- Proximity-based interaction with a unified "[F] to …" prompt (InteractionManager).
+- Proximity-based interaction with a unified "[E] to …" prompt (InteractionManager).
 - NPCs deliver paginated dialogue loaded from text files, then route to their service (shop).
 - Future direction: a more prominent dialogue system and richer NPC interactions.
 

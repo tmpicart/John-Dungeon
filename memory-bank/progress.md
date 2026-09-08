@@ -40,3 +40,5 @@
 - 2026-09-06 | fix | Chest loot spawns at chest origin: `_spawn()` drops the 15px down-screen offset, `scatter()` alone displaces drops (539a20c).
 - 2026-09-07 | feat | R-33 resource-driven dialogue: DialogueData/Stage .tres per speaker, npc_dialog rewrite (typewriter, portraits, stage consumption, modal freeze), unified npc.gd, PlayerProgress flags + stage counters, boss-key taunt, VT323 on the dialogue box (a21cc0a)
 - 2026-09-07 | feat | Dynamic prompt anchoring: alpha-aware frame bounds hug the drawn art (rotation/scale/flip proof), manager-side margin + label height, screen-space prompt_offset nudge (c115ced)
+- 2026-09-07 | chore | Unpushed session history audited and rebuilt: resave churn isolated as `chore(assets)` with the .gitignore hygiene, R-33 bullet corrected, memory-bank hash refs repointed (6e65ec5..c63ce5d)
+- 2026-09-07 | fix | Screen-space prompt layer: per-frame anchor projection on the manager CanvasLayer (VT323, layer 10), frame-relative used-rects (sideways prompts on multi-frame sprites fixed: NPCs, boss key, frame-1 chest), UI-subtree exclusion from bounds; smoke 66 checks (0be07b9)

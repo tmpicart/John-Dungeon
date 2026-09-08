@@ -14,7 +14,7 @@
 | Name | Path | Role |
 |---|---|---|
 | `Global` | `systems/global/global.gd` | player reference (property-backed; re-resolves freed/missing refs), `Direction` enum |
-| `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + binding-derived "…" prompt |
+| `InteractionManager` | `systems/interaction/interaction_manager.tscn` | interaction registry + binding-derived "…" prompt (screen-space layer; world anchor projected per frame) |
 
 ## Physics Layers
 | # | Name | # | Name |
@@ -33,7 +33,7 @@ Render layers 1–2: Player, Enemies.
 > `interact` is the single interaction action (R-30 consolidated the old `pickup`/`Interact` pair); controller support later = adding an event to the action. Prompts derive their key label from this binding.
 
 ## Tests
-- `tests/interaction_smoke.tscn` — headless regression suite (64 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
+- `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`
