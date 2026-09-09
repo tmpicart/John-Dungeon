@@ -11,3 +11,8 @@
 
 # Test artifacts
 smoke_result.txt
+
+# Asset policy (code-only repo, see ASSETS.md): game art/audio stay local.
+# Whitelist: assets/fonts/ is SIL OFL licensed and redistributable.
+/assets/*
+!/assets/fonts/
