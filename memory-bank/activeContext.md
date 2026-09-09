@@ -10,7 +10,7 @@ R-40 props shipped. This session executed the asset-license purge (see Asset Pol
 - History purged of asset blobs via 4 filter-repo passes (1762 + 2238 + 179 + 24 paths; final residual 0), incl. the legacy tracked `.godot/` caches and 2024-era duplicates under `Scenes/`; 2 empty commits pruned; pack 53.7 MiB -> 0.65 MiB
 - Backups: `%TEMP%\john-dungeon-pre-wipe.bundle` (full original history) + `D:\Godot_Games\John-Dungeon-assets-backup-20260908\` (610 files, 26.4 MB)
 - Every commit hash in older docs/logs is stale (full rewrite); bundle is the only map to old hashes
-- Force-push to origin PENDING user go; afterwards ask GitHub Support to purge cached old commits (0 forks)
+- Force-push DONE (c75abfa on origin/master, 2026-09-08); still recommended: GitHub Support request to purge cached old commits (0 forks)
 - `WilfingerS/CS415-2024` still hosts the 2024 build zip + full history - needs owner (Seth) to delete/privatize
 - Attribution: `CREDITS.md` - rebuild instructions: `ASSETS.md`
 - Never re-commit pack art; re-adding verified team-original art = fresh commits only
@@ -33,7 +33,7 @@ R-40 props shipped. This session executed the asset-license purge (see Asset Pol
 - After agent disk edits with editor open: user restarts editor before playtesting
 
 ## Next Up
-1. User go -> force-push master; GitHub Support cache-purge request
+1. GitHub Support cache-purge request for old commit SHAs
 2. R-40 room-block standard on custom_dungeon.tres (slots + variant model)
 3. R-41 floor parity rebuild
 4. D-3 dialogue content
