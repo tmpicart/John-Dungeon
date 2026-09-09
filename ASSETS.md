@@ -25,6 +25,10 @@ Fetch the packs below, place them at the listed paths, then run
 ## Notes
 
 - `assets/fonts/` (VT323, SIL OFL 1.1) **is tracked**; do not delete it.
+- `assets/effects/on_hit_flash.gdshader` (+.uid) is team-original and tracked.
+- `assets/effects/slash.png` is untracked (provenance unverifiable) and lives
+  in gitignored `assets/effects/` locally. If ever confirmed team-original,
+  whitelist it in `.gitignore` and commit it.
 - On a fresh clone, Godot logs `ext_resource` UID warnings for missing
   textures until `assets/` is populated and re-imported; it falls back to
   text paths and the game runs.

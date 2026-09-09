@@ -13,6 +13,11 @@
 smoke_result.txt
 
 # Asset policy (code-only repo, see ASSETS.md): game art/audio stay local.
-# Whitelist: assets/fonts/ is SIL OFL licensed and redistributable.
+# Whitelist: assets/fonts/ is SIL OFL licensed and redistributable;
+# assets/effects/on_hit_flash.gdshader (+.uid) is team-original.
 /assets/*
 !/assets/fonts/
+!/assets/effects/
+/assets/effects/*
+!/assets/effects/on_hit_flash.gdshader
+!/assets/effects/on_hit_flash.gdshader.uid
