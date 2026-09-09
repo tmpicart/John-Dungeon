@@ -69,3 +69,8 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 
 ## Known Trade-offs (accepted for now)
 - Player states receive the character via the injected `actor` reference; `Global.player` (property-backed; re-resolves freed/missing refs) remains the access path for non-state consumers.
+
+## Asset Policy
+- Code-only repo: everything under `assets/` is gitignored except whitelisted files — `assets/fonts/` (SIL OFL) and the team-original `assets/effects/on_hit_flash.gdshader` (+.uid). `slash.png` is blacklisted (unverified provenance).
+- Attribution registry: `CREDITS.md`. Rebuild manifest: `ASSETS.md`. Intake/renaming procedure: `.clinerules/assets.md`.
+- Enemy sheets in `assets/enemies/` split two ways: chibi derivatives used by scenes (`enemy_*.png`) and original pack sheets retained for planned boss use (`skeleton_enemy.png`, `archer_enemy.png`, `necromancer_creativekind_sheet.png`). Both classes are licensed for in-game use; never redistribute the raw files.

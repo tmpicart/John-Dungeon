@@ -3,36 +3,41 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-R-40 in progress: prop foundation shipped (`ed4d33e`) - entities/props family (wall_torch, side_torch, candlestick, candlestick_2), key rotation, potion anim cleanup, torch_wall moved out of room_blocks. Next: the room-block standard itself, then R-41 floor parity.
+R-40 props shipped. This session executed the asset-license purge (see Asset Policy). Next: R-40 room-block standard, then R-41 floor parity.
+
+## Asset Policy (decided 2026-09-08 - governs all asset work)
+- Repo is code-only: `/assets/*` gitignored except whitelists - `assets/fonts/` (VT323, SIL OFL 1.1) and team-original `assets/effects/on_hit_flash.gdshader`(+.uid); `slash.png` blacklisted (provenance unverifiable)
+- History purged of asset blobs via 4 filter-repo passes (1762 + 2238 + 179 + 24 paths; final residual 0), incl. the legacy tracked `.godot/` caches and 2024-era duplicates under `Scenes/`; 2 empty commits pruned; pack 53.7 MiB -> 0.65 MiB
+- Backups: `%TEMP%\john-dungeon-pre-wipe.bundle` (full original history) + `D:\Godot_Games\John-Dungeon-assets-backup-20260908\` (610 files, 26.4 MB)
+- Every commit hash in older docs/logs is stale (full rewrite); bundle is the only map to old hashes
+- Force-push to origin PENDING user go; afterwards ask GitHub Support to purge cached old commits (0 forks)
+- `WilfingerS/CS415-2024` still hosts the 2024 build zip + full history - needs owner (Seth) to delete/privatize
+- Attribution: `CREDITS.md` - rebuild instructions: `ASSETS.md`
+- Never re-commit pack art; re-adding verified team-original art = fresh commits only
+- Provenance confirmed: Pixel_Poem dungeon pack — use/modify/commercial OK, redistribution not granted (verified licence text); AstroBob skeleton + archer packs — same terms, originals kept as boss sheets; CreativeKind necromancer — use/modify/commercial OK, no distribution; LuizMelo monsters — CC0; BDragon1727 retro impact — non-commercial free, commercial = contribute; 7 Freesound CC0 sounds; Pixabay (artist unknown); ~20 bundle SFX + hud titles/buttons/wallpaper/hearts/plus/items key/slash — unknown origin. Used enemy art is chibi DERIVATIVES of these (see CREDITS.md)
+- Open: `slash.png` provenance; cloners need packs to run the game (documented in ASSETS.md)
 
 ## Conventions
-- Props: scriptless scenes in `entities/props/` - AnimatedSprite2D autoplay `default` 5.7 fps, radial PointLight2D, foot blocker StaticBody2D on Environment (layer 4); wall-mounted props at z 10 (Overhead tier), floor props z 0 y-sorted; side torch is left-facing (flip H per side)
-- Pack per-frame art (torch_1..4, candlestick_1/2_*) is distinct art from the objects/ strips (wall_torch_h, torch_animation) - verified pixel-level, not interchangeable
-- Pickup animation: universal coded bob in pickup_item.gd; frame animations ride on top (coin/key rotate at 4 fps); no baked-bob sheets (potion.png frames are identical - its no-op AnimationPlayer was removed)
-- .tres data hazard: 4.7.2 editor saves strip PackedStringArray/StringName from scripted sub-resources - author pages/flags as Array[String]/String (see techContext)
+- Props: scriptless scenes in `entities/props/` - AnimatedSprite2D autoplay `default` 5.7 fps, radial PointLight2D, foot blockers on Environment (layer 4); wall props z 10, floor props z 0 y-sorted
+- Pickup animation: universal coded bob in pickup_item.gd; frames ride on top
+- .tres data hazard: 4.7.2 editor saves strip PackedStringArray/StringName from scripted sub-resources - author as Array[String]/String (see techContext)
 - Tile room stack / door family / chest family / dialogue: unchanged (see systemPatterns.md)
 
 ## In Flight
-- nothing - props landed clean; user to visually confirm candle flicker + blockers in a fresh editor session
+- nothing - purge, provenance, and intake policy landed; force-push pending
 
 ## Verification Gates
-- gdlint on touched files (clean); repo baseline in `migrationMap.md` (ui area now 0)
-- `tests/interaction_smoke.tscn` headless - 66 assertions, exit 0
-- `--headless --import` before headless runs; scenes boot `--quit-after 5`; boots launched immediately after an import can exit 1 silently - rerun after a short settle delay
-- After agent disk edits with the editor open: user restarts the editor before playtesting (stale in-memory scenes caused false bug reports this session)
+- gdlint on touched files; baseline in `migrationMap.md`
+- `tests/interaction_smoke.tscn` headless - 66 assertions (local-only now; needs assets on disk)
+- `--headless --import` before headless runs; boots `--quit-after 5`
+- After agent disk edits with editor open: user restarts editor before playtesting
 
 ## Next Up
-1. R-40 room-block standard - author new templates on custom_dungeon.tres (slots + variant model; typed Door/Spawn/ChestSlot/DecorSlot markers)
-2. R-41 floor parity rebuild on the template set (old room_blocks + dungeon.tscn retire here)
-3. D-3 dialogue content
+1. User go -> force-push master; GitHub Support cache-purge request
+2. R-40 room-block standard on custom_dungeon.tres (slots + variant model)
+3. R-41 floor parity rebuild
+4. D-3 dialogue content
 
 ## Open Decisions
-- side_torch facing variants (single scene + flip vs left/right scenes) if flipping proves awkward in practice
-- standing torch removed by decision; revisit only if a floor torch is wanted (pack torch_1..4 art exists)
-- Optional: upstream bug report for the 4.7.2 .tres strip (repro steps captured)
-
-## Working Agreements (quick recall)
-- Commits: agent drafts -> user approves -> commit; memory bank follows as `docs(memory)`. Push only when instructed.
-- Pre-flight before any commit pause: repo-wide gdlint baseline + scoped gate on touched files, both green.
-- Circuit breaker: 3 failed attempts on a step -> stop, report, defer.
-- Scene text edits surgical; editor-made changes never reverted silently (editor-assigned scene uids get adopted into file headers).
+- Re-add verified team-original art (player/NPC/HUD/.kra outputs) in fresh commits - user decision
+- Public release: replace unknown-origin assets (wallpaper, titles, buttons, hearts, plus, key, slash, ~20 SFX); BDragon1727 VFX requires creator contribution for commercial use

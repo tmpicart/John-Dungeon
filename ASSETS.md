@@ -15,12 +15,15 @@ Fetch the packs below, place them at the listed paths, then run
 | Source | Destination |
 |---|---|
 | Pixel_Poem — "2D Pixel Dungeon Asset Pack" (itch.io) | `assets/2d_pixel_dungeon_asset_pack/` |
-| BDragon1727 — "Retro Impact Effect Pack 3 / 5" (itch.io) | `assets/effects/` |
-| CreativeKind — "Necromancer (Free)" (itch.io) | `assets/enemies/` |
+| BDragon1727 — "Retro Impact Effect Pack 3 / 5" (itch.io) | `assets/effects/` (retro_impact_*.png) |
+| CreativeKind — "Necromancer (Free)" (itch.io) — original kept for planned boss use | `assets/enemies/necromancer_creativekind_sheet.png` |
+| AstroBob — "Animated pixel art skeleton" + "Arcane archer animated pixel character" (itch.io) — originals kept for planned boss use | `assets/enemies/skeleton_enemy.png`, `assets/enemies/archer_enemy.png` |
 | LuizMelo — "Monsters Creatures Fantasy" (itch.io, CC0) | `assets/monsters_creatures_fantasy/` |
 | Pixel_Poem — enemy animations companion pack (itch.io) | `assets/enemy_animations_set/` |
 | Freesound / Pixabay / bundled SFX (see CREDITS.md) | `assets/sounds/` |
-| Team-original art (player, NPCs, HUD, items, tilesets) | `assets/player/`, `assets/npc/`, `assets/hud/`, `assets/items/`, `assets/tilesets/`, `assets/objects/` |
+| Team-original art (player, NPCs, most items, background/potion) | `assets/player/`, `assets/npc/`, `assets/items/` (except `key.png`), `assets/tilesets/background.png`, `assets/items/potion.png` |
+| Chibi derivatives — Pixel_Poem / AstroBob sources (see CREDITS.md) | `assets/objects/`, `assets/tilesets/` (dungeon tilesets), `assets/enemies/` (`enemy_*.png`), `assets/items/arcane_arrow.png` |
+| Unknown provenance (see CREDITS.md) | `assets/hud/`, `assets/items/key.png`, `assets/effects/slash.png` |
 
 ## Notes
 

@@ -37,6 +37,7 @@ Render layers 1–2: Player, Enemies.
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`
-- `.gitattributes`: `* text=auto eol=lf` · `.gitignore`: `.godot/`, `*.tmp`, `*~`, `.vscode/`
+- `.gitattributes`: `* text=auto eol=lf` · `.gitignore`: `.godot/`, `*.tmp`, `*~`, `.vscode/`, plus the asset policy block (`/assets/*` with whitelists — see `ASSETS.md`)
+- Asset policy: code-only repo — art/audio stay local-only; asset blobs purged from history (2026-09-08). Only `assets/fonts/` + the custom `assets/effects/on_hit_flash.gdshader` files are tracked
 - `.uid` sidecar files are tracked (Godot 4.4+); always move them together with their script/scene
 - Godot upgrades rewrite `.import` sidecars with new importer metadata — a normal one-time migration; commit as an isolated `chore:` commit when it appears (see `.clinerules/git.md`)
