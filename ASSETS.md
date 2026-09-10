@@ -34,4 +34,13 @@ Fetch the packs below, place them at the listed paths, then run
 - On a fresh clone, Godot logs `ext_resource` UID warnings for missing
   textures until `assets/` is populated and re-imported; it falls back to
   text paths and the game runs.
-- Asset-policy decision and purge record: see `memory-bank/activeContext.md`.
+- Asset-policy decision and purge record: see "Purge & recovery record" above; authoring conventions: `memory-bank/systemPatterns.md`.
+
+## Purge & recovery record (2026-09-08)
+- History purged of asset blobs via 4 filter-repo passes (1762 + 2238 + 179 + 24 paths; final residual 0), incl. the legacy tracked `.godot/` caches and 2024-era duplicates under `Scenes/`; 2 empty commits pruned; pack 53.7 MiB → 0.65 MiB
+- Backups: `%TEMP%\john-dungeon-pre-wipe.bundle` (full original history) + `D:\Godot_Games\John-Dungeon-assets-backup-20260908\` (610 files, 26.4 MB)
+- Every commit hash in older docs/logs is stale (full rewrite); the bundle is the only map to old hashes
+- Force-push DONE (c75abfa on origin/master, 2026-09-08); still recommended: GitHub Support request to purge cached old commits (0 forks)
+- `WilfingerS/CS415-2024` still hosts the 2024 build zip + full history — needs owner (Seth) to delete/privatize
+- Provenance (final): original art + style adaptations by Elijah Geronimo — adaptations after Pixel_Poem dungeon pack (tileset), AstroBob (flail skeleton; arcane archer + arrow), CreativeKind (necromancer); originals of those enemies kept as boss sheets; Thayer Picart owns the remaster. Licences: Pixel_Poem/AstroBob/CreativeKind — use/modify/commercial OK, no raw-file redistribution; LuizMelo CC0; BDragon1727 — non-commercial free, commercial = contribute; 7 Freesound CC0. Unknown-origin items (hud art, ~20 SFX) intentionally uncredited in CREDITS.md — replace before any public release
+- Cloners need packs to run the game (see rebuild table above); CREDITS.md intentionally omits unknown-origin items

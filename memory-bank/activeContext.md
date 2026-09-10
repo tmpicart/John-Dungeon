@@ -3,28 +3,21 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-R-40 props shipped. This session executed the asset-license purge (see Asset Policy). Next: R-40 room-block standard, then R-41 floor parity.
+Descent design audited and revised (2026-09-09): task lists split into S/E/W/B tracks - one system or enemy per task (`devPlan.md`). Record errors fixed: `boss_shadow.png` = Sorceress boss sprite (not an effect); vampire sheet NOT in use. Design source: `productContext.md` "The Descent" sections. First build task: **S-1 hue-shift shader**.
 
-## Asset Policy (decided 2026-09-08 - governs all asset work)
-- Repo is code-only: `/assets/*` gitignored except whitelists - `assets/fonts/` (VT323, SIL OFL 1.1) and `assets/effects/on_hit_flash.gdshader`(+.uid) project code; `slash.png` blacklisted (provenance unverifiable)
-- History purged of asset blobs via 4 filter-repo passes (1762 + 2238 + 179 + 24 paths; final residual 0), incl. the legacy tracked `.godot/` caches and 2024-era duplicates under `Scenes/`; 2 empty commits pruned; pack 53.7 MiB -> 0.65 MiB
-- Backups: `%TEMP%\john-dungeon-pre-wipe.bundle` (full original history) + `D:\Godot_Games\John-Dungeon-assets-backup-20260908\` (610 files, 26.4 MB)
-- Every commit hash in older docs/logs is stale (full rewrite); bundle is the only map to old hashes
-- Force-push DONE (c75abfa on origin/master, 2026-09-08); still recommended: GitHub Support request to purge cached old commits (0 forks)
-- `WilfingerS/CS415-2024` still hosts the 2024 build zip + full history - needs owner (Seth) to delete/privatize
-- Attribution: `CREDITS.md` - rebuild instructions: `ASSETS.md`
-- Never re-commit pack art; re-adding verified team-original art = fresh commits only
-- Provenance (final): original art + style adaptations by Elijah Geronimo - adaptations after Pixel_Poem dungeon pack (tileset), AstroBob (flail skeleton; arcane archer + arrow), CreativeKind (necromancer); originals of those enemies kept as boss sheets; Thayer Picart owns the remaster. Licences: Pixel_Poem/AstroBob/CreativeKind - use/modify/commercial OK, no raw-file redistribution; LuizMelo CC0; BDragon1727 - non-commercial free, commercial = contribute; 7 Freesound CC0. Unknown-origin items (hud art, ~20 SFX) intentionally uncredited in CREDITS.md - replace before any public release
-- Cloners need packs to run the game (documented in ASSETS.md); CREDITS.md intentionally omits unknown-origin items
+## In Flight (user, Godot editor)
+- `custom_dungeon.tres` rework: 16px atoms; collision painted on wall tiles (physics layer 0 -> Environment 4); TileSet patterns next
+- `test_room.tscn` working-tree edits - user's editor session, never revert
 
-## Conventions
-- Props: scriptless scenes in `entities/props/` - AnimatedSprite2D autoplay `default` 5.7 fps, radial PointLight2D, foot blockers on Environment (layer 4); wall props z 10, floor props z 0 y-sorted
-- Pickup animation: universal coded bob in pickup_item.gd; frames ride on top
-- .tres data hazard: 4.7.2 editor saves strip PackedStringArray/StringName from scripted sub-resources - author as Array[String]/String (see techContext)
-- Tile room stack / door family / chest family / dialogue: unchanged (see systemPatterns.md)
+## Conventions (systemPatterns "Tileset authoring")
+- Patterns stamp collision/nav/custom data; wall collision = tiles; scene StaticBody2D only for dynamic blockers (doors/chests); nav on floor tiles only (cleanup: strip nav from 2:3/3:3/4:3)
+- Decals: paint-time randomize (multi-select probability + scattering % + random flips)
 
-## In Flight
-- nothing - purge, provenance, and intake policy landed; force-push pending
+## Decisions added 2026-09-09 (audit pass)
+- Rolls: NO i-frames, stamina chunks; mutual action cancels (roll/attack/block) with hitbox hygiene
+- Armor = full negation incl. unblockables (clank SFX + VFX + hitstop); wand = secondary fire via loadout slots (alt-weapon / potion / tool); potion belt typed
+- Status framework (S-2) parked until variant/wand effect scope; E-1 lesser skelly may double as player summon (D-5)
+- Art to be sourced via intake: Deity, Nightborne, Knight, wand sprites (check assets/items/weapons.png)
 
 ## Verification Gates
 - gdlint on touched files; baseline in `migrationMap.md`
@@ -33,11 +26,14 @@ R-40 props shipped. This session executed the asset-license purge (see Asset Pol
 - After agent disk edits with editor open: user restarts editor before playtesting
 
 ## Next Up
-1. GitHub Support cache-purge request for old commit SHAs
-2. R-40 room-block standard on custom_dungeon.tres (slots + variant model)
-3. R-41 floor parity rebuild
-4. D-3 dialogue content
+1. S-1 hue-shift shader (first code task of the S-track)
+2. R-40 room-block standard: patterns + descent room-type conventions (user's editor work continues)
+3. E-1 lesser skelly (blocked on user's sheet pick)
+4. S-4 armor, then S-3 stamina+cancels
+5. GitHub Support cache-purge request for old commit SHAs (still pending)
 
 ## Open Decisions
-- Re-add verified team-original art (player/NPC/HUD/.kra outputs) in fresh commits - user decision
-- Public release: replace unknown-origin assets (wallpaper, titles, buttons, hearts, plus, key, slash, ~20 SFX); BDragon1727 VFX requires creator contribution for commercial use
+- Wand input binding + potion carry model: settle at S-5/S-6 implementation
+- Depth room-mix shape + director numbers: provisional until playtest
+- `WilfingerS/CS415-2024` still hosts the 2024 build + history - owner (Seth) to delete/privatize
+- Public release: replace unknown-origin assets (HUD art, ~20 SFX); BDragon1727 VFX requires creator contribution for commercial use
