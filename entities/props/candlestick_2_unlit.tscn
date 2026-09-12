@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://6lqm0v7kvk5l"]
+
+[ext_resource type="Texture2D" uid="uid://coyng8st7lxvy" path="res://assets/tilesets/dungeon_tileset.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_candle"]
+atlas = ExtResource("1_atlas")
+region = Rect2(64, 144, 16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_foot"]
+radius = 3.0
+
+[node name="Candlestick2Unlit" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_candle")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 6)
+shape = SubResource("CircleShape2D_foot")

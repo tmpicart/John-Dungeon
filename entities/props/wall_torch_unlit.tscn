@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://dwtorchu1"]
+
+[ext_resource type="Texture2D" uid="uid://coyng8st7lxvy" path="res://assets/tilesets/dungeon_tileset.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_torch"]
+atlas = ExtResource("1_atlas")
+region = Rect2(32, 144, 16, 16)
+
+[node name="WallTorchUnlit" type="Node2D"]
+z_index = 10
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -1)
+texture = SubResource("AtlasTexture_torch")

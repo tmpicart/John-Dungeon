@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dwshackl2"]
+
+[ext_resource type="Texture2D" uid="uid://coyng8st7lxvy" path="res://assets/tilesets/dungeon_tileset.png" id="1_atlas"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_shackle"]
+atlas = ExtResource("1_atlas")
+region = Rect2(96, 112, 16, 16)
+
+[node name="WallShackle2" type="Node2D"]
+z_index = 10
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_shackle")
