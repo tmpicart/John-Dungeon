@@ -8,6 +8,10 @@ class_name PickupItem
 signal settled
 
 const MIN_BOUNCE_POP := 30.0
+const ENVIRONMENT_MASK := 4
+const _MAX_LANDING_ROLLS := 6
+const _REST_SLACK := 2.0
+const _EDGE_CLEARANCE := 4.0
 
 @export var sprite_path: NodePath = ^"../Sprite2D"
 @export var bob_height := 1.5
@@ -38,13 +42,57 @@ func _ready() -> void:
 
 
 ## Chest / monster-drop entry point: random direction, speed and pop.
-## Defaults spill toward the viewer (front hemisphere) so drops never hide
-## behind the source; pass angle_spread = TAU for omnidirectional bursts.
-func scatter(strength: float, angle_center: float = PI * 0.5, angle_spread: float = PI) -> void:
-	var angle := angle_center + randf_range(-angle_spread * 0.5, angle_spread * 0.5)
-	var speed := randf_range(strength * 0.6, strength)
-	eject(Vector2.from_angle(angle) * speed, randf_range(90.0, 140.0))
+## The landing point is validated against Environment geometry with a
+## one-shot point query; blocked points re-roll shorter, and the source
+## position is the final fallback. Defaults spill toward the viewer
+## (front hemisphere) so drops never hide behind the source. A positive
+## delay keeps the item hidden and gated, launching it later via a
+## self-owned tween, so freed items can never fire a stale launch.
+func scatter(
+		strength: float,
+		angle_center: float = PI * 0.5,
+		angle_spread: float = PI,
+		delay: float = 0.0
+) -> void:
+	_set_collection(false)
+	_stop_bob()
+	if _sprite != null:
+		_sprite.position.y = _sprite_base_y
+		_sprite.visible = delay <= 0.0
+	if delay > 0.0:
+		var hold := create_tween()
+		hold.tween_interval(delay)
+		hold.tween_callback(_launch.bind(strength, angle_center, angle_spread))
+		return
+	_launch(strength, angle_center, angle_spread)
 
+
+func _launch(strength: float, angle_center: float, angle_spread: float) -> void:
+	var pop := randf_range(90.0, 140.0)
+	var airtime := 2.0 * pop / bounce_gravity
+	for attempt in _MAX_LANDING_ROLLS:
+		var angle := angle_center + randf_range(-angle_spread * 0.5, angle_spread * 0.5)
+		var falloff := 1.0 - float(attempt) / float(_MAX_LANDING_ROLLS)
+		var distance := randf_range(strength * 0.6, strength) * falloff
+		var direction := Vector2.from_angle(angle)
+		# Validate where the item will actually rest: frame quantization can
+		# carry it a pixel or two past the aim, so probe a little further.
+		var rest_distance := maxf(distance - _REST_SLACK, 0.0)
+		var rest := global_position + direction * rest_distance
+		if _is_free(rest) and _is_free(rest + direction * _EDGE_CLEARANCE):
+			# Bounce hops add friction-damped travel: scale the speed so the
+			# item stops on the validated rest point instead of skidding on.
+			var term := ground_friction * bounce_damping
+			var reach := 1.0
+			var power := 1.0
+			var decayed := pop
+			while decayed > MIN_BOUNCE_POP:
+				power *= term
+				reach += power
+				decayed *= bounce_damping
+			eject(direction * (rest_distance / (airtime * reach)), pop)
+			return
+	eject(Vector2.ZERO, pop)
 
 ## Explicit ejection: ground-plane velocity plus an upward pop speed.
 ## Height starts at zero so items rise out of the spawn point.
@@ -56,6 +104,7 @@ func eject(velocity: Vector2, pop: float) -> void:
 	_stop_bob()
 	z_index = 1
 	if _sprite != null:
+		_sprite.visible = true
 		_sprite.position.y = _sprite_base_y
 	_set_collection(false)
 
@@ -70,7 +119,7 @@ func _process(delta: float) -> void:
 		if _sprite != null:
 			_sprite.position.y = _sprite_base_y - _height
 		return
-	# Ground contact: bounce on the fall speed or settle.
+# Ground contact: bounce on the fall speed or settle.
 	_height = 0.0
 	if -_height_velocity > MIN_BOUNCE_POP:
 		_height_velocity = -_height_velocity * bounce_damping
@@ -79,6 +128,15 @@ func _process(delta: float) -> void:
 			_sprite.position.y = _sprite_base_y
 	else:
 		_settle()
+
+
+## One-shot point query at scatter time: a landing point is free when no
+## Environment collider occupies it.
+func _is_free(global_pos: Vector2) -> bool:
+	var params := PhysicsPointQueryParameters2D.new()
+	params.position = global_pos
+	params.collision_mask = ENVIRONMENT_MASK
+	return get_world_2d().direct_space_state.intersect_point(params, 1).is_empty()
 
 
 func _settle() -> void:

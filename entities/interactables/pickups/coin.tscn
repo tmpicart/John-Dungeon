@@ -59,4 +59,3 @@ frame_progress = 0.922801
 [node name="coin_sfx" type="AudioStreamPlayer2D" parent="."]
 stream = SubResource("AudioStreamRandomizer_2tp37")
 volume_db = -5.0
-

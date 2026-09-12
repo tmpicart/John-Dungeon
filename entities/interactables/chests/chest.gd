@@ -5,6 +5,7 @@ extends Node2D
 ## interaction prompt, same as the doors.
 
 const MESSAGE_TIME := 1.0
+const SPAWN_WAVE_DELAY := 0.12
 const LOCKED_PROMPT := "You Need a Key To Open!"
 
 @export var requires_key := false
@@ -37,15 +38,29 @@ func _on_interact() -> void:
 func _drop_loot() -> void:
 	if loot_table == null or loot_value <= 0:
 		return
+	var launched := 0
+	var wave := 0
+	var wave_size := _next_wave_size()
 	for scene in loot_table.roll(loot_value):
-		_spawn(scene)
+		_spawn(scene, wave)
+		launched += 1
+		if launched >= wave_size:
+			launched = 0
+			wave += 1
+			wave_size = _next_wave_size()
 
 
-func _spawn(scene: PackedScene) -> void:
+func _spawn(scene: PackedScene, wave: int) -> void:
 	var item: PickupItem = scene.instantiate()
 	owner.add_child(item)
 	item.global_position = global_position
-	item.scatter(scatter_strength)
+	# Wave spew: items launch 2-3 at a time; queued ones stay hidden until
+	# their wave fires.
+	item.scatter(scatter_strength, PI * 0.5, PI, SPAWN_WAVE_DELAY * wave)
+
+
+func _next_wave_size() -> int:
+	return 2 + randi() % 2
 
 
 func _show_warning() -> void:

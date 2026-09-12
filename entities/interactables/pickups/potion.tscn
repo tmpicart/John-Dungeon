@@ -22,4 +22,3 @@ shape = SubResource("CircleShape2D_rdqgk")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_e5bpn")
 hframes = 4
-
