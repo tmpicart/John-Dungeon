@@ -51,3 +51,4 @@
 - 2026-09-12 | fix | Door collision accuracy: red door blocker widened to the closed-door silhouette, prompt area grown, sprite + interaction shape realigned (no more edge-catching) (570ceaa)
 - 2026-09-12 | feat | R-40-prep level toolset: test_room reference stack (Floor/Walls/Decals/Obstacles/Overhead flags), five unlit prop scenes, obstacle_outline.gd @tool (offset-silhouette rim + seams, auto-rebuild) (8411cf0)
 - 2026-09-12 | feat | Validated-landing loot scatter: PickupItem on Node2D with rest-point query validation + hop-series speed scaling, chest 2-3 wave spew (hidden queue, tween delays), static button-pickup keys y-sorted, seeded obstacle probe (1be19eb)
+- 2026-09-13 | docs | Rules additions: research-before-design policy (.clinerules/research.md), standalone-voice commit messages (git.md), debug-loop containment (circuit-breaker.md)

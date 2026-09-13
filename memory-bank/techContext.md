@@ -32,6 +32,17 @@ Render layers 1–2: Player, Enemies.
 
 > `interact` is the single interaction action (R-30 consolidated the old `pickup`/`Interact` pair); controller support later = adding an event to the action. Prompts derive their key label from this binding.
 
+## Engine facts (4.7.2 — navigation & physics)
+- `PhysicsDirectSpaceState2D.intersect_ray` returns a single Dictionary (empty when clear) — not an array.
+- `NavigationAgent2D.get_next_path_position()` must be called every physics frame, finished path or not — the agent's internal path state stalls otherwise.
+- `NavigationAgent2D.velocity_computed` emits continuously while avoidance is enabled; connect/disconnect it per owning state.
+- A hidden TileMapLayer stops updating its nav internals — hide baked nav layers via `modulate.a = 0`, not `visible = false`.
+- `simplify_path` corrupts tight-cover routes (corner cuts through blocked cells); leave simplification off for tile navmeshes.
+- Obstacle tilesets can carry collision polygons that overhang past their cell — the cell-based navmesh cannot see them; followers of tile-navmesh paths need slide-or-margin handling at edges.
+- GDScript lambdas capture by value at creation.
+- Headless probes must drive physics by frame count (tick-based assertions), not wall-clock waits.
+- Headless engine runs on this machine: `Start-Process -FilePath <engine> -ArgumentList ... -Wait -PassThru` to capture exit codes and redirected output.
+
 ## Tests
 - `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
 
