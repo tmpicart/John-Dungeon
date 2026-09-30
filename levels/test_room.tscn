@@ -23,6 +23,8 @@
 [ext_resource type="PackedScene" uid="uid://dwtorchu1" path="res://entities/props/wall_torch_unlit.tscn" id="21_tor"]
 [ext_resource type="PackedScene" uid="uid://dwshackl2" path="res://entities/props/wall_shackle_2.tscn" id="22_shk2"]
 [ext_resource type="Script" uid="uid://dw4xopm5lh46r" path="res://levels/obstacle_outline.gd" id="23_out"]
+[ext_resource type="PackedScene" uid="uid://bj53m0le6fixn" path="res://entities/enemies/arcane_archer/arcane_archer.tscn" id="24_2y21t"]
+[ext_resource type="PackedScene" uid="uid://cvk5t5c7vvgv6" path="res://entities/enemies/flail_skeleton/flail_skeleton.tscn" id="25_7jaot"]
 
 [node name="TestRoom" type="Node2D" unique_id=1237626728]
 y_sort_enabled = true
@@ -186,3 +188,9 @@ position = Vector2(105, 147)
 
 [node name="Key2" parent="." unique_id=535514584 instance=ExtResource("17_y0nbg")]
 position = Vector2(254, 53)
+
+[node name="Arcane_Archer" parent="." unique_id=68154134 instance=ExtResource("24_2y21t")]
+position = Vector2(214, 63)
+
+[node name="Flail_Skeleton" parent="." unique_id=1252151774 instance=ExtResource("25_7jaot")]
+position = Vector2(103, 101)

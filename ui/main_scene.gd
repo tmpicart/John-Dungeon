@@ -29,3 +29,14 @@ func _ready():
 	player.inventory.boss_key_changed.connect(item_bar.update_boss_key)
 	player.inventory.potions_changed.connect(item_bar.update_potions)
 	player.inventory.coins_changed.connect(item_bar.update_coins)
+
+	# Bake the runtime navmesh once physics has flushed the loaded bodies.
+	_bake_nav()
+
+
+## Two physics frames guarantee the level's bodies are flushed into the space
+## before NavBaker's prop-exclusion probes query it.
+func _bake_nav() -> void:
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	NavBaker.bake(self)
