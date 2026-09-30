@@ -2,7 +2,7 @@
 
 [ext_resource type="TileSet" uid="uid://bn2ta0gm8e6yw" path="res://assets/tilesets/custom_dungeon.tres" id="1_hw6vf"]
 [ext_resource type="PackedScene" uid="uid://rvpiujtilw1o" path="res://entities/interactables/chests/chest_no_key.tscn" id="2_e6vom"]
-[ext_resource type="PackedScene" uid="uid://06fson1afemk" path="res://entities/interactables/doors/key_door.tscn" id="3_np6ep"]
+[ext_resource type="PackedScene" uid="uid://06fson1afemk" path="res://entities/interactables/doors/door_key.tscn" id="3_np6ep"]
 [ext_resource type="PackedScene" uid="uid://bddrcwkuo7k48" path="res://entities/player/character.tscn" id="4_wyybw"]
 [ext_resource type="Script" uid="uid://fc4ub6qla4bf" path="res://ui/main_scene.gd" id="5_main"]
 [ext_resource type="PackedScene" uid="uid://7i30u8mpwy4y" path="res://ui/heart_bar.tscn" id="6_heart"]
