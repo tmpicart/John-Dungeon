@@ -3,7 +3,7 @@ extends Area2D
 class_name PlayerHurtbox
 
 func _ready():
-	connect("area_entered", self._on_area_entered)
+	area_entered.connect(_on_area_entered)
 
 func _on_area_entered(area: Area2D) -> void:
 	var hitbox = area
