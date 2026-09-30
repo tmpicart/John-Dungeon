@@ -20,9 +20,8 @@ shader = ExtResource("1_d5q7n")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nokm8"]
-radius = 7.88175
-height = 15.7635
+[sub_resource type="CircleShape2D" id="CircleShape2D_nokm8"]
+radius = 7.14286
 
 [sub_resource type="Animation" id="Animation_devur"]
 resource_name = "Death"
@@ -339,9 +338,8 @@ vframes = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(4.54747e-13, -5.71429)
-scale = Vector2(0.725, 0.725)
-shape = SubResource("CapsuleShape2D_nokm8")
+position = Vector2(0, 0)
+shape = SubResource("CircleShape2D_nokm8")
 
 [node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("2_ebbn7")
@@ -410,3 +408,9 @@ stream = SubResource("AudioStreamRandomizer_3huqu")
 volume_db = 6.0
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 6.0
+neighbor_distance = 60.0
+max_neighbors = 8
+max_speed = 50.0
+time_horizon_agents = 0.5

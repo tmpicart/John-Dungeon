@@ -25,9 +25,8 @@ shader = ExtResource("2_byyqd")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
-radius = 7.0
-height = 24.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_pdttr"]
+radius = 6.66667
 
 [sub_resource type="Animation" id="Animation_cheg3"]
 resource_name = "Attack"
@@ -322,8 +321,8 @@ frame = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1702155895]
 show_behind_parent = true
-position = Vector2(0, -12)
-shape = SubResource("CapsuleShape2D_pdttr")
+position = Vector2(0, 0)
+shape = SubResource("CircleShape2D_pdttr")
 
 [node name="State Control" type="Node" parent="." unique_id=1746836453 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("4_f2shu")
@@ -360,14 +359,12 @@ summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 summon_sfx = NodePath("../../summon_sfx")
 
-[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "ray_cast")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state")]
 script = ExtResource("12_f46sl")
 navigation_agent = NodePath("../../NavigationAgent2D")
 chase_state = NodePath("../EnemyChase")
-ray_cast = NodePath("../../AimRaycast")
 speed = 100
 retreat_distance = 125
-wall_avoid_distance = 50
 
 [node name="EnemyHurt" type="Node" parent="State Control" unique_id=574359299 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("17_hurt")
@@ -382,7 +379,7 @@ libraries/ = SubResource("AnimationLibrary_yixv0")
 
 [node name="AimRaycast" type="RayCast2D" parent="." unique_id=1980064671]
 target_position = Vector2(300, 0)
-collision_mask = 7
+collision_mask = 4
 
 [node name="Hurtbox" type="Area2D" parent="." unique_id=2019809483]
 collision_layer = 256
@@ -413,3 +410,9 @@ volume_db = -5.0
 [node name="summon_sfx" type="AudioStreamPlayer2D" parent="." unique_id=331029290]
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=1509397695]
+avoidance_enabled = true
+radius = 6.0
+neighbor_distance = 60.0
+max_neighbors = 8
+max_speed = 100.0
+time_horizon_agents = 0.5

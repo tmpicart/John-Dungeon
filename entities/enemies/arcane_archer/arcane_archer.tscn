@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bj53m0le6fixn"]
+[gd_scene format=3 uid="uid://bj53m0le6fixn"]
 
 [ext_resource type="Script" uid="uid://bqejjo6stwwg" path="res://entities/enemies/base_enemy.gd" id="1_sqpd4"]
 [ext_resource type="Script" uid="uid://bpk851cryqf1f" path="res://systems/state_core/state_control.gd" id="3_dk7ir"]
@@ -14,8 +14,8 @@
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="11_gng2b"]
 [ext_resource type="AudioStream" uid="uid://dmggj3bb1d1jy" path="res://assets/sounds/enemies/slime/524952_magnuswaker_squelch_2.wav" id="12_ynpjb"]
 [ext_resource type="AudioStream" uid="uid://2abbl0ptiwav" path="res://assets/sounds/enemies/archer/whoosh_weapon_knife_swing_04.wav" id="13_87241"]
-[ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="14_hurt"]
-[ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="15_stun"]
+[ext_resource type="Script" uid="uid://b6nfl5rpgojwg" path="res://entities/enemies/states/enemy_hurt.gd" id="14_hurt"]
+[ext_resource type="Script" uid="uid://bmty43qg65woh" path="res://entities/enemies/states/enemy_stun.gd" id="15_stun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_iu8kf"]
 resource_local_to_scene = true
@@ -23,9 +23,8 @@ shader = ExtResource("3_dsqkb")
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_value = 0.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_pdttr"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_pdttr"]
 radius = 7.14286
-height = 20.0001
 
 [sub_resource type="Animation" id="Animation_cheg3"]
 resource_name = "Attack"
@@ -181,108 +180,110 @@ random_volume_offset_db = 1.0
 streams_count = 1
 stream_0/stream = ExtResource("12_ynpjb")
 
-[node name="Arcane_Archer" type="CharacterBody2D" groups=["Enemies"] node_paths=PackedStringArray("state_control", "hurt_state", "stun_state")]
+[node name="Arcane_Archer" type="CharacterBody2D" unique_id=661969110 node_paths=PackedStringArray("state_control", "hurt_state", "stun_state") groups=["Enemies"]]
 scale = Vector2(0.7, 0.7)
 collision_layer = 2
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_sqpd4")
+hp = 2
+attack_cooldown_duration = 0.25
 state_control = NodePath("State Control")
 hurt_state = NodePath("State Control/EnemyHurt")
 stun_state = NodePath("State Control/EnemyStun")
-hp = 2
-attack_cooldown_duration = 0.25
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1217579439]
 material = SubResource("ShaderMaterial_iu8kf")
 position = Vector2(1.699, -15)
 texture = ExtResource("3_xkaj8")
 hframes = 17
 vframes = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1534437164]
 show_behind_parent = true
-position = Vector2(-1.42857, -11.4286)
-shape = SubResource("CapsuleShape2D_pdttr")
+position = Vector2(0, 0)
+shape = SubResource("CircleShape2D_pdttr")
 
-[node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
+[node name="State Control" type="Node" parent="." unique_id=2109829665 node_paths=PackedStringArray("initial_state")]
 script = ExtResource("3_dk7ir")
 initial_state = NodePath("EnemyIdle")
 
-[node name="EnemyIdle" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
+[node name="EnemyIdle" type="Node" parent="State Control" unique_id=1678026948 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("4_dksyp")
 chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyChase" type="Node" parent="State Control" node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "aim_ray_cast")]
+[node name="EnemyChase" type="Node" parent="State Control" unique_id=807818733 node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "aim_ray_cast")]
 script = ExtResource("5_uw5cu")
 navigation_agent = NodePath("../../NavigationAgent2D")
 idle_state = NodePath("../EnemyIdle")
 attack_state = NodePath("../EnemyAttack")
 retreat_state = NodePath("../EnemyRetreat")
-aim_ray_cast = NodePath("../../RayCast2D")
 speed = 42
 attempt_attack_range = 150
 retreat_range = 75
+melee_press_range = 0.0
 require_line_of_sight = true
-approach_stop_factor = 0.9
+aim_ray_cast = NodePath("../../RayCast2D")
+chase_drop_distance = 300
 
-[node name="EnemyAttack" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state", "aim_ray_cast")]
+[node name="EnemyAttack" type="Node" parent="State Control" unique_id=404725240 node_paths=PackedStringArray("chase_state", "aim_ray_cast")]
 script = ExtResource("6_qgvvr")
+chase_state = NodePath("../EnemyChase")
 projectile = ExtResource("7_0t3rh")
 aim_ray_cast = NodePath("../../RayCast2D")
-chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyRetreat" type="Node" parent="State Control" node_paths=PackedStringArray("navigation_agent", "chase_state", "ray_cast")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=238050942 node_paths=PackedStringArray("navigation_agent", "chase_state")]
 script = ExtResource("9_4wgc7")
 navigation_agent = NodePath("../../NavigationAgent2D")
 chase_state = NodePath("../EnemyChase")
-ray_cast = NodePath("../../RayCast2D")
 speed = 50
 
-[node name="EnemyHurt" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
+[node name="EnemyHurt" type="Node" parent="State Control" unique_id=220156819 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("14_hurt")
 chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyStun" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state")]
+[node name="EnemyStun" type="Node" parent="State Control" unique_id=1881869672 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("15_stun")
 chase_state = NodePath("../EnemyChase")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_yixv0")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1910266369]
+libraries/ = SubResource("AnimationLibrary_yixv0")
 
-[node name="RayCast2D" type="RayCast2D" parent="."]
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=2043709989]
 position = Vector2(0, -10.5)
 target_position = Vector2(300, 0)
-collision_mask = 7
+collision_mask = 4
 
-[node name="Hurtbox" type="Area2D" parent="."]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1322526116]
 collision_layer = 256
 collision_mask = 32
 script = ExtResource("9_k7gki")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=887951873]
 position = Vector2(-1.42857, -11.4286)
 shape = SubResource("CapsuleShape2D_to1xr")
 debug_color = Color(0, 1, 0, 0.0901961)
 
-[node name="death_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="death_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1378894480]
 stream = SubResource("AudioStreamRandomizer_gm4ve")
 volume_db = 6.0
 
-[node name="walk_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="walk_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1377417076]
 position = Vector2(0, -2)
 stream = SubResource("AudioStreamRandomizer_d36xm")
 volume_db = -10.0
 
-[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="ouch_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1192551759]
 stream = SubResource("AudioStreamRandomizer_ht1mq")
 volume_db = -5.0
 
-[node name="attack_sfx" type="AudioStreamPlayer2D" parent="."]
+[node name="attack_sfx" type="AudioStreamPlayer2D" parent="." unique_id=1007654226]
 stream = ExtResource("13_87241")
 
-[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
-
-
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." unique_id=141400825]
+avoidance_enabled = true
+radius = 8.0
+neighbor_distance = 60.0
+max_neighbors = 8
+max_speed = 50.0
+time_horizon_agents = 0.5

@@ -30,9 +30,8 @@ height = 40.0
 radius = 13.75
 height = 42.5
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_tyh7b"]
-radius = 7.5
-height = 17.5
+[sub_resource type="CircleShape2D" id="CircleShape2D_tyh7b"]
+radius = 5.88235
 
 [sub_resource type="Animation" id="Animation_7shn8"]
 resource_name = "Attack"
@@ -439,8 +438,8 @@ debug_color = Color(0.905882, 0.6, 0.701961, 0.419608)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 show_behind_parent = true
-position = Vector2(0, -8.75)
-shape = SubResource("CapsuleShape2D_tyh7b")
+position = Vector2(0, 0)
+shape = SubResource("CircleShape2D_tyh7b")
 
 [node name="State Control" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 script = ExtResource("3_b4qnn")
@@ -506,3 +505,9 @@ position = Vector2(0, -10)
 stream = SubResource("AudioStreamRandomizer_d6n6w")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+avoidance_enabled = true
+radius = 6.0
+neighbor_distance = 60.0
+max_neighbors = 8
+max_speed = 33.0
+time_horizon_agents = 0.5
