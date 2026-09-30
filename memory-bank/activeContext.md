@@ -46,7 +46,7 @@ aim, shared chase/attack states, escape-scored retreat, docs.
 - After agent disk edits with editor open: user restarts editor before playtesting
 
 ## Next Up
-1. Playtest the nav series: doorway corners, enemy pairs, fire-through-allies
+1. BUG-1..3 (devPlan Bugs): doorway pathing stall, doorway sprite vanish, necromancer missile rework
 2. R-40 room-block standard, then R-41 tier-1 slice (devPlan lead tasks)
 
 ## Open Decisions

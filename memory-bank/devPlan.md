@@ -19,6 +19,13 @@
 | R-46 | Tileset nav-polygon cleanup | Delete the dead painted nav polygons from `custom_dungeon.tres` (runtime bakes instead); optional bake debug draw |
 | D-10 | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
 
+## Bugs — playtest findings (2026-09-30)
+| ID | Symptom | Direction |
+|---|---|---|
+| BUG-1 | Enemies stall/oscillate at doorways — pathing does not commit | Doorway surface is 2 px slack after agent_radius erosion; check waypoint handoff + repath churn at narrow cells (probe scenario) |
+| BUG-2 | Sprites vanish inside doorways | Display, not physics: suspected z/y-sort tier overlap with the wall stack at door cells |
+| BUG-3 | Necromancer missiles still need the rework | Original homing + pass-by leniency on a small centered hitbox; necromancer fires without LOS gate; spec: `ai-rework-log.md` fresh-start steps 3–4 |
+
 ## D-1 Combat feel pass
 - Knockback on hit for enemies (uses the knockback-ready damage signature); player knockback evaluation
 - Hit-stop / frame-freeze tuning pass

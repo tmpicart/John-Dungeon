@@ -55,3 +55,4 @@ Migration complete: frameworks R-01..R-33 landed; development phase — task lis
 - 2026-09-30 | feat | Shared chase/attack states on the baked mesh: RVO avoidance on all five enemies, corner press-through, archer LOS volley; chase_probe.
 - 2026-09-30 | feat | Escape-scored retreat with cornered fight latch and ranged standoff repositioning; retreat_probe.
 - 2026-09-30 | docs | Verified layer/system map into techContext; design-review follow-ups R-43..R-46 + D-10 into devPlan.
+- 2026-09-30 | docs | Playtest findings logged as BUG-1..3: doorway pathing stall, doorway sprite vanish, necromancer missile rework.
