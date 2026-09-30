@@ -3,41 +3,51 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-AI rework restart prep (2026-09-13): the enemy/missile AI attempt was rolled back
-pre-commit. **`memory-bank/ai-rework-log.md` is the spec for the fresh start.**
-Next build task after the AI restart: R-40 room-block standard, then R-41 slice.
+Development phase. The AI navigation rework landed on `origin/master` as a
+reviewed 8-commit series (2026-09-30): runtime navmesh baking, width-aware
+aim, shared chase/attack states, escape-scored retreat, docs.
 
 ## Just Landed
-- `docs(rules)` research policy, standalone-voice commits, debug-loop breaker
-- `docs(memory)` engine facts block in techContext.md; ai-rework-log.md added
-- All AI-related working-tree changes reverted to HEAD (enemies, projectiles,
-  NavBaker, probes, test_room/ui edits); working tree clean at push point
+- NavBaker: Environment cells carved from the navmesh at agent clearance;
+  main_scene bakes once at load
+- BaseEnemy aim gate: 3-ray check vs the Environment layer (2px clearance,
+  hit-from-inside guard); arrow flight identity via Global.player
+- Shared chase/attack states on the baked mesh; RVO avoidance live on all
+  five enemies; navmesh-scored retreat with a cornered-fight latch
+- Verified layer/system map in techContext; follow-ups R-43..R-46, D-10
+  recorded in devPlan
 
 ## Working Agreements
-- AI restart: read `ai-rework-log.md` first; resurrect NavBaker + both probes
-  (probe-green before rollback), then missile homing + pass-by leniency,
-  necromancer without LOS gating, archer with LOS + plain approach. No vantage ring.
-- Pickups: `scatter()` = validated landing; no physics bodies; never `await`
-  timers on freed instances
-- Wall-decor rule: alignment-sensitive decor = entity (rotate/flip); filler decor = tile
-- Circuit breaker: 3 attempts per gate; read-before-patch; named mechanisms
-- Research rule: validate engine APIs against the class reference before use
+- Enemy states are shared (`states/enemy_chase|attack|retreat.gd`);
+  per-enemy behavior = exported config on the scene, not script overrides
+- Player references: `Global.player` at point of use; layer bits for
+  physics identity; groups for broadcast only
+- Aim, flight, and nav all key off the Environment bit — check the
+  layer-consumer table in `techContext.md` before adding layers
+- Unwalkable ≠ solid: carve nav via `BLOCKER_LAYER_NAMES`, never by
+  reusing the Environment bit
+- Wall-decor rule: alignment-sensitive decor = entity; filler decor = tile
 
 ## Known Limits (accepted)
-- `Environment` container not y-sorted: chests/props sort vs player as one block; fix deliberately in R-40/R-41
-- Stale editor script cache strips unknown exports on save - restart editor after agent disk edits
+- Bodies >8 px wide need per-size-class nav maps (R-43); today's discs
+  (5.88–7.14 px) fit the single map
+- 3-ray aim is ray-thin, not projectile-width (R-44 width cast pending)
+- `Environment` container not y-sorted: chests/props sort vs player as
+  one block; fix deliberately in R-40/R-41
+- Stale editor script cache strips unknown exports on save - restart
+  editor after agent disk edits
 
 ## Verification Gates
-- gdlint on touched files; baseline in `migrationMap.md`
+- gdlint on touched files; baseline in `techContext.md`
 - `tests/interaction_smoke.tscn` headless - 66 assertions (local-only now; needs assets on disk)
-- `--headless --import` before headless runs; boots `--quit-after 5`
-- Headless engine runs need `Start-Process -Wait -PassThru` (PowerShell)
+- Headless probes: nav_probe, level_nav_probe, chase_probe, retreat_probe
+  (the result txt files are the record)
+- `--headless --import` before headless runs; PowerShell `Start-Process -Wait -PassThru`
 - After agent disk edits with editor open: user restarts editor before playtesting
 
 ## Next Up
-1. AI restart per `ai-rework-log.md` (NavBaker + probes, then missile/enemy behavior)
-2. R-40 room-block standard: patterns + descent room-type conventions
-3. R-41 tier-1 vertical slice; E-1 lesser skelly (blocked on user sheet pick)
+1. Playtest the nav series: doorway corners, enemy pairs, fire-through-allies
+2. R-40 room-block standard, then R-41 tier-1 slice (devPlan lead tasks)
 
 ## Open Decisions
 - Wand input binding + potion carry model: settle at S-5/S-6 implementation

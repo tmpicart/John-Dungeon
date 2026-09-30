@@ -57,10 +57,5 @@ A tight, readable top-down action crawl: clear rooms of enemies, manage consumab
 
 ## NPCs & Dialogue
 - Proximity-based interaction with a unified "[E] to …" prompt (InteractionManager).
-- NPCs deliver paginated dialogue loaded from text files, then route to their service (shop).
+- NPCs deliver paginated dialogue from `DialogueData` resources, then route to their service (shop).
 - Future direction: a more prominent dialogue system and richer NPC interactions.
-
-## Future Systems (explicit intent)
-- **Summonable ally creatures** that fight alongside the player — combat ownership, faction, and targeting must stay clean enough to support this.
-- Smarter, more varied enemy AI; multi-phase boss design.
-- Complete sound and music design.

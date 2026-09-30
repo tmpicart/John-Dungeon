@@ -2,54 +2,56 @@
 
 > **Purpose:** Feature status and a compact work log. One line per task; caps and archiving rules in `.clinerules/log-hygiene.md`.
 
-## Refactor Status
-
-### Working on the new framework
-- Player subsystems: movement/dash, combat + parry/reflect, inventory, animation ✔
-- Enemy base class + pathfinding states (idle/chase/attack/retreat/summon) ✔
-- Regular enemies: slimes, arcane archer, flail skeleton, necromancer behaviors ✔
-- Interaction manager/areas, HUD wiring, main-menu → Floor1 flow ✔
+## Status
+Migration complete: frameworks R-01..R-33 landed; development phase — task list in `devPlan.md` (R-40..R-42 lead).
 
 ## Log
 - 2026-09-02 | setup | Audited codebase; established memory bank + clinerules; accepted Godot 4.7 importer metadata migration (240 `.import` files).
-- 2026-09-02 | planning | Adopted hybrid structure and framework decisions; authored `refactorPlan.md` (R0–R4) and `devPlan.md` (D-1..D-7).
-- 2026-09-02 | refactor | R-01 dead-file purge: 31 tracked files removed (orphans, junk audio copies, skeleton-dup sheets, zip); zero refs verified by path + uid.
-- 2026-09-02 | assets | Vendored Monsters_Creatures_Fantasy (21 sheets) + Enemy_Animations_Set (16 sheets + Aseprite) under Assets/; v2.0 pack download confirmed byte-duplicate of the vendored copy.
-- 2026-09-02 | refactor | R-02 debug-spam removal: 24 prints + 7 dead #print lines + 3 empty _process stubs dropped; error paths → push_error/push_warning (8aab1a4).
-- 2026-09-02 | fix | R-03 MainMenu startup: _ready() + random title from Assets/Hud via preload; node renamed TitleCard (1fef410).
-- 2026-09-02 | refactor | R-10 hybrid tree: 146 files → Entities/Systems/UI/Levels/room_blocks; dedupe tileset + door sound; every res:// ref + autoload/main-scene anchors rewritten; 4 stale Sorceress-projectile hitbox refs documented → R-24 (983dbfc).
-- 2026-09-02 | refactor | R-11 snake_case sweep: 744 paths renamed (29 asset folders, ~140 assets, 78 scripts/scenes + .uid sidecars, dialogue txt), 2 file/class mismatches fixed, 543 path refs rewritten; all 5 verification gates green (67d4588).
-- 2026-09-02 | refactor | R-12 folder snake_case: 22 game folders incl. `Assets`→`assets` lowercased per Godot docs; ~850 paths + 355 reference files rewritten; gates green + silent headless run (cc1df32).
-- 2026-09-03 | refactor | R-20 state core rebuild: typed+validated transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, idle-state deletion, Sorceress Idle.enemy wiring; 41 files (ba5246a).
-- 2026-09-03 | fix | Player movement feel: rates rescaled for the single tick (accel 1000 / friction 800 / decay 800), dash normalized to fixed `dash_speed` 200; user-verified (80a8cbe).
-- 2026-09-03 | refactor | R-21 player subsystem API: `spend_coins`/`consume_key`/`add_potion`/`add_bomb` on `PlayerInventory`, `PlayerCombat.upgrade_weapon()` with damage resync, shop/NPC/doors/chest/pickup rewiring, local door-timing constants, shrink-safe heart bar, temporary `buy1`/`buy2` actions (e70a04d).
-- 2026-09-03 | refactor | R-22 enemy anim/logic separation: signal-driven waits + interrupt flow tokens, EnemyHurt/EnemyStun interrupt states, knockback-ready take_damage, base attack cooldowns, px/s velocity retune, red-slime pounce / camera time-scale / arrow-leak fixes, necromancer summon spawn fold-in (757331a).
-- 2026-09-04 | refactor | R-23 enemy state configuration: typed transitions + exported behavior config replace all per-enemy state scripts; shared EnemySummon (same-room flood-fill) + EnemyPounce added; 11 scripts + sidecars deleted (fc90c84).
-- 2026-09-04 | refactor | R-24 Sorceress onto BaseEnemy: typed states + non-interruptible intake, per-hitbox damage, parry-vulnerable/beam-recovery window, unblockable projectile tiers, z-tier + flash-palette conventions, door/dormancy decoupling; playtest-hardened (ced8c35).
-- 2026-09-04 | feat | LootTable resource + tier-1 table: exact-sum budget rolls, item-owned tier/value (e580a54).
-- 2026-09-04 | refactor | R-30 interaction framework: Interactable base, event-driven InteractionManager, `interact` input on E, PickupItem scatter drops + Pickup migration, chest loot wiring, headless smoke test (7c37b7e).
-- 2026-09-04 | feat | Sorceress parry-stagger: parried melee/slide freezes her on the yellow pulse with doubled damage (boss_stagger state, stun() override, attack-surface shutdown on interrupt/death); beam recovery unchanged (04168fb).
-- 2026-09-04 | feat | Aim-locked arcing homing reflects: PlayerCombat aim API (aim_direction + cursor-snap get_aim_target over EnemyHurtbox shape queries), missiles launch ±75° wide and re-lock persistently, single-Hitbox projectiles, no-pierce reflect (1ee97d4).
-- 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish effect via the shared EnemySummon state; dead summoners cancel pending spawns (6897d87).
-- 2026-09-04 | fix | Boss phase-2 playtest: intervention warning 3.0s→1.5s; stars spawn at chest height, wall-bounce via collision_mask 4 (exception loops dropped), contact-kill on PlayerHurtbox (f1143d2).
-- 2026-09-05 | fix | Boss parry-stagger flush violation: stagger pauses mid-action, exit stops (dc71bf7); necromancer summon/cast swap poses and share the purple attack strobe, no more baked white flicker (46986e1).
-- 2026-09-06 | refactor | R-31 unified doors: LockType door script with animation Call Method unlock timing (4 scenes on one script, plain doors gain SFX); boolean boss key on PlayerInventory + HUD icon box, prompted pickup; stale door/chest scripts retired, chest_no_key.gd -> chest.gd; floor_1 test doors + chest2 drop fix (squashed single commit).
-- 2026-09-06 | refactor | R-32 shop rework: ShopData-driven mouse shop (dynamic cards, click-buy, coin bar, Esc/walk-away close, modal input freeze via Character.set_input_locked); Max HP+ moved to a new NPC-less altar; shopkeeps + altar on floor_1; legacy shop/inventory UI + buy1/buy2 retired (81b2f5d).
-- 2026-09-06 | refactor | Test room promoted to default level: main menu loads test_room, floor_1 deleted; shared custom_dungeon.tres to assets/tilesets; Ground/Decals/Walls/Overhead stack with z/collision/nav flags + HUD parity (1e37a09).
-- 2026-09-06 | feat | Door/chest variants + summon guard: key_door_sheet renamed, door_red.tscn no-lock door, labels retired for prompt-flash locked feedback (InteractionManager.refresh_prompt); chest.tscn red locked chest consumes a key (key-drop retired) (0aaaa0f); enemy_summon occupancy guard vs bodies/areas (9457bd3).
-- 2026-09-06 | fix | Chest loot spawns at chest origin: `_spawn()` drops the 15px down-screen offset, `scatter()` alone displaces drops (539a20c).
-- 2026-09-07 | feat | R-33 resource-driven dialogue: DialogueData/Stage .tres per speaker, npc_dialog rewrite (typewriter, portraits, stage consumption, modal freeze), unified npc.gd, PlayerProgress flags + stage counters, boss-key taunt, VT323 on the dialogue box (a21cc0a)
-- 2026-09-07 | feat | Dynamic prompt anchoring: alpha-aware frame bounds hug the drawn art (rotation/scale/flip proof), manager-side margin + label height, screen-space prompt_offset nudge (c115ced)
-- 2026-09-07 | chore | Unpushed session history audited and rebuilt: resave churn isolated as `chore(assets)` with the .gitignore hygiene, R-33 bullet corrected, memory-bank hash refs repointed (6e65ec5..c63ce5d)
-- 2026-09-07 | fix | Screen-space prompt layer: per-frame anchor projection on the manager CanvasLayer (VT323, layer 10), frame-relative used-rects (sideways prompts on multi-frame sprites fixed: NPCs, boss key, frame-1 chest), UI-subtree exclusion from bounds; smoke 66 checks (0be07b9)
-- 2026-09-08 | feat | R-40 props foundation: entities/props family (wall_torch, side_torch, candlestick, candlestick_2 — flicker, lights, foot blockers, wall z-tier), key rotation, potion no-op anim stripped, legacy torch.tscn removed, torch_wall moved to props, ui gdlint cleared (ed4d33e)
-- 2026-09-08 | chore | Asset license purge: code-only repo policy adopted; assets/ untracked (fonts + custom shader whitelisted; slash.png blacklisted); CREDITS.md/ASSETS.md added; full history purged via 4 filter-repo passes to zero residual (incl. legacy tracked .godot caches); pack 53.7→0.65 MiB; backups kept; force-push pending
-- 2026-09-08 | docs | Provenance recorded: Pixel_Poem use/modify/commercial verified (replacement mandate retired); enemy family mapped (AstroBob ×2 + CreativeKind chibi derivatives; originals kept for planned bosses); asset intake policy added (.clinerules/assets.md); dialogue_box.png removed as unused
-- 2026-09-08 | docs | CREDITS.md rewritten in industry credit format (Thayer Picart remaster; Elijah Geronimo originals + style adaptations with sources; pack/artist credits; unknown-origin items intentionally omitted); ASSETS.md classes and .clinerules credit-style rules aligned
-- 2026-09-09 | design | Descent architecture locked: 6-tier endless levels + depth director (TierProfile), Zelda-continue death + per-arena checkpoints, boss roster + roaming Undying Knight, Sorceress -> deity cosmic-arena finale; tier table + constraints in productContext, D-4/D-6 expanded; tileset conventions recorded (tile-painted collision, pattern authoring)
-- 2026-09-09 | design | Audit revision: fixed boss_shadow/vampire-sheet record errors; split D-2/D-4/D-6 into S/E/W/B tracks (one system or enemy per task); decided armor-negation rules, no-i-frame rolls + action cancels, wand secondary fire via loadout slots, potion belt; R-41 rescoped to tier-1 vertical slice
-- 2026-09-12 | fix | Door collision accuracy: red door blocker widened to the closed-door silhouette, prompt area grown, sprite + interaction shape realigned (no more edge-catching) (570ceaa)
-- 2026-09-12 | feat | R-40-prep level toolset: test_room reference stack (Floor/Walls/Decals/Obstacles/Overhead flags), five unlit prop scenes, obstacle_outline.gd @tool (offset-silhouette rim + seams, auto-rebuild) (8411cf0)
-- 2026-09-12 | feat | Validated-landing loot scatter: PickupItem on Node2D with rest-point query validation + hop-series speed scaling, chest 2-3 wave spew (hidden queue, tween delays), static button-pickup keys y-sorted, seeded obstacle probe (1be19eb)
-- 2026-09-13 | docs | Rules additions: research-before-design policy (.clinerules/research.md), standalone-voice commit messages (git.md), debug-loop containment (circuit-breaker.md)
-- 2026-09-13 | docs | AI rework attempt log added (ai-rework-log.md) as the restart spec; associated working-tree changes rolled back pre-commit
+- 2026-09-02 | planning | Adopted hybrid structure and framework decisions; authored refactorPlan (R0–R4) and devPlan (D-1..D-7).
+- 2026-09-02 | refactor | R-01 dead-file purge: 31 tracked files removed (orphans, junk audio, duplicate sheets, zip); zero refs verified by path + uid.
+- 2026-09-02 | assets | Vendored Monsters_Creatures_Fantasy (21 sheets) + Enemy_Animations_Set (16 sheets + Aseprite) under Assets/.
+- 2026-09-02 | refactor | R-02 debug-spam removal: 24 prints + 7 dead print lines + 3 empty _process stubs; error paths → push_error/push_warning.
+- 2026-09-02 | fix | R-03 MainMenu startup: _ready() + random title via preload; node renamed TitleCard.
+- 2026-09-02 | refactor | R-10 hybrid tree: 146 files → Entities/Systems/UI/Levels/room_blocks; tileset + door sound deduped; res:// refs + autoload anchors rewritten; 4 stale hitbox refs → R-24.
+- 2026-09-02 | refactor | R-11 snake_case sweep: 744 paths renamed (asset folders, scripts/scenes + .uid sidecars, dialogue txt); 543 path refs rewritten; all gates green.
+- 2026-09-02 | refactor | R-12 folder snake_case: 22 game folders incl. `Assets`→`assets` per Godot docs; ~850 paths + 355 reference files rewritten; gates green.
+- 2026-09-03 | refactor | R-20 state core rebuild: typed+validated transitions, actor injection, `Global` hardening, single-tick fix, framerate-independent decay, idle-state deletion; 41 files.
+- 2026-09-03 | fix | Player movement feel: rates rescaled for the single tick (accel 1000 / friction 800 / decay 800), dash normalized to fixed `dash_speed` 200; user-verified.
+- 2026-09-03 | refactor | R-21 player subsystem API: spend/consume/add methods on PlayerInventory, upgrade_weapon() with damage resync, shop/NPC/doors/chest/pickup rewiring.
+- 2026-09-03 | refactor | R-22 enemy anim/logic separation: signal-driven waits + interrupt flow tokens, EnemyHurt/EnemyStun states, knockback-ready take_damage, px/s velocity retune; several feel fixes folded in.
+- 2026-09-04 | refactor | R-23 enemy state configuration: typed transitions + exported behavior config replace all per-enemy state scripts; shared EnemySummon + EnemyPounce added; 11 scripts deleted.
+- 2026-09-04 | refactor | R-24 Sorceress onto BaseEnemy: typed states + non-interruptible intake, per-hitbox damage, parry-vulnerable/beam-recovery window, unblockable projectile tiers; playtest-hardened.
+- 2026-09-04 | feat | LootTable resource + tier-1 table: exact-sum budget rolls, item-owned tier/value.
+- 2026-09-04 | refactor | R-30 interaction framework: Interactable base, event-driven InteractionManager, `interact` on E, PickupItem scatter drops, chest loot wiring, headless smoke test.
+- 2026-09-04 | feat | Sorceress parry-stagger: parried melee/slide freezes her on the yellow pulse with doubled damage (boss_stagger, stun() override); beam recovery unchanged.
+- 2026-09-04 | feat | Aim-locked arcing homing reflects: PlayerCombat aim API (aim_direction + cursor-snap get_aim_target), ±75° launches with persistent re-lock, no-pierce reflect.
+- 2026-09-04 | feat | Summon telegraph: creatures materialize spawn_delay (0.5s) after the flourish via shared EnemySummon; dead summoners cancel pending spawns.
+- 2026-09-04 | fix | Boss phase-2: intervention warning 3.0→1.5s; stars spawn at chest height, wall-bounce via collision_mask 4, contact-kill on PlayerHurtbox.
+- 2026-09-05 | fix | Parry-stagger flush violation: stagger pauses mid-action, exit stops; necromancer summon/cast swap poses and share the purple attack strobe.
+- 2026-09-06 | refactor | R-31 unified doors: one LockType script, animation Call Method unlock timing (4 scenes); boolean boss key on PlayerInventory + HUD; stale door/chest scripts retired.
+- 2026-09-06 | refactor | R-32 shop rework: ShopData-driven mouse shop (dynamic cards, click-buy, coin bar, walk-away close, modal input freeze); Max HP+ altar; legacy shop UI retired.
+- 2026-09-06 | refactor | Test room promoted to default level: main menu loads test_room, floor_1 deleted; shared custom_dungeon.tres; layer stack with z/collision/nav flags + HUD parity.
+- 2026-09-06 | feat | Door/chest variants + summon guard: door_red.tscn no-lock door, prompt-flash locked feedback, locked chest consumes a key; enemy_summon occupancy guard.
+- 2026-09-06 | fix | Chest loot spawns at chest origin: `_spawn()` drops the 15px down-screen offset; `scatter()` alone displaces drops.
+- 2026-09-07 | feat | R-33 resource-driven dialogue: DialogueData/Stage .tres per speaker, npc_dialog rewrite (typewriter, portraits, stage consumption), unified npc.gd, PlayerProgress flags + stage counters, boss-key taunt.
+- 2026-09-07 | feat | Dynamic prompt anchoring: alpha-aware frame bounds hug the drawn art (rotation/scale/flip proof), manager-side margin + label height, screen-space prompt_offset nudge.
+- 2026-09-07 | fix | Screen-space prompt layer: per-frame anchor projection on the manager CanvasLayer, frame-relative used-rects (sideways prompts fixed: NPCs, boss key, chest), UI-subtree exclusion; smoke 66 checks.
+- 2026-09-08 | feat | R-40 props foundation: entities/props family (flicker, lights, foot blockers, wall z-tier), key rotation, legacy torch.tscn removed, ui gdlint cleared.
+- 2026-09-08 | chore | Asset license purge: code-only repo policy; assets/ untracked (fonts + custom shader whitelisted); CREDITS.md/ASSETS.md added; history purged to zero residual; pack 53.7→0.65 MiB.
+- 2026-09-08 | docs | Provenance recorded: enemy family mapped (chibi derivatives in scenes; originals kept for planned bosses); asset intake policy added (.clinerules/assets.md).
+- 2026-09-08 | docs | CREDITS.md rewritten in industry credit format; ASSETS.md provenance classes aligned.
+- 2026-09-09 | design | Descent architecture locked: 6-tier endless levels + depth director (TierProfile), Zelda-continue death + per-arena checkpoints, boss roster + roaming Undying Knight, deity cosmic-arena finale.
+- 2026-09-09 | design | Task tracks split (one system or enemy per task): armor-negation rules, no-i-frame rolls + action cancels, wand secondary fire via loadout slots, potion belt; R-41 rescoped to tier-1 slice.
+- 2026-09-12 | fix | Door collision accuracy: red door blocker widened to the closed-door silhouette, prompt area grown, sprite + interaction shape realigned (570ceaa).
+- 2026-09-12 | feat | R-40-prep level toolset: test_room reference stack (Floor/Walls/Decals/Obstacles/Overhead flags), five unlit prop scenes, obstacle_outline.gd @tool (8411cf0).
+- 2026-09-12 | feat | Validated-landing loot scatter: PickupItem rest-point query validation + hop speed scaling, chest 2-3 wave spew, static button-pickup keys y-sorted, seeded obstacle probe (1be19eb).
+- 2026-09-13 | docs | Rules: research-before-design policy (research.md), standalone-voice commit messages (git.md), debug-loop containment (circuit-breaker.md).
+- 2026-09-13 | docs | ai-rework-log.md added as the AI restart spec.
+- 2026-09-13 | docs | Docs/rules audit: stale entries removed, duplicated facts single-homed (engine facts → techContext, gear design → productContext), length caps added to log-hygiene.
+- 2026-09-13 | refactor | Refactor retirement: legacy demo floor deleted (dungeon + 8 room blocks), doors renamed to the door_<variant> family, last string-form connect migrated.
+- 2026-09-13 | docs | Plans consolidated: refactorPlan/migrationMap retired (R-40..R-42 lead devPlan, R-43 → W-1); D-9 group-retirement task recorded; projectbrief moved to the development phase.
+- 2026-09-30 | feat | Runtime navmesh baking: NavBaker carves Environment cells at agent_radius clearance; main_scene bakes on load; nav/level_nav/scene probes.
+- 2026-09-30 | feat | Width-aware aim gate on the Environment layer (3-ray, 2px clearance); arrow flight identity via Global.player; NPC feet join env layer.
+- 2026-09-30 | feat | Shared chase/attack states on the baked mesh: RVO avoidance on all five enemies, corner press-through, archer LOS volley; chase_probe.
+- 2026-09-30 | feat | Escape-scored retreat with cornered fight latch and ranged standoff repositioning; retreat_probe.
+- 2026-09-30 | docs | Verified layer/system map into techContext; design-review follow-ups R-43..R-46 + D-10 into devPlan.

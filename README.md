@@ -41,4 +41,4 @@
 - Fixed summoning, jittery movement, and other enemy behavior bugs  
 - Resolved issues with on-hit animations for both player and enemies
 
-> **Note:** The remastered version is currently unplayable due to major refactoring affecting the main dungeon level, though all original content is still present in the project.
+> **Note:** The remaster is mid-rebuild: the original dungeon level is being replaced by modular room blocks, so there is no shippable build yet — the test room is fully playable.

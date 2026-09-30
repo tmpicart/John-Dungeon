@@ -22,18 +22,17 @@ Build on the original's foundation:
 - Complete sound and music design
 
 ## Current Phase
-Intentional mid-refactor state: the remastered player, enemy, and interaction frameworks are in place, while dungeon content is being rebuilt from the original level into modular room scenes. The game is not shippable during this phase.
+Development phase: the remastered player, enemy, interaction, dialogue, and shop frameworks are complete; content is built on the descent design (room-block standard, generated tiers). The game is not shippable until the tier-1 descent slice is playable.
 
 ## Scope Decisions (adopted)
 | Decision | Choice |
 |---|---|
 | File naming | `snake_case` for all files |
 | Level architecture | Rebuild the dungeon from modular room blocks; keep door/room layout generation-friendly (procedural generation is a possible future direction) |
-| Original level | Kept as read-only reference until content parity is reached |
 | Boss (The Sorceress) | Migrate onto the current enemy framework |
 | Global access | Formalize the `Global` autoload into a standard service-locator role |
 | Future systems | Summonable ally creatures — informs combat ownership, faction, and targeting design |
 
 ## Non-Goals (current phase)
-- No shipping milestone until level parity is reached.
+- No shipping milestone until the tier-1 descent slice is playable.
 - No engine upgrade or platform targets.
