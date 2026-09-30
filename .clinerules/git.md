@@ -24,7 +24,8 @@ Plain, factual, informative — the commit history doubles as project documentat
 
 - Standalone documentation: messages describe the change as it lands, never
   how it came to be. No references to iterations, review or playtest rounds,
-  prior attempts, superseded drafts, or session/agent workflow ("round 2",
-  "follow-up", "kept from the earlier pass" are all excluded). A reader with
-  only the diff and the message must fully understand the change. The same
-  rule applies to `progress.md` one-liners.
+  prior attempts, superseded drafts, session/agent workflow, or verification
+  reporting ("round 2", "follow-up", "kept from the earlier pass", "Gates:",
+  "Tested:" are all excluded — gate results belong in the task summary, not
+  history). A reader with only the diff and the message must fully
+  understand the change. The same rule applies to `progress.md` one-liners.

@@ -16,4 +16,4 @@ The user works directly in the Godot editor; the agent works through code and th
 - Flag renames of nodes that state machines reference by name (see `systemPatterns.md` trade-offs).
 
 ## Verification loop
-- After script or scene changes, the user runs the project in the editor; treat their runtime feedback as the test result. There is no headless test suite — never claim runtime verification without it.
+- After script or scene changes, the user runs the project in the editor; their runtime feedback is the test result. The headless smoke suite (`tests/interaction_smoke.tscn`, 66 assertions — see `memory-bank/techContext.md`) covers the interaction framework only; there is no automated gameplay suite, so never claim runtime verification without a user playtest.

@@ -37,9 +37,7 @@ section, never mixed into Original art.
 
 ## Renaming or moving assets
 
-- Move the file together with its `.import` sidecar (and `.uid` where
-  present); rewrite every reference (scenes, scripts, resources).
-- Update `.gitignore` whitelist paths, `ASSETS.md`, and `CREDITS.md` in the
-  same task.
-- Verify with a reference grep sweep and a headless boot
-  (`--quit-after 5`).
+- Move/rename mechanics (sidecars, reference rewrites, verification):
+  `.clinerules/godot-collaboration.md`.
+- Additionally, in the same task: update `.gitignore` whitelist paths,
+  `ASSETS.md`, and `CREDITS.md`.
