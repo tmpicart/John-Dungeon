@@ -28,6 +28,7 @@ hframes = 3
 frame = 1
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=68220187]
+collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=971314933]
 position = Vector2(0, -2)

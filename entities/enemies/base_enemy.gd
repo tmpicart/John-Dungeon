@@ -7,6 +7,12 @@ class_name BaseEnemy
 ## through State Control via the typed state exports below.
 
 const FLIP_THRESHOLD := 0.1
+## Environment layer (walls + props): the only geometry aim checks treat
+## as blocking; bodies (player 1, enemies 2) never block aim.
+const AIM_BLOCKING_MASK := 1 << 2
+## Projectiles are ~1 px wide, so aim rays need clearance past tangency:
+## a thin gate ray clears corners the projectile body clips.
+const AIM_CLEARANCE_PX := 2.0
 
 @export var hp: int = 1
 @export var damage: int = 1
@@ -74,6 +80,37 @@ func handle_animations():
 			$Sprite2D.scale.x = 1
 
 		last_velocity_x = velocity.x
+
+## Pins sprite facing to a world point. Attack flows use this: movement
+## flipping is suspended while attacking, so the sprite would otherwise
+## hold the last walk tick's direction and fire backwards.
+func face_toward(point: Vector2) -> void:
+	var to_point := point - global_position
+	if abs(to_point.x) > FLIP_THRESHOLD:
+		if to_point.x < 0:
+			$Sprite2D.scale.x = -1
+		else:
+			$Sprite2D.scale.x = 1
+
+## Width-aware aim check between two world points: the center ray plus
+## +/- clearance parallels. True when none of the three hits blocking
+## geometry; the caller owns the endpoints, so clamping stays theirs.
+func aim_line_clear(from_point: Vector2, to_point: Vector2) -> bool:
+	var space := get_world_2d().direct_space_state
+	var perpendicular := (to_point - from_point).normalized().orthogonal()
+	for side: float in [0.0, 1.0, -1.0]:
+		var shift := perpendicular * (AIM_CLEARANCE_PX * side)
+		var query := PhysicsRayQueryParameters2D.create(
+				from_point + shift, to_point + shift, AIM_BLOCKING_MASK,
+				[get_rid()])
+		# Aim origins sit above body centers: a body pressed against a
+		# blocker's south face parks that origin inside the shape. Default
+		# queries ignore their containing shape, reading clear LOS through
+		# the whole block; count it as blocked so chase keeps closing.
+		query.hit_from_inside = true
+		if not space.intersect_ray(query).is_empty():
+			return false
+	return true
 
 ## Damage entry point (Hurtbox routes here). `from_position` is where the hit
 ## originated — stored for the knockback pass, not applied yet.

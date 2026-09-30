@@ -6,7 +6,11 @@ extends Node2D
 ## (e.g. spawned off-screen flying away).
 @export var max_lifetime := 10.0
 
+var player: CharacterBody2D
 var _lifetime := 0.0
+
+func _ready():
+	player = Global.player as CharacterBody2D
 
 func _physics_process(delta):
 	var direction = Vector2.RIGHT.rotated(rotation)
@@ -17,12 +21,11 @@ func _physics_process(delta):
 		queue_free()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	if body is CollisionObject2D:
-		var body_layer = body.collision_layer
-		var is_player = (body_layer & (1 << 0)) != 0
-		if is_player and body.combat.blocking:
-			return
-
+	# The flight mask sweeps the player body (layer 1) and Environment
+	# walls and props (layer 3); identity comes from Global.player: a
+	# blocking player lets the arrow pass, anything else ends it.
+	if body == player and player.combat.blocking:
+		return
 	queue_free()
 
 func _on_screen_exited() -> void:
