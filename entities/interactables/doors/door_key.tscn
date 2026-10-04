@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://06fson1afemk"]
+[gd_scene format=3 uid="uid://06fson1afemk"]
 
 [ext_resource type="Script" uid="uid://bd0xbbwojjpm1" path="res://entities/interactables/doors/door.gd" id="1_jb23n"]
 [ext_resource type="Texture2D" uid="uid://db8i5hw3ddrlo" path="res://assets/objects/key_door_sheet.png" id="2_34n7f"]
@@ -6,10 +6,10 @@
 [ext_resource type="AudioStream" uid="uid://d3beneff5ug0s" path="res://assets/sounds/dorm_door_opening_6038.mp3" id="4_5ta5b"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xqm0d"]
-size = Vector2(20, 45)
+size = Vector2(20, 26)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_he8pr"]
-size = Vector2(16, 64)
+size = Vector2(16, 6)
 
 [sub_resource type="Animation" id="Animation_rk3td"]
 length = 0.001
@@ -86,39 +86,38 @@ _data = {
 &"open": SubResource("Animation_tdb0i")
 }
 
-[node name="KeyDoor" type="Node2D"]
+[node name="KeyDoor" type="Node2D" unique_id=1969897945]
 script = ExtResource("1_jb23n")
 lock_type = 1
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-1, -1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=428110616]
+position = Vector2(0, -8)
 texture = ExtResource("2_34n7f")
 hframes = 3
 vframes = 4
 
-[node name="InteractionArea" parent="." instance=ExtResource("3_eki16")]
+[node name="InteractionArea" parent="." unique_id=744293376 instance=ExtResource("3_eki16")]
 prompt = "Open Door"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
-position = Vector2(-1, -2.5)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea" unique_id=1924441847]
+position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_xqm0d")
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1797197414]
 collision_layer = 4
+collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-1, -25)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=640617612]
+position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_he8pr")
 
-[node name="PassageLink" type="NavigationLink2D" parent="."]
-start_position = Vector2(-1, -70)
-end_position = Vector2(-1, 20)
-enabled = false
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=715832065]
+libraries/ = SubResource("AnimationLibrary_ar63u")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_ar63u")
-}
-
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1038765487]
 stream = ExtResource("4_5ta5b")
+
+[node name="PassageLink" type="NavigationLink2D" parent="." unique_id=213712228]
+enabled = false
+start_position = Vector2(0, -25)
+end_position = Vector2(0, 17)

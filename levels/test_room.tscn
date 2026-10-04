@@ -78,7 +78,7 @@ position = Vector2(232, 82)
 loot_value = 43
 
 [node name="KeyDoor" parent="Environment" unique_id=459750829 instance=ExtResource("3_np6ep")]
-position = Vector2(-7, 95)
+position = Vector2(1, 97)
 rotation = -1.5707964
 
 [node name="DoorRed" parent="Environment" unique_id=581598634 instance=ExtResource("8_door")]

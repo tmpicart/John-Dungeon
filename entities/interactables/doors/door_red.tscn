@@ -109,10 +109,10 @@ collision_mask = 3
 position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_he8pr")
 
-[node name="PassageLink" type="NavigationLink2D" parent="."]
+[node name="PassageLink" type="NavigationLink2D" parent="." unique_id=957940365]
+enabled = false
 start_position = Vector2(0, -25)
 end_position = Vector2(0, 17)
-enabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1074121830]
 libraries/ = SubResource("AnimationLibrary_ar63u")
