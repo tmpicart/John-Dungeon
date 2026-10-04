@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://clp3rxlbhwvv6"]
+[gd_scene load_steps=28 format=3 uid="uid://clp3rxlbhwvv6"]
 
 [ext_resource type="Texture2D" uid="uid://bmctyjn7krper" path="res://assets/enemies/enemy_slime.png" id="1_75lyw"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="1_d5q7n"]
@@ -13,6 +13,7 @@
 [ext_resource type="AudioStream" uid="uid://clf1npumucsf3" path="res://assets/sounds/enemies/478271_joao_janz_8_bit_explosion_1_4.wav" id="10_5m1q3"]
 [ext_resource type="Script" path="res://entities/enemies/states/enemy_hurt.gd" id="11_hurt"]
 [ext_resource type="Script" path="res://entities/enemies/states/enemy_stun.gd" id="12_stun"]
+[ext_resource type="Script" path="res://entities/enemies/contact_hitbox.gd" id="13_contact"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oclns"]
 resource_local_to_scene = true
@@ -291,9 +292,8 @@ _data = {
 &"stun": SubResource("Animation_vuqpf")
 }
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wso5k"]
-radius = 3.0
-height = 7.14286
+[sub_resource type="CircleShape2D" id="CircleShape2D_contact"]
+radius = 10.5
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_to14j"]
 radius = 4.14079
@@ -372,12 +372,10 @@ libraries = {
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 128
 collision_mask = 64
+script = ExtResource("13_contact")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
-position = Vector2(1.90735e-06, -5.71429)
-rotation = 1.5708
-scale = Vector2(2, 2)
-shape = SubResource("CapsuleShape2D_wso5k")
+shape = SubResource("CircleShape2D_contact")
 debug_color = Color(0.999972, 0.184834, 0.214931, 0.545098)
 
 [node name="Hurtbox" type="Area2D" parent="."]

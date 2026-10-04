@@ -6,7 +6,13 @@ func _ready():
 	area_entered.connect(_on_area_entered)
 
 func _on_area_entered(area: Area2D) -> void:
-	var hitbox = area
+	contact_hit(area)
+
+
+## Shared entry point for edge-triggered hits and the contact tick the
+## EnemyContactHitbox re-drives while its overlap persists; owns the
+## parry cone and the damage fallback.
+func contact_hit(hitbox: Area2D) -> void:
 	var player = self.get_owner()
 
 	var shield_dir = player.combat.aim_direction()
