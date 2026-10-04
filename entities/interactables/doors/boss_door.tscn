@@ -86,7 +86,7 @@ _data = {
 &"open": SubResource("Animation_tdb0i")
 }
 
-[node name="KeyDoor" type="Node2D"]
+[node name="BossDoor" type="Node2D"]
 script = ExtResource("1_4kna6")
 lock_type = 2
 
