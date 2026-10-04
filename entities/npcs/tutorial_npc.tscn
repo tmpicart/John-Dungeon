@@ -14,6 +14,7 @@ height = 18.0
 size = Vector2(12, 18)
 
 [node name="TutorialNPC" type="Node2D" unique_id=920846700]
+z_index = 3
 script = ExtResource("1_dvvii")
 dialogue = ExtResource("5_dlg")
 

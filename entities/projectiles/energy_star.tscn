@@ -43,7 +43,7 @@ fill_to = Vector2(0.830275, 0.169725)
 [node name="Energy Star" type="CharacterBody2D" groups=["Enemies"]]
 collision_layer = 0
 collision_mask = 4
-z_index = 1
+z_index = 4
 script = ExtResource("1_e5xby")
 
 [node name="hitbox" type="Area2D" parent="."]

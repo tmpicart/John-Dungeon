@@ -299,6 +299,7 @@ streams_count = 1
 stream_0/stream = ExtResource("16_v2j72")
 
 [node name="Necromancer" type="CharacterBody2D" unique_id=862063401 node_paths=PackedStringArray("state_control", "hurt_state", "stun_state") groups=["Enemies"]]
+z_index = 3
 y_sort_enabled = true
 scale = Vector2(0.75, 0.75)
 collision_layer = 2

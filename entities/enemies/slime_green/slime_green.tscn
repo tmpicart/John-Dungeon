@@ -318,6 +318,7 @@ streams_count = 1
 stream_0/stream = ExtResource("10_5m1q3")
 
 [node name="Slime_Green" type="CharacterBody2D" groups=["Enemies"] node_paths=PackedStringArray("state_control", "hurt_state", "stun_state")]
+z_index = 3
 y_sort_enabled = true
 scale = Vector2(0.7, 0.7)
 collision_layer = 2

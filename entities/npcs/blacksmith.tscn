@@ -16,6 +16,7 @@ height = 18.0
 size = Vector2(12, 18)
 
 [node name="Blacksmith" type="Node2D" unique_id=1712758499]
+z_index = 3
 script = ExtResource("1_ysehu")
 dialogue = ExtResource("6_dlg")
 shop_data = ExtResource("5_bshop")

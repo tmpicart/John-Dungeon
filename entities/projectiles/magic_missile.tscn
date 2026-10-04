@@ -45,6 +45,7 @@ fill_from = Vector2(0.5, 0.527523)
 fill_to = Vector2(0.830275, 0.169725)
 
 [node name="Magic Missile" type="Node2D" groups=["Enemies"]]
+z_index = 4
 scale = Vector2(0.75, 0.75)
 script = ExtResource("1_oudw1")
 

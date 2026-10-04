@@ -43,7 +43,7 @@ _data = {
 }
 
 [node name="Intervention Light" type="Node2D" groups=["Enemies"]]
-z_index = 1
+z_index = 4
 scale = Vector2(2.5, 2.5)
 script = ExtResource("1_yrb63")
 

@@ -82,6 +82,7 @@ _data = {
 radius = 38.6266
 
 [node name="Bomb" type="Node2D"]
+z_index = 4
 scale = Vector2(0.5, 0.5)
 script = ExtResource("1_vx7us")
 
