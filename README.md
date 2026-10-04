@@ -30,9 +30,10 @@
 - Player code modularized and using state machine architecture for separation of concerns  
 - Proper collision layers implemented, removing reliance on groups  
 - TileMapLayer now properly tied to map collisions
+- Standardized door template (colliders, interaction, nav links) for modular room blocks
 
 **Gameplay & combat**
-- Enemy AI now uses pathfinding  
+- Enemy AI now pathfinds on a runtime-baked navmesh with local avoidance  
 - Player combat animations reworked; dash ability added  
 - Hitboxes, hurtboxes, and reflection systems refined  
 - General gameplay fluidity improvements
