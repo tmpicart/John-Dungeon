@@ -23,7 +23,6 @@
 | ID | Symptom | Direction |
 |---|---|---|
 | BUG-1 | Enemies stall/oscillate at doorways — pathing does not commit | Doorway surface is 2 px slack after agent_radius erosion; check waypoint handoff + repath churn at narrow cells (probe scenario) |
-| BUG-2 | Sprites vanish inside doorways | Display, not physics: suspected z/y-sort tier overlap with the wall stack at door cells |
 | BUG-3 | Necromancer missiles still need the rework | Original homing + pass-by leniency on a small centered hitbox; necromancer fires without LOS gate; spec: `ai-rework-log.md` fresh-start steps 3–4 |
 
 ## D-1 Combat feel pass
@@ -100,4 +99,4 @@ Variants = new/modified attack + additional effects (S-2 when unparked) + shadin
 Convention (Godot docs + Game Programming Patterns "Service Locator"): `Global.player` at point of use — the `"Player"` group stays private to `global.gd`; physics-contact identity uses collision-layer bits; groups are broadcast/tagging only.
 - Replace direct `get_first_node_in_group("Player")` with `Global.player`: boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat), projectiles (magic_missile/curse_glyph)
 - `interactable.gd`: `is_in_group("Player")` → collision-layer check
-- Strip vestigial tags: `"Enemies"` (Sorceress + 4 projectile scenes, `add_to_group` on 5 boss-spawn scripts, `beam.gd` exception loop), `"door"` (door_sealed), `"health"` (HeartBars — verify main_scene wiring first); keep smoke stubs' `"Player"`
+- Strip vestigial tags: `"Enemies"` (Sorceress + 4 projectile scenes, `add_to_group` on 5 boss-spawn scripts, `beam.gd` exception loop), `"health"` (HeartBars — verify main_scene wiring first); keep smoke stubs' `"Player"`
