@@ -16,7 +16,10 @@ extends Node
 ## box reopens), the NPC-pocket archer guard (a player shadowed
 ## beside a body-sized blocker: hold the mouth, fire when the shadow
 ## clears), and L-corner rounding - solo and as a pair - holding the
-## corridor line off the tile apices.
+## corridor line off the tile apices. The doorway battery
+## (chase_probe_doorway.gd) adds open-gap threading and the door-open
+## commit; the press battery (chase_probe_press.gd) covers the guard
+## lifecycle through the route-improvement release.
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -206,6 +209,20 @@ func _run() -> void:
 		await _stage_corner_pair()
 		if is_instance_valid(_corner_body):
 			_corner_body.queue_free()
+	# Doorway battery (BUG-1): open-gap threading across the bake's 2px
+	# channel, then the door-open commit with a real door scene. Runs on
+	# its own node - see chase_probe_doorway.gd.
+	var doorway: Node = preload("res://tests/chase_probe_doorway.gd").new()
+	add_child(doorway)
+	doorway.probe = self
+	await doorway.run()
+	doorway.queue_free()
+	# Press battery: guard lifecycle - see chase_probe_press.gd.
+	var press_battery: Node = preload("res://tests/chase_probe_press.gd").new()
+	add_child(press_battery)
+	press_battery.probe = self
+	await press_battery.run()
+	press_battery.queue_free()
 	_completed = true
 
 func _stage_sealed_archer_guard() -> void:
@@ -762,7 +779,9 @@ func _stage_npc_pocket_guard() -> void:
 	var npc := Vector2(172, 86)
 	var arrived := false
 	var clock := 0.0
-	while clock < 6.0 and not arrived:
+	# Mouth walk crosses the whole room plus blocker avoidance; the
+	# ceiling carries headless pacing variance.
+	while clock < 10.0 and not arrived:
 		await get_tree().physics_frame
 		clock += get_physics_process_delta_time()
 		arrived = chase.navigation_agent.is_navigation_finished()
@@ -879,7 +898,7 @@ func _stage_corner_pair() -> void:
 	var window_second := second.global_position
 	var clock := 0.0
 	var both_attacked := false
-	while clock < 12.0:
+	while clock < 18.0:
 		await get_tree().physics_frame
 		clock += get_physics_process_delta_time()
 		min_gap = minf(min_gap,
@@ -903,6 +922,9 @@ func _build_room() -> void:
 	var tile_set := _build_plain_tile_set()
 	_floor_layer = _make_layer("Floor", tile_set, true)
 	_walls_layer = _make_layer("Walls", tile_set, false)
+	# Ship stack: floor art never collides even though the shared synthetic
+	# tile carries the blocker polygon for the Walls layer.
+	_floor_layer.collision_enabled = false
 	for x in ROOM_COLUMNS:
 		for y in ROOM_ROWS:
 			_floor_layer.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
@@ -936,6 +958,13 @@ func _make_layer(layer_name: String, tile_set: TileSet, nav_enabled: bool) -> Ti
 func _build_plain_tile_set() -> TileSet:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = Vector2i(CELL_SIZE, CELL_SIZE)
+	# The bake carves Walls cells through their tile physics (the ship
+	# semantic; physics-free painted atoms are the doorway-threshold
+	# exception), so the synthetic blocker tile carries the full-cell polygon.
+	# The source must join the TileSet before tile physics are set: TileData
+	# sizes its physics layers through the owning TileSet.
+	tile_set.add_physics_layer()
+	tile_set.set_physics_layer_collision_layer(0, BLOCKER_MASK)
 	var source := TileSetAtlasSource.new()
 	var image := Image.create_empty(CELL_SIZE, CELL_SIZE, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
@@ -943,6 +972,14 @@ func _build_plain_tile_set() -> TileSet:
 	source.texture_region_size = Vector2i(CELL_SIZE, CELL_SIZE)
 	source.create_tile(Vector2i.ZERO)
 	tile_set.add_source(source, 0)
+	var tile_data: TileData = source.get_tile_data(Vector2i.ZERO, 0)
+	tile_data.set_collision_polygons_count(0, 1)
+	tile_data.set_collision_polygon_points(0, 0, PackedVector2Array([
+		Vector2(-CELL_SIZE / 2.0, -CELL_SIZE / 2.0),
+		Vector2(-CELL_SIZE / 2.0, CELL_SIZE / 2.0),
+		Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0),
+		Vector2(CELL_SIZE / 2.0, -CELL_SIZE / 2.0),
+	]))
 	return tile_set
 
 

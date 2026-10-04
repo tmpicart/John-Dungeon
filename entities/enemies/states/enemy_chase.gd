@@ -87,6 +87,10 @@ var _press_flipped := false
 ## Guard hold: sealed geometry on every press approach — stand, face the
 ## player, let the attack-range gate swing when the box opens.
 var _guarding := false
+## Final-position distance captured at guard engagement: the hold releases
+## only when a fresh path end beats it by WAYPOINT_REACH_DISTANCE, so
+## per-repath mesh noise on a still-sealed mouth cannot churn the guard.
+var _guard_final_distance := 0.0
 ## Countdown set by EnemyRetreat on a cornered exit: geometry offered no
 ## escape, so both retreat triggers stand down while it decays.
 var _retreat_suppressed := 0.0
@@ -259,6 +263,21 @@ func _follow_path(delta: float, to_player: Vector2) -> void:
 		_finish_or_press(to_player, delta)
 		return
 
+	# A sealed-mouth guard outlives its seal once the route opens under it
+	# (door passage, moved blocker): the held latch would stand the enemy
+	# off a now-reachable player. A reachable path ends at the player, an
+	# unreachable one at the sealing geometry, so the release demands a
+	# solid improvement on the distance the guard was engaged at — a
+	# still-sealed mouth re-queries to within noise of the same endpoint
+	# and must keep the hold.
+	if _guarding and navigation_agent.get_final_position().distance_to(
+			player.global_position) \
+			< _guard_final_distance - NavBaker.WAYPOINT_REACH_DISTANCE:
+		_guarding = false
+		_press_flipped = false
+		_press_side = 0.0
+		_press_clock = 0.0
+
 	# Tight waypoint switching rounds corners without grinding the tile
 	# apices; the final leg keeps the loose finish so standoffs at
 	# unreachable targets (sealed mouths, body-shadow pockets) hold their
@@ -339,6 +358,8 @@ func _finish_or_press(to_player: Vector2, delta: float) -> void:
 						- enemy.global_position).normalized()
 			else:
 				_guarding = true
+				_guard_final_distance = navigation_agent.get_final_position() \
+						.distance_to(player.global_position)
 		_press_clock = 0.0
 		_press_reference = enemy.global_position
 	# The flush only delivers while a path is active; at a finished path the
