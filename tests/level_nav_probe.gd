@@ -7,9 +7,11 @@ extends Node
 ## mouth, lower-west pocket, west strip) and that a disc walker reaches the
 ## lower-west pocket through the live physics. Also reports the baked region
 ## geometry, an obstruction-cause map of the west wall area, NPC carve facts
-## (foot body carved, prompt zone walkable), and path facts: the area beyond
-## the closed key door must stay severed. Instrument-health or route
-## failures exit 1.
+## (foot body carved, prompt zone walkable), and a doorway audit: cell maps
+## for every mouth, each door's passage-link endpoints measured against the
+## live mesh, the opened key door bridging route and walker body through its
+## mouth, and bare-mouth facts for the north passage. Instrument-health
+## or route failures exit 1.
 
 const ROOM_SCENE := "res://levels/test_room.tscn"
 const ARCHER_SPAWN := Vector2(214, 63)
@@ -19,10 +21,20 @@ const GAP_MOUTH := Vector2(96, 104)
 const WEST_POCKET := Vector2(24, 140)
 const WEST_STRIP := Vector2(24, 40)
 const WEST_EXIT := Vector2(-6, 95)
+## Solid annex floor west of the key door: the open-door crossing target
+## (WEST_EXIT sits at the slab face, inside the baked door gap).
+const ANNEX_POINT := Vector2(-88, 96)
+## Mouth of the doorless north passage (level-authoring facts; no route
+## target exists beyond it).
+const NORTH_PASSAGE := Vector2(144, 8)
+const NORTH_PASSAGE_INNER := Vector2(144, 24)
+## Endpoint-to-mesh tolerance for a usable passage link: an off-mesh
+## endpoint adds no pathfinding edge.
+const LINK_REACH_MAX := 2.0
 ## Cell window printed around the west wall: position is the top-left cell,
 ## size the column/row count.
 const MAP_WINDOW := Rect2i(-6, -2, 21, 16)
-const GAP_DETAIL_COLUMNS: Array[int] = [1, 2, 3, 4, 5, 6, 7]
+const GAP_DETAIL_COLUMNS: Array[int] = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7]
 ## Physics masks: Environment blockers (walls, props, chests, NPC foot
 ## bodies), default characters.
 const BLOCKER_MASK := 1 << 2
@@ -135,9 +147,10 @@ func _run() -> void:
 
 	_tee("")
 	_tee("== path queries (archer spawn -> west targets) ==")
-	# Beyond the closed key door the mesh must stay severed; reported as a
-	# fact, not a pass/fail (rebake on door-open is separate work).
-	_report_path(map, ARCHER_SPAWN, WEST_EXIT)
+	# Beyond the closed key door the mesh must stay severed; the open-door
+	# stage below reroutes it through the door's production open flow.
+	_check(not _report_path(map, ARCHER_SPAWN, WEST_EXIT),
+			"mesh stays severed beyond the closed key door")
 	_check(_report_path(map, ARCHER_SPAWN, GAP_MOUTH),
 			"mesh routes spawn -> gap mouth")
 	_check(_report_path(map, ARCHER_SPAWN, WEST_POCKET),
@@ -180,6 +193,25 @@ func _run() -> void:
 	_tee("== walker: spawn -> lower-west pocket, full enemy mask (%d) ==" % enemy_mask)
 	_check((await _walk_route(room, ARCHER_SPAWN, WEST_POCKET, enemy_mask)) == "reached",
 			"walker reaches lower-west pocket (full enemy mask)")
+
+	_tee("")
+	_tee("== west key door: production open flow ==")
+	var key_door := room.get_node_or_null("Environment/KeyDoor")
+	_check(key_door != null, "key door present at the west exit")
+	if key_door != null:
+		var door_link: NavigationLink2D = key_door.get_node_or_null("PassageLink")
+		_check(door_link != null and not door_link.enabled,
+				"closed key door ships a disabled passage link")
+		var door_animation: AnimationPlayer = key_door.get_node("AnimationPlayer")
+		door_animation.play("open")
+		await door_animation.animation_finished
+		for i in SETTLE_FRAMES:
+			await get_tree().physics_frame
+		_check(door_link != null and door_link.enabled,
+				"open flow arms the passage link")
+		_report_path(map, ARCHER_SPAWN, WEST_EXIT)
+		await _audit_doorways(map, room, space, floor_layer, walls_layer,
+				obstacles_layer, nav_layer)
 
 	_completed = true
 	room.queue_free()
@@ -283,12 +315,7 @@ func _print_map(
 		blockers.append(walls_layer)
 	if obstacles_layer != null:
 		blockers.append(obstacles_layer)
-	for y in range(MAP_WINDOW.position.y, MAP_WINDOW.end.y):
-		var row := ""
-		for x in range(MAP_WINDOW.position.x, MAP_WINDOW.end.x):
-			row += _classify_cell(Vector2i(x, y), floor_layer, blockers, nav_layer, space)
-		var row_world_y: float = floor_layer.to_global(floor_layer.map_to_local(Vector2i(0, y))).y
-		_tee("  %6.1f %s" % [row_world_y, row])
+	_print_cell_window(MAP_WINDOW, floor_layer, blockers, nav_layer, space)
 
 
 func _classify_cell(
@@ -441,3 +468,88 @@ func _walk_route(room: Node2D, from: Vector2, to: Vector2, mask: int) -> String:
 	walker.queue_free()
 	await get_tree().physics_frame
 	return outcome
+
+
+## Every opening audited on the live map: per-mouth cell windows, each door's
+## link endpoint reach, the opened west doorway's route+body crossing, and
+## bare-mouth facts for the north passage (level-authoring side).
+func _audit_doorways(
+		map: RID,
+		room: Node2D,
+		space: PhysicsDirectSpaceState2D,
+		floor_layer: TileMapLayer,
+		walls_layer: TileMapLayer,
+		obstacles_layer: TileMapLayer,
+		nav_layer: TileMapLayer) -> void:
+	_tee("")
+	_tee("== doorway audit ==")
+	var blockers: Array[TileMapLayer] = []
+	if walls_layer != null:
+		blockers.append(walls_layer)
+	if obstacles_layer != null:
+		blockers.append(obstacles_layer)
+	_print_cell_window(Rect2i(-5, 3, 6, 6), floor_layer, blockers, nav_layer, space)
+	_print_cell_window(Rect2i(5, -2, 6, 5), floor_layer, blockers, nav_layer, space)
+	_print_cell_window(Rect2i(7, 10, 4, 5), floor_layer, blockers, nav_layer, space)
+	for door_name in ["KeyDoor", "DoorRed", "DoorRed4"]:
+		var usable := _report_link_reach(map, room, door_name)
+		if door_name == "KeyDoor":
+			_check(usable, "opened key door link endpoints sit on the mesh")
+	_check(_report_path(map, ARCHER_SPAWN, ANNEX_POINT),
+			"opened key door bridges the annex (route reaches the annex floor)")
+	_check((await _walk_route(room, ARCHER_SPAWN, ANNEX_POINT,
+			CHARACTER_MASK | 2 | BLOCKER_MASK)) == "reached",
+			"enemy-size walker crosses the opened west doorway")
+	_report_mouth(map, space, "north bare passage mouth", NORTH_PASSAGE)
+	_report_mouth(map, space, "north bare passage inner lip", NORTH_PASSAGE_INNER)
+
+
+## Classified-cell rows for one mouth's neighborhood (same legend as the
+## west-window map).
+func _print_cell_window(
+		window: Rect2i,
+		floor_layer: TileMapLayer,
+		blockers: Array[TileMapLayer],
+		nav_layer: TileMapLayer,
+		space: PhysicsDirectSpaceState2D) -> void:
+	for y in range(window.position.y, window.end.y):
+		var row := ""
+		for x in range(window.position.x, window.end.x):
+			row += _classify_cell(Vector2i(x, y), floor_layer, blockers, nav_layer, space)
+		var row_world_y: float = floor_layer.to_global(floor_layer.map_to_local(Vector2i(0, y))).y
+		_tee("  %6.1f %s" % [row_world_y, row])
+
+
+## Endpoint-to-mesh distances for one door's passage link; true when both
+## endpoints sit on the live mesh (an off-mesh endpoint adds no edge).
+func _report_link_reach(map: RID, room: Node2D, door_name: String) -> bool:
+	var door := room.get_node_or_null("Environment/" + door_name)
+	if door == null:
+		_tee("  %s: absent" % door_name)
+		return false
+	var link: NavigationLink2D = door.get_node_or_null("PassageLink")
+	if link == null:
+		_tee("  %s: ships no PassageLink" % door_name)
+		return false
+	var start: Vector2 = link.to_global(link.start_position)
+	var end: Vector2 = link.to_global(link.end_position)
+	var start_gap := start.distance_to(NavigationServer2D.map_get_closest_point(map, start))
+	var end_gap := end.distance_to(NavigationServer2D.map_get_closest_point(map, end))
+	_tee("  %s link %s -> %s | start-to-mesh %.1f px | end-to-mesh %.1f px | enabled %s" % [
+			door_name, start, end, start_gap, end_gap, link.enabled])
+	return start_gap <= LINK_REACH_MAX and end_gap <= LINK_REACH_MAX
+
+
+## Bare-mouth facts: blocker claims at the point plus the gap to the live
+## mesh (0 px means the mesh reaches the wall line).
+func _report_mouth(
+		map: RID,
+		space: PhysicsDirectSpaceState2D,
+		label: String,
+		at: Vector2) -> void:
+	var claims: Array[String] = []
+	for hit in _probe_hits(space, at, CLAIM_MASK):
+		claims.append(_hit_label(hit))
+	var gap := at.distance_to(NavigationServer2D.map_get_closest_point(map, at))
+	var claim_text := ", ".join(claims) if not claims.is_empty() else "none"
+	_tee("  %s @ %s -> mesh %.1f px | claims: %s" % [label, at, gap, claim_text])

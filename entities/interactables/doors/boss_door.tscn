@@ -9,7 +9,7 @@
 size = Vector2(20, 45)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_he8pr"]
-size = Vector2(14, 6)
+size = Vector2(16, 64)
 
 [sub_resource type="Animation" id="Animation_rk3td"]
 length = 0.001
@@ -89,6 +89,7 @@ _data = {
 [node name="KeyDoor" type="Node2D"]
 script = ExtResource("1_4kna6")
 lock_type = 2
+nav_gap = Rect2(-16, -64, 30, 78)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1, -1)
@@ -103,10 +104,16 @@ position = Vector2(-1, -2.5)
 shape = SubResource("RectangleShape2D_xqm0d")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(-1, 4)
+position = Vector2(-1, -25)
 shape = SubResource("RectangleShape2D_he8pr")
+
+[node name="PassageLink" type="NavigationLink2D" parent="."]
+start_position = Vector2(-1, -59)
+end_position = Vector2(-1, 17)
+enabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

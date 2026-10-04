@@ -2,8 +2,9 @@ extends Node2D
 
 ## Unified door. `lock_type` selects the lock behavior; the "open" animation
 ## drives the flow and its Call Method track calls `_set_passable()` to drop
-## the blocking collision at the authored frame. A failed unlock flashes the
-## world-space interaction prompt with the locked message.
+## the blocking collision and arm the PassageLink navmesh connection at the
+## authored frame. A failed unlock flashes the world-space interaction
+## prompt with the locked message.
 
 enum LockType { NONE, KEY, BOSS_KEY }
 
@@ -11,6 +12,10 @@ const MESSAGE_TIME := 1.0
 const LOCKED_PROMPT := "You Need a Key To Open!"
 
 @export var lock_type: LockType = LockType.NONE
+## Mouth kept margin-less in the baked mesh, in door-local space: the rect
+## over the threshold cells the bake must keep clear of static padding so
+## the armed passage link spans clean mesh on both sides.
+@export var nav_gap: Rect2 = Rect2()
 
 var _open := false
 
@@ -18,9 +23,15 @@ var _open := false
 @onready var animation: AnimationPlayer = $AnimationPlayer
 @onready var static_collision: CollisionShape2D = $StaticBody2D/CollisionShape2D
 @onready var open_sfx: AudioStreamPlayer2D = get_node_or_null("AudioStreamPlayer2D")
+## Reroutes pathfinding through the opened doorway without a rebake; only
+## the openable door scenes ship one.
+@onready var passage_link: NavigationLink2D = get_node_or_null("PassageLink")
 
 
 func _ready() -> void:
+	# Passability-gated body: the bake carves the real footprint and keeps
+	# nav_gap margin-less (NavBaker.TRANSIENT_GROUP).
+	$StaticBody2D.add_to_group(NavBaker.TRANSIENT_GROUP)
 	interaction_area.interacted.connect(_on_interact)
 
 
@@ -29,6 +40,10 @@ func _set_passable() -> void:
 	# Fires during animation processing, possibly inside a physics flush - defer the change.
 	static_collision.set_deferred("disabled", true)
 	interaction_area.enabled = false
+	if passage_link != null:
+		# The closed-door bake carved the doorway out of the navmesh; the
+		# passage link re-connects both sides without a rebake.
+		passage_link.set_deferred("enabled", true)
 
 
 func _on_interact() -> void:

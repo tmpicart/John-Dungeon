@@ -88,6 +88,7 @@ _data = {
 
 [node name="Door" type="Node2D" unique_id=1485646396]
 script = ExtResource("1_red")
+nav_gap = Rect2(-8, -22, 16, 30)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=808509491]
 position = Vector2(1, -7)
@@ -108,6 +109,11 @@ collision_mask = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=994460713]
 position = Vector2(0, -3)
 shape = SubResource("RectangleShape2D_he8pr")
+
+[node name="PassageLink" type="NavigationLink2D" parent="."]
+start_position = Vector2(0, -25)
+end_position = Vector2(0, 17)
+enabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1074121830]
 libraries/ = SubResource("AnimationLibrary_ar63u")

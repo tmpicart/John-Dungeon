@@ -99,8 +99,8 @@ func _run() -> void:
 	if region != null:
 		var poly := region.navigation_polygon
 		_check(poly != null and poly.vertices.size() > 0, "region holds a baked polygon")
-		_check(poly != null and poly.agent_radius == NavBaker.AGENT_RADIUS,
-				"polygon baked with agent clearance")
+		_check(poly != null and poly.agent_radius == 0.0,
+				"polygon bakes at radius 0 (clearance authored per outline)")
 
 	# NavigationAgent2D extends Node, not Node2D: it paths from its parent's
 	# transform, so the start position lives on a holder node.
@@ -159,6 +159,9 @@ func _build_room() -> void:
 	_floor_layer = _make_layer("Floor", tile_set, true)
 	_walls_layer = _make_layer("Walls", tile_set, false)
 	_obstacles_layer = _make_layer("Obstacles", tile_set, false)
+	# Ship stack: floor art never collides even though the shared synthetic
+	# tile carries the blocker polygon for the Walls/Obstacles layers.
+	_floor_layer.collision_enabled = false
 	for x in ROOM_SIZE:
 		for y in ROOM_SIZE:
 			_floor_layer.set_cell(Vector2i(x, y), 0, Vector2i.ZERO)
@@ -190,13 +193,29 @@ func _make_layer(layer_name: String, tile_set: TileSet, nav_enabled: bool) -> Ti
 func _build_plain_tile_set() -> TileSet:
 	var tile_set := TileSet.new()
 	tile_set.tile_size = Vector2i(CELL_SIZE, CELL_SIZE)
+	# The bake carves Walls/Obstacles cells through their tile physics (the
+	# ship semantic; physics-free painted atoms are the doorway-threshold
+	# exception), so the synthetic blocker tile carries the full-cell polygon.
+	tile_set.add_physics_layer()
+	tile_set.set_physics_layer_collision_layer(0, BLOCKER_MASK)
 	var source := TileSetAtlasSource.new()
 	var image := Image.create_empty(CELL_SIZE, CELL_SIZE, false, Image.FORMAT_RGBA8)
 	image.fill(Color(0, 0, 0, 0))
 	source.texture = ImageTexture.create_from_image(image)
 	source.texture_region_size = Vector2i(CELL_SIZE, CELL_SIZE)
 	source.create_tile(Vector2i.ZERO)
+	# The source must join the TileSet before tile physics are set: TileData
+	# sizes its physics layers through the owning TileSet (setting them on an
+	# unbound source errors with physics.size() = 0).
 	tile_set.add_source(source, 0)
+	var tile_data: TileData = source.get_tile_data(Vector2i.ZERO, 0)
+	tile_data.set_collision_polygons_count(0, 1)
+	tile_data.set_collision_polygon_points(0, 0, PackedVector2Array([
+		Vector2(-CELL_SIZE / 2.0, -CELL_SIZE / 2.0),
+		Vector2(-CELL_SIZE / 2.0, CELL_SIZE / 2.0),
+		Vector2(CELL_SIZE / 2.0, CELL_SIZE / 2.0),
+		Vector2(CELL_SIZE / 2.0, -CELL_SIZE / 2.0),
+	]))
 	return tile_set
 
 
