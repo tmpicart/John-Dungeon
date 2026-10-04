@@ -63,11 +63,12 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 
 ## Tests
 - `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
-- Headless probes (manual diagnostics; the result `txt` files are the record, gitignored): `nav_probe` (bake invariants), `level_nav_probe` (room walk matrix), `chase_probe` (staging/chase/attack), `retreat_probe` (corner + standoff), `scene_probe` (scene staging audit)
+- Headless probes (manual diagnostics; the result `txt` files are the record, gitignored): `nav_probe` (bake invariants), `level_nav_probe` (room walk matrix + door-link archway sweeps), `chase_probe` (staging/chase/attack), `retreat_probe` (corner + standoff), `scene_probe` (scene staging audit)
 - gdlint baseline (repo-wide): all areas clean except `entities/player` (41 findings — opportunistic gate on rewrites) and `entities/projectiles` (3, `bomb.gd`)
 
 ## Repository
 - Remote: `https://github.com/tmpicart/John-Dungeon.git`, branch `master`
+- CI: none by decision (2026-10-04) — the lint-only action (`Scony/godot-gdscript-toolkit`) is a 5-minute add once the gdlint baseline is repo-wide clean; test CI is blocked by the code-only asset policy (scene-booting probes need assets on disk)
 - `.gitattributes`: `* text=auto eol=lf` · `.gitignore`: `.godot/`, `*.tmp`, `*~`, `.vscode/`, plus the asset policy block (`/assets/*` with whitelists — see `ASSETS.md`)
 - Asset policy: code-only repo (manifest + whitelist: `ASSETS.md`); asset blobs purged from history 2026-09-08
 - `.uid` sidecar files are tracked (Godot 4.4+); always move them together with their script/scene
