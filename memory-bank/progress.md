@@ -57,4 +57,4 @@ Migration complete: frameworks R-01..R-33 landed; development phase — task lis
 - 2026-09-30 | docs | Verified layer/system map into techContext; design-review follow-ups R-43..R-46 + D-10 into devPlan.
 - 2026-09-30 | docs | Playtest findings logged as BUG-1..3: doorway pathing stall, doorway sprite vanish, necromancer missile rework.
 - 2026-10-04 | fix | Door standard: door_key matched to door_red colliders/link and seated in the west archway; deprecated door scenes removed.
-- 2026-10-04 | fix | BUG-2 resolved: character roots z 3 (enemies + NPCs), airborne projectiles z 4, per systemPatterns tiers.
+- 2026-10-04 | fix | Doorway sprite vanish resolved: character roots z 3 (enemies + NPCs), airborne projectiles z 4, per systemPatterns tiers.

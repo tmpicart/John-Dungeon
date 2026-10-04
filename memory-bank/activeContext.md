@@ -12,7 +12,7 @@ door family standardization landed 2026-10-04 as a 7-commit series.
   west archway (rotated -PI/2 per convention)
 - Deprecated doors deleted: `door_sealed`, `door_standard_1/2`; boss door
   root renamed BossDoor (pre-standard geometry until R-42)
-- BUG-2 resolved: character roots z 3, airborne projectiles z 4 (14 scenes)
+- Doorway sprite vanish resolved: character roots z 3, airborne projectiles z 4 (14 scenes)
 - `tests/level_nav_probe` archway sweeps: link connects, sever + annex verified
 
 ## Working Agreements
