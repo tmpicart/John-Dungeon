@@ -89,7 +89,6 @@ _data = {
 [node name="KeyDoor" type="Node2D"]
 script = ExtResource("1_4kna6")
 lock_type = 2
-nav_gap = Rect2(-16, -64, 30, 78)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-1, -1)
@@ -111,8 +110,8 @@ position = Vector2(-1, -25)
 shape = SubResource("RectangleShape2D_he8pr")
 
 [node name="PassageLink" type="NavigationLink2D" parent="."]
-start_position = Vector2(-1, -59)
-end_position = Vector2(-1, 17)
+start_position = Vector2(-1, -70)
+end_position = Vector2(-1, 20)
 enabled = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

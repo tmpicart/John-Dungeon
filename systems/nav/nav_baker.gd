@@ -8,8 +8,6 @@ class_name NavBaker
 ## door-arch strips stay thin), floor-less cells keep a padded full-cell
 ## rect, and free-standing bodies on the exclusion mask (props, chests, NPC
 ## foot bodies) contribute their real collision outlines, also padded.
-## Inside a door's nav_gap rect the padding is suppressed (the exact
-## footprint stands in), so authored doorway slits stay margin-less gaps.
 ## Door bodies join TRANSIENT_GROUP: their passability is runtime-gated, so
 ## they carve at their real footprint with no clearance — the seam a closed
 ## door seals — while the armed PassageLink bridges that seam without a
@@ -29,8 +27,8 @@ const GENERATED_REGION_NAME := "GeneratedNavRegion"
 ## obstacles in front of every interactable.
 const EXCLUSION_MASK := 1 << 2
 ## Bodies whose passability is runtime-gated (openable doors): the bake
-## carves their real footprint without clearance and keeps their door's
-## nav_gap mouth margin-less; the armed PassageLink bridges the seam.
+## carves their real footprint without clearance; the armed PassageLink
+## bridges the seam.
 const TRANSIENT_GROUP := "nav_transient"
 ## NavigationAgent2D path_desired_distance for followers: above the 11.3px
 ## cell half-diagonal so the agent's waypoint cursor still advances when a
@@ -48,7 +46,7 @@ const PATH_SWITCH_DISTANCE := 4.0
 ## free-standing bodies): enemy feet discs run 5.9-7.7px world radius, so
 ## 7.0 margins the common discs when corners are taken tightly
 ## (PATH_SWITCH_DISTANCE); bulkier discs may brush walls. Twice the radius
-## still fits a 16px doorway. Door bodies and door gap mouths stay unpadded.
+## still fits a 16px doorway. Door bodies stay unpadded.
 const AGENT_RADIUS := 7.0
 
 
@@ -75,16 +73,13 @@ static func bake(scope: Node) -> TileMapLayer:
 
 	var nav_layer := _find_or_create_nav_layer(scope, floor_layer.tile_set.tile_size.x)
 	var transient_outlines: Array[PackedVector2Array] = []
-	var gap_rects: Array[Rect2] = []
 	var body_bounds: Array[Rect2] = []
-	var body_outlines := _collect_body_outlines(
-			scope, transient_outlines, gap_rects, body_bounds)
+	var body_outlines := _collect_body_outlines(scope, transient_outlines, body_bounds)
 	body_bounds.append_array(_outline_bounds(transient_outlines))
 	var half := Vector2(floor_layer.tile_set.tile_size) / 2.0
 
 	var used := floor_layer.get_used_rect()
-	var obstruction_outlines := _collect_obstruction_outlines(
-			floor_layer, used, blockers, gap_rects)
+	var obstruction_outlines := _collect_obstruction_outlines(floor_layer, used, blockers)
 	for x in range(used.position.x, used.end.x):
 		for y in range(used.position.y, used.end.y):
 			var cell := Vector2i(x, y)
@@ -173,14 +168,12 @@ static func _is_blocked(cell: Vector2i, blockers: Array[TileMapLayer]) -> bool:
 ## mask (props, doors, chests, NPCs), wherever they sit in the scope tree.
 ## Static bodies keep their real footprint padded by AGENT_RADIUS; bodies in
 ## TRANSIENT_GROUP (doors: passability is runtime-gated) carve at their real
-## footprint with no clearance, and their parent door's nav_gap rect feeds
-## the gap list so the bake keeps that mouth margin-less. real_bounds
-## receives the static bodies' unpadded footprint bounds for the walkability
-## visualization's cell exclusion.
+## footprint with no clearance. real_bounds receives the static bodies'
+## unpadded footprint bounds for the walkability visualization's cell
+## exclusion.
 static func _collect_body_outlines(
 		scope: Node,
 		transient_outlines: Array[PackedVector2Array],
-		gap_rects: Array[Rect2],
 		real_bounds: Array[Rect2]) -> Array[PackedVector2Array]:
 	var outlines: Array[PackedVector2Array] = []
 	var stack: Array[Node] = [scope]
@@ -193,83 +186,13 @@ static func _collect_body_outlines(
 				_append_body_outlines(child, collected)
 				real_bounds.append_array(_outline_bounds(collected))
 				if child.is_in_group(TRANSIENT_GROUP):
-					var door := child.get_parent() as Node2D
-					var local_gap := Rect2()
-					if door != null and ("nav_gap" in door):
-						local_gap = door.get("nav_gap")
 					for outline in collected:
-						if local_gap.size != Vector2.ZERO:
-							transient_outlines.append(
-									_gap_seam_outline(outline, door, local_gap))
-						else:
-							transient_outlines.append(outline)
-					var gap := _door_gap_rect(child)
-					if gap.size != Vector2.ZERO:
-						gap_rects.append(gap)
+						transient_outlines.append(outline)
 				else:
 					for outline in collected:
 						_emit_static_outline(
-								_offset_outline(outline, AGENT_RADIUS), outline,
-								gap_rects, outlines)
+								_offset_outline(outline, AGENT_RADIUS), outlines)
 	return outlines
-
-
-## World-space nav_gap rect of a transient body's parent door (the rect is
-## authored in door-local space; doors sit on axis-aligned node rotations, so
-## the transformed bounding box is exact).
-static func _door_gap_rect(body: CollisionObject2D) -> Rect2:
-	var door := body.get_parent()
-	if door == null or not ("nav_gap" in door):
-		return Rect2()
-	var local: Rect2 = door.get("nav_gap")
-	if local.size == Vector2.ZERO:
-		return Rect2()
-	return _local_rect_world_bounds(local, door)
-
-
-## The sealed seam under a closed door: the body footprint extruded along
-## its thin axis (the passage direction) and intersected with the nav_gap
-## rect, so the slab's slice of the mouth seals without mesh slivers beside
-## it. Rotation-agnostic: in door-local space the slab is thin along the
-## axis the player crosses, wide along the mouth. The armed passage link
-## bridges exactly this seam.
-static func _gap_seam_outline(
-		outline: PackedVector2Array,
-		door: Node2D,
-		local_gap: Rect2) -> PackedVector2Array:
-	var to_local: Transform2D = door.global_transform.affine_inverse()
-	var bounds := Rect2(to_local * outline[0], Vector2.ZERO)
-	for point in outline:
-		bounds = bounds.expand(to_local * point)
-	var seam: Rect2
-	if bounds.size.x <= bounds.size.y:
-		var y_start := maxf(bounds.position.y, local_gap.position.y)
-		var y_end := minf(bounds.end.y, local_gap.end.y)
-		seam = Rect2(
-				Vector2(local_gap.position.x, y_start),
-				Vector2(local_gap.size.x, y_end - y_start))
-	else:
-		var x_start := maxf(bounds.position.x, local_gap.position.x)
-		var x_end := minf(bounds.end.x, local_gap.end.x)
-		seam = Rect2(
-				Vector2(x_start, local_gap.position.y),
-				Vector2(x_end - x_start, local_gap.size.y))
-	if seam.size.x <= 0.0 or seam.size.y <= 0.0:
-		return outline
-	return _rect_outline(_local_rect_world_bounds(seam, door))
-
-
-static func _local_rect_world_bounds(local: Rect2, node: Node2D) -> Rect2:
-	var transform: Transform2D = node.global_transform
-	var corner_a: Vector2 = transform * local.position
-	var corner_b: Vector2 = transform * Vector2(local.end.x, local.position.y)
-	var corner_c: Vector2 = transform * local.end
-	var corner_d: Vector2 = transform * Vector2(local.position.x, local.end.y)
-	var rect := Rect2(corner_a, Vector2.ZERO)
-	rect = rect.expand(corner_b)
-	rect = rect.expand(corner_c)
-	rect = rect.expand(corner_d)
-	return rect
 
 
 static func _append_body_outlines(
@@ -306,14 +229,11 @@ static func _append_points(
 ## inflating into full-cell blocks that seal doorway mouths. Padded
 ## full-cell rects remain the fallback for floor-less cells and concave
 ## authored polygons; physics-free painted atoms (doorway thresholds) and
-## plain floor stay walkable. Every piece is clipped against the door gap
-## rects so authored mouths stay margin-less (the door body's seam seals
-## them shut when closed).
+## plain floor stay walkable.
 static func _collect_obstruction_outlines(
 		floor_layer: TileMapLayer,
 		used: Rect2i,
-		blockers: Array[TileMapLayer],
-		gap_rects: Array[Rect2]) -> Array[PackedVector2Array]:
+		blockers: Array[TileMapLayer]) -> Array[PackedVector2Array]:
 	var outlines: Array[PackedVector2Array] = []
 	var half := Vector2(floor_layer.tile_set.tile_size) / 2.0
 	for x in range(used.position.x, used.end.x):
@@ -323,17 +243,16 @@ static func _collect_obstruction_outlines(
 			if tile_polygons.is_empty():
 				if floor_layer.get_cell_source_id(cell) != -1:
 					continue
-				_emit_cell_rect(floor_layer, cell, half, gap_rects, outlines)
+				_emit_cell_rect(floor_layer, cell, half, outlines)
 				continue
 			for polygon in tile_polygons:
 				if _is_convex_outline(polygon):
 					_emit_static_outline(
-							_offset_outline(polygon, AGENT_RADIUS), polygon,
-							gap_rects, outlines)
+							_offset_outline(polygon, AGENT_RADIUS), outlines)
 				else:
 					# Concave authored collision: the miter offsetter is
 					# convex-only, so keep the padded cell approximation.
-					_emit_cell_rect(floor_layer, cell, half, gap_rects, outlines)
+					_emit_cell_rect(floor_layer, cell, half, outlines)
 	return outlines
 
 
@@ -411,103 +330,19 @@ static func _emit_cell_rect(
 		floor_layer: TileMapLayer,
 		cell: Vector2i,
 		half: Vector2,
-		gap_rects: Array[Rect2],
 		outlines: Array[PackedVector2Array]) -> void:
 	var center: Vector2 = floor_layer.to_global(floor_layer.map_to_local(cell))
 	var cell_rect := Rect2(center - half, half * 2.0)
-	_emit_static_outline(
-			_rect_outline(cell_rect.grow(AGENT_RADIUS)), _rect_outline(cell_rect),
-			gap_rects, outlines)
+	_emit_static_outline(_rect_outline(cell_rect.grow(AGENT_RADIUS)), outlines)
 
 
-## Emits one static obstruction under the door-gap rule: outside every
-## nav_gap the padded outline keeps full clearance; inside a gap the padding
-## is suppressed (the exact footprint stands in) so authored doorway slits
-## stay margin-less. Both inputs must be convex; the gap complement pieces
-## and the interior intersection are convex too, so the bake's convex
-## partition sees simple pieces only.
+## Emits one static obstruction outline at its padded footprint.
 static func _emit_static_outline(
 		padded: PackedVector2Array,
-		exact: PackedVector2Array,
-		gap_rects: Array[Rect2],
 		outlines: Array[PackedVector2Array]) -> void:
 	if padded.size() < 3:
 		return
-	var pieces: Array[PackedVector2Array] = [padded]
-	for gap in gap_rects:
-		if gap.size == Vector2.ZERO:
-			continue
-		var next: Array[PackedVector2Array] = []
-		for piece in pieces:
-			next.append_array(_polygon_minus_rect(piece, gap))
-		pieces = next
-	for gap in gap_rects:
-		if gap.size == Vector2.ZERO:
-			continue
-		var inner := _clip_convex_to_rect(exact, gap)
-		if inner.size() >= 3:
-			pieces.append(inner)
-	outlines.append_array(pieces)
-
-
-## Sutherland-Hodgman clip of a convex outline against the half-plane
-## normal.dot(point) <= offset; boundary vertices count as inside.
-static func _clip_halfplane(
-		outline: PackedVector2Array,
-		normal: Vector2,
-		offset: float) -> PackedVector2Array:
-	var count := outline.size()
-	if count == 0:
-		return outline
-	var result := PackedVector2Array()
-	for i in count:
-		var cur := outline[i]
-		var nxt := outline[(i + 1) % count]
-		var cur_in := normal.dot(cur) <= offset
-		var nxt_in := normal.dot(nxt) <= offset
-		if cur_in:
-			result.append(cur)
-		if cur_in != nxt_in:
-			result.append(cur.lerp(
-					nxt, (offset - normal.dot(cur)) / normal.dot(nxt - cur)))
-	return result
-
-
-## Convex polygon minus an axis-aligned rect, as up to four convex remainder
-## pieces (left/right columns, top/bottom rows within the gap's x span);
-## gap rects arrive axis-aligned in world space because doors sit on
-## 90-degree node rotations.
-static func _polygon_minus_rect(
-		piece: PackedVector2Array,
-		gap: Rect2) -> Array[PackedVector2Array]:
-	var parts: Array[PackedVector2Array] = []
-	var left := _clip_halfplane(piece, Vector2(-1.0, 0.0), -gap.position.x)
-	if left.size() >= 3:
-		parts.append(left)
-	var right := _clip_halfplane(piece, Vector2(1.0, 0.0), gap.end.x)
-	if right.size() >= 3:
-		parts.append(right)
-	var top := _clip_halfplane(piece, Vector2(0.0, -1.0), -gap.position.y)
-	top = _clip_halfplane(top, Vector2(-1.0, 0.0), -gap.position.x)
-	top = _clip_halfplane(top, Vector2(1.0, 0.0), gap.end.x)
-	if top.size() >= 3:
-		parts.append(top)
-	var bottom := _clip_halfplane(piece, Vector2(0.0, 1.0), gap.end.y)
-	bottom = _clip_halfplane(bottom, Vector2(-1.0, 0.0), -gap.position.x)
-	bottom = _clip_halfplane(bottom, Vector2(1.0, 0.0), gap.end.x)
-	if bottom.size() >= 3:
-		parts.append(bottom)
-	return parts
-
-
-## Intersection of a convex outline with an axis-aligned rect.
-static func _clip_convex_to_rect(
-		piece: PackedVector2Array, gap: Rect2) -> PackedVector2Array:
-	var clipped := _clip_halfplane(piece, Vector2(-1.0, 0.0), -gap.position.x)
-	clipped = _clip_halfplane(clipped, Vector2(1.0, 0.0), gap.end.x)
-	clipped = _clip_halfplane(clipped, Vector2(0.0, -1.0), -gap.position.y)
-	clipped = _clip_halfplane(clipped, Vector2(0.0, 1.0), gap.end.y)
-	return clipped
+	outlines.append(padded)
 
 
 ## Outward miter offset of a convex outline by amount (circle/capsule/rect/

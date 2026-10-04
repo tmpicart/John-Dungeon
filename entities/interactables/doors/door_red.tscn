@@ -88,7 +88,6 @@ _data = {
 
 [node name="Door" type="Node2D" unique_id=1485646396]
 script = ExtResource("1_red")
-nav_gap = Rect2(-8, -22, 16, 30)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=808509491]
 position = Vector2(1, -7)

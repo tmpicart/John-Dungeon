@@ -12,10 +12,6 @@ const MESSAGE_TIME := 1.0
 const LOCKED_PROMPT := "You Need a Key To Open!"
 
 @export var lock_type: LockType = LockType.NONE
-## Mouth kept margin-less in the baked mesh, in door-local space: the rect
-## over the threshold cells the bake must keep clear of static padding so
-## the armed passage link spans clean mesh on both sides.
-@export var nav_gap: Rect2 = Rect2()
 
 var _open := false
 
@@ -29,8 +25,8 @@ var _open := false
 
 
 func _ready() -> void:
-	# Passability-gated body: the bake carves the real footprint and keeps
-	# nav_gap margin-less (NavBaker.TRANSIENT_GROUP).
+	# Passability-gated body: the bake carves the real footprint with no
+	# clearance (NavBaker.TRANSIENT_GROUP).
 	$StaticBody2D.add_to_group(NavBaker.TRANSIENT_GROUP)
 	interaction_area.interacted.connect(_on_interact)
 
