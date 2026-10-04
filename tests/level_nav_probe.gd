@@ -10,8 +10,10 @@ extends Node
 ## (foot body carved, prompt zone walkable), and a doorway audit: cell maps
 ## for every mouth, each door's passage-link endpoints measured against the
 ## live mesh, the opened key door bridging the annex through its mouth
-## (link endpoints + route query), and bare-mouth facts for the north
-## passage. Instrument-health or route failures exit 1.
+## (link endpoints + route query), bare-mouth facts for the north passage,
+## and point-precision physics sweeps of every door lane and archway throat
+## (what projectiles actually hit - nav-invisible). Instrument-health or
+## route failures exit 1.
 
 const ROOM_SCENE := "res://levels/test_room.tscn"
 const ARCHER_SPAWN := Vector2(214, 63)
@@ -21,8 +23,10 @@ const GAP_MOUTH := Vector2(96, 104)
 const WEST_POCKET := Vector2(24, 140)
 const WEST_STRIP := Vector2(24, 40)
 const WEST_EXIT := Vector2(-6, 95)
-## Solid annex floor west of the key door: the open-door crossing target
-## (WEST_EXIT sits at the slab face, inside the baked door gap).
+## Jamb-mouth dead end inside the west frame: the closed door's plug sits at
+## the archway throat (cell col -4), so the corridor east of it still bakes.
+## Solid annex floor west of the throat: the closed-door sever target and the
+## open-door crossing target.
 const ANNEX_POINT := Vector2(-88, 96)
 ## Mouth of the doorless north passage (level-authoring facts; no route
 ## target exists beyond it).
@@ -147,9 +151,10 @@ func _run() -> void:
 
 	_tee("")
 	_tee("== path queries (archer spawn -> west targets) ==")
-	# Beyond the closed key door the mesh must stay severed; the open-door
-	# stage below reroutes it through the door's production open flow.
-	_check(not _report_path(map, ARCHER_SPAWN, WEST_EXIT),
+	# Beyond the closed key door the mesh must stay severed; the door's plug
+	# sits at the archway throat, so "beyond" is the annex floor. The
+	# open-door stage below reroutes through the door's production open flow.
+	_check(not _report_path(map, ARCHER_SPAWN, ANNEX_POINT),
 			"mesh stays severed beyond the closed key door")
 	_check(_report_path(map, ARCHER_SPAWN, GAP_MOUTH),
 			"mesh routes spawn -> gap mouth")
@@ -500,8 +505,52 @@ func _audit_doorways(
 	# Embodied door crossing (a disc walking the link through the padded
 	# mouth) is deliberately not asserted here: it is physics-timing
 	# dependent and belongs to user playtest, not this deterministic probe.
+	_tee("")
+	_sweep_lane(space, Vector2(-80, 96), Vector2(20, 96), "west key lane y=96")
+	_sweep_lane(space, Vector2(-56, 76), Vector2(-56, 116), "west throat x=-56")
+	_sweep_lane(space, Vector2(262, 92), Vector2(322, 92), "east lane y=92")
+	_sweep_lane(space, Vector2(296, 76), Vector2(296, 116), "east throat x=296")
+	_sweep_lane(space, Vector2(144, -40), Vector2(144, 28), "north lane x=144")
+	_sweep_lane(space, Vector2(124, -10), Vector2(164, -10), "north throat y=-10")
+	_sweep_lane(space, Vector2(144, 160), Vector2(144, 232), "south lane x=144")
+	_sweep_lane(space, Vector2(124, 204), Vector2(164, 204), "south throat y=204")
 	_report_mouth(map, space, "north bare passage mouth", NORTH_PASSAGE)
 	_report_mouth(map, space, "north bare passage inner lip", NORTH_PASSAGE_INNER)
+
+## Physics-only sweep of one door lane: every blocker claim along the
+## passage axis, printed when the claim set changes, with the tile cell for
+## authoring fixes. Nav-invisible - this is what projectiles actually hit.
+func _sweep_lane(
+		space: PhysicsDirectSpaceState2D,
+		from: Vector2,
+		to: Vector2,
+		label: String) -> void:
+	_tee("== lane sweep: %s (%s -> %s) ==" % [label, from, to])
+	var previous := ""
+	var steps := int(from.distance_to(to))
+	for i in steps + 1:
+		var at := from.lerp(to, float(i) / steps)
+		var claims := PackedStringArray()
+		for hit in _probe_point_hits(space, at, BLOCKER_MASK):
+			claims.append(_hit_label(hit))
+		var current := ",".join(claims)
+		if current.is_empty():
+			current = "none"
+		if current != previous:
+			_tee("  @ (%.0f, %.0f) cell(%d, %d): %s" % [
+					at.x, at.y, int(floor(at.x / 16.0)),
+					int(floor(at.y / 16.0)), current])
+			previous = current
+
+
+func _probe_point_hits(
+		space: PhysicsDirectSpaceState2D,
+		at: Vector2,
+		mask: int) -> Array:
+	var probe := PhysicsPointQueryParameters2D.new()
+	probe.position = at
+	probe.collision_mask = mask
+	return space.intersect_point(probe, 8)
 
 
 ## Classified-cell rows for one mouth's neighborhood (same legend as the
