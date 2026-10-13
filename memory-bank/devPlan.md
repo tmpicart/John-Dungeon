@@ -3,6 +3,22 @@
 > **Purpose:** The ordered feature task list; entries move to `progress.md` when shipped.
 > **Lifecycle:** Tasks are deleted on completion (noted in `progress.md`); keep this file under ~80 lines. Rules: `.clinerules/log-hygiene.md`.
 
+## Docs refinement — DOC- (current lead)
+
+One task per session; entries delete on ship. From the 2026-10-13 docs audit + decision round — all open decisions resolved; details land with DOC-1.
+
+| ID | Task | Notes |
+|---|---|---|
+| DOC-1 | Decisions & register | Author Open Decisions section (top of this file); land resolved decisions into owning docs: aim = direction + soft lock, revisit at 2R (systemPatterns); wand/potion = owned collection + cycle inputs, keys at S-5/S-6 (productContext + task rows); S-2 unpark just-in-time at first consumer; unknown assets closed as-is; provenance→source wording sweep (skip dated log lines); fix projectbrief generator drift |
+| DOC-2 | Purpose charter & single-homing | One-line charter per memory file header; single-home: phase → projectbrief, mission → projectbrief, conventions → systemPatterns, engine facts → techContext; activeContext becomes pointer-snapshot |
+| DOC-3 | systemPatterns I | Architecture sections (~7.6K chars): one fact per bullet, strip R-ID/refactor commentary, telegraphic grammar; fact inventory verified before/after |
+| DOC-4 | systemPatterns II | Adopted Conventions table (~10.5K chars): split >400-char cells, merge rows duplicating Architecture facts, fold Known Trade-offs; file ≤ ~12 KB, zero mechanical facts lost |
+| DOC-5 | techContext + productContext | Strip R-references; engine facts one per line; provisional design tables unchanged |
+| DOC-6 | devPlan restructure | Absorb 2R + necromancer playtest + archer flip as tasks; re-ID the D-1 grab-bag; subtasks for R-40 and D-9; size classes; archive Sept 2-13 log lines → memory-bank/archive/progress-2026-q3.md; return this file to ≤ ~80 lines |
+| DOC-7 | Rules: git + loading | Commit protocol → memory-bank/commit-protocol.md with gate stub in git.md (draft only at user-confirmed DONE); session start reads activeContext only; when-to-read-what table; evaluate moving assets.md out of always-loaded rules |
+| DOC-8 | Rules: editor + hygiene | godot-collaboration rewrite per research: real conflict modes = cache-stale overwrites + two-writer lost updates (godot #75865, #24646), not general corruption; log-hygiene soft caps (systemPatterns, techContext, productContext); drop ai-rework-log reference |
+| DOC-9 | README refresh | Align Current Status with shipped state; trim duplicated goals list; stays self-contained |
+
 ## Room-block & descent foundations — R- (lead tasks)
 | ID | Task | Notes |
 |---|---|---|
