@@ -3,7 +3,7 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-Development phase. Missile/volley + firing repositioning series landed 2026-10-13. Devplan leads: R-40..R-42.
+Development phase. Docs-refinement program (DOC-1..DOC-9) is the devPlan lead; game tasks (2R, R-40..) queue behind it.
 
 ## Just Landed
 - Missile consume pairing: reflected shots die on the hurtbox that
@@ -48,13 +48,13 @@ Development phase. Missile/volley + firing repositioning series landed 2026-10-1
   editor-clean confirmation first
 
 ## Next Up
-1. Task 2R: straight-launch reflect (drop the arc fan), cone
+1. DOC-1: decisions register + land resolved decisions into owning docs
+2. Task 2R: straight-launch reflect (drop the arc fan), cone
    soft-seek for targetless shots (stub combat aim-direction seam)
-2. Necromancer playtest: whiff exports + firing repositioning tuning
-3. Archer flip: `reposition_after_whiff` + firing stance ON
-4. R-40 room-block standard, then R-41 tier-1 slice
+3. Necromancer playtest: whiff exports + firing repositioning tuning
+4. Archer flip: `reposition_after_whiff` + firing stance ON
+5. R-40 room-block standard, then R-41 tier-1 slice
 
 ## Open Decisions
 - Archer repositioning ships OFF until necromancer playtest
-- Wand input binding + potion carry model: settle at S-5/S-6
-- Public release: replace unknown-origin assets (HUD art, ~20 SFX)
+- Aim, wand/potion, S-2, unknown assets resolved; register → devPlan top (DOC-1)
