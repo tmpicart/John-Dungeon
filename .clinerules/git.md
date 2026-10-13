@@ -29,3 +29,19 @@ Plain, factual, informative — the commit history doubles as project documentat
   "Tested:" are all excluded — gate results belong in the task summary, not
   history). A reader with only the diff and the message must fully
   understand the change. The same rule applies to `progress.md` one-liners.
+
+## Message framing (subject and body)
+
+- Subject: imperative, completing "If applied, this commit will
+  ___" - the commit is the actor; name in-game entities only when
+  it aids clarity. Cap 50 characters, no trailing period.
+- Body: blank line after the subject, wrapped at 72. First
+  paragraph states the observable problem, bullets carry the
+  changes. The body explains what and why - the diff shows how.
+- Define project jargon at first use (volley, muzzle, whiff,
+  reflect, consume) - one parenthetical is enough.
+- No task-plan IDs (R-N, BUG-N) as framing; plain language first,
+  an ID at most as a trailing pointer.
+- docs(memory) commits describe their content and always carry a
+  body; status voice ("done", "complete", "snapshot") is not a
+  description.
