@@ -3,18 +3,14 @@
 > **Purpose:** Where work stands right now. Rewritten each session (<=60 lines) - history goes to `progress.md`, not here.
 
 ## Phase
-Development phase. Docs-refinement program (DOC-1..DOC-9) is the devPlan lead; game tasks (2R, R-40..) queue behind it.
+Development phase. Docs-refinement program (DOC-2..DOC-9) is the devPlan lead; game tasks (2R, R-40..) queue behind it.
 
 ## Just Landed
-- Missile consume pairing: reflected shots die on the hurtbox that
-  takes the damage; player contact consumes via a per-tick sweep after
-  the physics flush (same-frame parries keep the shot); capsule widened
-- Firing stance repositioning: EnemyChase FIRING scorer (navmesh fan
-  probes + `_bounded_close_in`), EnemyRetreat grades stances via
-  `band_clear_at(position)`; necromancer retreat is hit-driven only
-- Ten unpushed combat commits reworded 2026-10-13 (trees verified
-  identical); framing standard in `.clinerules/git.md`; backup tags until push
-- missile_probe at 13 stages / 39 checks (reflect pairing set added)
+- DOC-1: Open Decisions register at the top of devPlan; resolved
+  decisions landed in owning docs (aim → systemPatterns,
+  wand/potion → productContext + S-5/S-6 rows, S-2 unpark policy,
+  unknown assets → ASSETS.md); provenance→source sweep;
+  projectbrief generator drift fixed
 
 ## Working Agreements
 - Enemy states are shared (`states/enemy_chase|attack|retreat.gd`);
@@ -48,7 +44,7 @@ Development phase. Docs-refinement program (DOC-1..DOC-9) is the devPlan lead; g
   editor-clean confirmation first
 
 ## Next Up
-1. DOC-1: decisions register + land resolved decisions into owning docs
+1. DOC-2: purpose charter & single-homing
 2. Task 2R: straight-launch reflect (drop the arc fan), cone
    soft-seek for targetless shots (stub combat aim-direction seam)
 3. Necromancer playtest: whiff exports + firing repositioning tuning
@@ -56,5 +52,5 @@ Development phase. Docs-refinement program (DOC-1..DOC-9) is the devPlan lead; g
 5. R-40 room-block standard, then R-41 tier-1 slice
 
 ## Open Decisions
-- Archer repositioning ships OFF until necromancer playtest
-- Aim, wand/potion, S-2, unknown assets resolved; register → devPlan top (DOC-1)
+- Register lives at the top of `devPlan.md`: aim revisit at 2R;
+  archer repositioning OFF until the necromancer playtest

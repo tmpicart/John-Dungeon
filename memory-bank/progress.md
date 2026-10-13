@@ -69,4 +69,5 @@ Migration complete: frameworks R-01..R-33 landed; development phase — task lis
 - 2026-10-13 | fix | Missile consume pairs with damage: reflected shots die on the hurtbox that takes the hit; per-tick player sweep keeps same-frame parries alive.
 - 2026-10-13 | docs | Commit framing rules added to git.md; the ten unpushed combat commits reworded to match (trees unchanged; msg-backup held until push).
 - 2026-10-13 | docs | Docs-refinement program decided (aim, wand/potion, S-2, unknown assets); DOC-1..DOC-9 track landed as devPlan lead.
+- 2026-10-13 | docs | DOC-1: decisions register atop devPlan; aim/wand-potion/S-2/unknown-asset decisions landed; provenance→source sweep; projectbrief drift fix.
 
