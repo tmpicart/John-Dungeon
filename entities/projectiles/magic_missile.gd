@@ -1,5 +1,15 @@
 extends Node2D
 
+## Hybrid missile flight: direct-seek homing arcs wherever the line to the
+## player is clear; while cover blocks that line the missile paths through
+## the runtime-baked mesh at the same turn cap, so volleys round cover
+## instead of splatting on it. Reflected missiles never route — their
+## targets are enemies in the open — and keep the reflect homing.
+
+## Environment bit: the only geometry the mode check treats as blocking
+## (walls and prop bodies, per the aim-gate convention).
+const BLOCKING_MASK := 1 << 2
+
 @export var speed := 85
 @export var damage: int = 1
 @export var leniency_threshold = 25
@@ -8,6 +18,20 @@ extends Node2D
 ## Launches the reflect this many degrees wide of the aim line (random side)
 ## so the homing visibly arcs onto the lock.
 @export var reflect_arc_deg := 75.0
+## Seconds between blocked-line checks while flying direct arcs.
+@export var route_check_interval := 0.1
+## Seconds between path re-queries while routing around cover.
+@export var repath_interval := 0.35
+## Consecutive clear seconds required to leave route mode; absorbs the
+## flip-flopping at cover edges.
+@export var clear_hysteresis := 0.2
+## Waypoint switch radius. Distance-based because plane tests are
+## lateral-blind: when a repath's clamped path start falls behind the
+## missile, "past the plane" cascades through far waypoints and the missile
+## aims at the player instead of the route (probe-verified). 18.0 gives the
+## fast arc more slack than the followers' 12px reach and covers the +12px
+## forward hitbox.
+@export var waypoint_reach := 18.0
 
 var reflected = false
 var passed = false
@@ -16,38 +40,151 @@ var player: CharacterBody2D
 var target: Node2D
 var launch_angle := 0.0
 
-func _ready():
-	player = get_tree().get_first_node_in_group("Player")
+## Route mode: the direct line is blocked; steering follows baked-mesh
+## waypoints until the line has been clear for the hysteresis window.
+var _routing := false
+var _route_points: PackedVector2Array = []
+var _route_index := 0
+var _check_clock := 0.0
+var _repath_clock := 0.0
+var _clear_clock := 0.0
 
-func _physics_process(delta):
-	if not reflected:
-		if not passed:
-			var target_direction = (player.global_position - global_position).normalized()
-			var target_angle = target_direction.angle()
 
-			# Smooth rotation toward target angle
-			rotation = lerp_angle(rotation, target_angle, delta * turn_speed)
-			direction = Vector2.RIGHT.rotated(rotation)
+func _ready() -> void:
+	player = Global.player as CharacterBody2D
+
+
+func _physics_process(delta: float) -> void:
+	if reflected:
+		_steer_reflected(delta)
+	elif _routing:
+		_steer_routed(delta)
 	else:
-		# After reflection the chase never gives up: targetless missiles keep
-		# polling the player's aim (this is the physics step) and settle onto
-		# the aim line between locks; only contact ends them.
-		if not is_instance_valid(target):
-			target = player.combat.get_aim_target()
-		var desired_angle := launch_angle
-		if target != null:
-			desired_angle = (target.global_position - global_position).normalized().angle()
-		rotation = lerp_angle(rotation, desired_angle, delta * turn_speed)
-		direction = Vector2.RIGHT.rotated(rotation)
+		if not passed:
+			_steer_direct(delta)
+			_check_clock += delta
+			if _check_clock >= route_check_interval:
+				_check_clock = 0.0
+				if not _line_to_player_clear():
+					_enter_route()
 
 	global_position += direction * speed * delta
 
 	var distance_to_player = global_position.distance_to(player.global_position)
-	if not passed and not reflected and distance_to_player < leniency_threshold:
+	if not passed and not reflected and not _routing \
+			and distance_to_player < leniency_threshold:
 		passed = true
 		_resume_tracking_later()
 
 	$AnimationPlayer.play("Track")
+
+
+## Direct-seek homing — the pre-routing flight, unchanged: wherever the line
+## to the player is clear, the missile keeps today's arc character.
+func _steer_direct(delta: float) -> void:
+	var target_direction = (player.global_position - global_position).normalized()
+	var target_angle = target_direction.angle()
+
+	# Smooth rotation toward target angle
+	rotation = lerp_angle(rotation, target_angle, delta * turn_speed)
+	direction = Vector2.RIGHT.rotated(rotation)
+
+
+
+## Cover routing: the same turn cap steers at mesh waypoints, so routed
+## flight keeps the arc character. Waypoints switch by closing within
+## waypoint_reach of them; the aim point rides the current-to-next leg
+## midpoint so the turn rounds the inside of the corridor instead of the
+## boundary vertices.
+func _steer_routed(delta: float) -> void:
+	_check_clock += delta
+	if _check_clock >= route_check_interval:
+		_check_clock = 0.0
+		if _line_to_player_clear():
+			_clear_clock += route_check_interval
+			if _clear_clock >= clear_hysteresis:
+				_routing = false
+				return
+		else:
+			_clear_clock = 0.0
+
+	_repath_clock += delta
+	if _repath_clock >= repath_interval:
+		_repath_clock = 0.0
+		_route_points = _query_route()
+		_route_index = 0
+
+	if _route_points.size() < 2:
+		# An empty or point path (region-to-map sync race, disconnected
+		# geometry) falls back to direct arcs instead of wedging.
+		_routing = false
+		return
+
+	_route_index = _advance_route_index()
+	var aim_point: Vector2 = _route_points[_route_index]
+	if _route_index < _route_points.size() - 1:
+		aim_point = aim_point.lerp(_route_points[_route_index + 1], 0.5)
+
+	var target_angle := (aim_point - global_position).normalized().angle()
+	rotation = lerp_angle(rotation, target_angle, delta * turn_speed)
+	direction = Vector2.RIGHT.rotated(rotation)
+
+
+## Advances past waypoints the missile has closed within waypoint_reach of
+## and returns the settled index.
+func _advance_route_index() -> int:
+	while _route_index < _route_points.size() - 1 \
+			and global_position.distance_to(_route_points[_route_index]) \
+					<= waypoint_reach:
+		_route_index += 1
+	return _route_index
+
+
+func _enter_route() -> void:
+	_route_points = _query_route()
+	_route_index = 0
+	_repath_clock = 0.0
+	_clear_clock = 0.0
+	_routing = _route_points.size() >= 2
+
+
+## Paths through the runtime-baked mesh. Both endpoints are clamped to the
+## mesh: a target hugging geometry often sits off the polygons, and an
+## off-mesh endpoint queries to an empty path. optimize=false keeps the
+## server's corridor untouched — the raw path runs through the corridor's
+## interior — while mesh postprocessing corner-cuts tile-navmesh paths
+## (engine fact).
+func _query_route() -> PackedVector2Array:
+	var map := get_world_2d().get_navigation_map()
+	var from := NavigationServer2D.map_get_closest_point(map, global_position)
+	var to := NavigationServer2D.map_get_closest_point(map, player.global_position)
+	return NavigationServer2D.map_get_path(map, from, to, false)
+
+
+## Single center-ray check (Environment only), throttled by the caller.
+## Ray-thin is correct for mode switching, unlike the fire gate: a corner
+## the body would graze still reads clear, and the crash it produces is
+## the outmaneuver behavior this projectile is tuned for.
+func _line_to_player_clear() -> bool:
+	var space := get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(
+			global_position, player.global_position, BLOCKING_MASK)
+	query.hit_from_inside = true
+	return space.intersect_ray(query).is_empty()
+
+
+## Reflected homing: the chase never gives up — targetless missiles keep
+## polling the player's aim (this is the physics step) and settle onto
+## the aim line between locks; only contact ends them.
+func _steer_reflected(delta: float) -> void:
+	if not is_instance_valid(target):
+		target = player.combat.get_aim_target()
+	var desired_angle := launch_angle
+	if target != null:
+		desired_angle = (target.global_position - global_position).normalized().angle()
+	rotation = lerp_angle(rotation, desired_angle, delta * turn_speed)
+	direction = Vector2.RIGHT.rotated(rotation)
+
 
 ## Pauses homing briefly after passing the player; one timer per pass instead
 ## of one per frame.
