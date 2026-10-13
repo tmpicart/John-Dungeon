@@ -17,9 +17,13 @@ const EXIT_CLEARANCE_PX := 3.0
 
 @export var speed := 85
 @export var damage: int = 1
-@export var leniency_threshold = 25
+## Homing freezes inside this radius so a last-instant dodge commits the
+## shot past the player; small enough to steer through most of the approach.
+@export var leniency_threshold = 12
 @export var track_resume_delay = .5
-@export var turn_speed = 3
+## Turn radius = speed / turn_speed (~15 px): a U-turn must fit a
+## two-tile corridor.
+@export var turn_speed = 5.5
 ## Launches the reflect this many degrees wide of the aim line (random side)
 ## so the homing visibly arcs onto the lock.
 @export var reflect_arc_deg := 75.0
