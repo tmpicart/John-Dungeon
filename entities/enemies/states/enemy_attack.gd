@@ -65,6 +65,13 @@ func _spawn_projectile(spawn_position: Vector2) -> void:
 	if player != null and _requires_sight() \
 			and not enemy.aim_line_clear(spawn_position, player.global_position):
 		return
+	# A projectile born inside cover dies on its first contact tick, before
+	# any flight logic runs: the volley offsets sit fixed relative to the
+	# body, so an overhang over the origin buries that muzzle. Skip buried
+	# spawns instead of clamping — the mesh's closest point can snap
+	# through a thin wall to the far side.
+	if not enemy.spawn_point_clear(spawn_position):
+		return
 	var proj = projectile.instantiate()
 	get_tree().current_scene.add_child(proj)
 	proj.add_to_group("Enemies")

@@ -10,6 +10,11 @@ extends Node2D
 ## (walls and prop bodies, per the aim-gate convention).
 const BLOCKING_MASK := 1 << 2
 
+## Lateral clearance the routing-exit lanes sweep: the body runs about
+## ±2 px off its spine, so an exit gate as ray-thin as the entry check
+## releases the missile onto arcs that clip corners the line only grazes.
+const EXIT_CLEARANCE_PX := 3.0
+
 @export var speed := 85
 @export var damage: int = 1
 @export var leniency_threshold = 25
@@ -100,7 +105,7 @@ func _steer_routed(delta: float) -> void:
 	_check_clock += delta
 	if _check_clock >= route_check_interval:
 		_check_clock = 0.0
-		if _line_to_player_clear():
+		if _lane_clear_wide():
 			_clear_clock += route_check_interval
 			if _clear_clock >= clear_hysteresis:
 				_routing = false
@@ -161,16 +166,38 @@ func _query_route() -> PackedVector2Array:
 	return NavigationServer2D.map_get_path(map, from, to, false)
 
 
-## Single center-ray check (Environment only), throttled by the caller.
-## Ray-thin is correct for mode switching, unlike the fire gate: a corner
-## the body would graze still reads clear, and the crash it produces is
-## the outmaneuver behavior this projectile is tuned for.
+## Entry-side lane check (Environment only), throttled by the caller.
+## Ray-thin on purpose: eager routing engages sooner, and a genuine
+## sidestep leaves the line clear at any width — the crash it produces on
+## tight outmaneuvers is the tuning this projectile ships with. The exit
+## side is width-aware (see _lane_clear_wide).
 func _line_to_player_clear() -> bool:
 	var space := get_world_2d().direct_space_state
 	var query := PhysicsRayQueryParameters2D.create(
 			global_position, player.global_position, BLOCKING_MASK)
 	query.hit_from_inside = true
 	return space.intersect_ray(query).is_empty()
+
+
+## Exit-side lane check: the aim-gate center-plus-parallels sweep at
+## EXIT_CLEARANCE_PX. Routing releases onto direct arcs only when every
+## lane reads clear for the full hysteresis window — a center ray that
+## merely grazes a corner must not hand a turning missile an arc that
+## clips it. The entry check stays ray-thin by design.
+func _lane_clear_wide() -> bool:
+	var space := get_world_2d().direct_space_state
+	var lateral := (player.global_position - global_position).normalized().orthogonal()
+	for side: float in [0.0, 1.0, -1.0]:
+		var shift := lateral * (EXIT_CLEARANCE_PX * side)
+		var query := PhysicsRayQueryParameters2D.create(
+				global_position + shift, player.global_position + shift,
+				BLOCKING_MASK)
+		# Same rule as the aim gate: an origin pressed into a blocker's
+		# face counts as blocked, never clear-through.
+		query.hit_from_inside = true
+		if not space.intersect_ray(query).is_empty():
+			return false
+	return true
 
 
 ## Reflected homing: the chase never gives up — targetless missiles keep

@@ -112,6 +112,19 @@ func aim_line_clear(from_point: Vector2, to_point: Vector2) -> bool:
 			return false
 	return true
 
+
+## True when the world point is not inside blocking geometry (Environment
+## only; bodies never count). Volley muzzles sit at fixed body offsets, so
+## an overhang over the origin buries some spawns — callers skip buried
+## spawns rather than clamp them (the mesh's closest point can snap
+## through a thin wall to the far side).
+func spawn_point_clear(point: Vector2) -> bool:
+	var query := PhysicsPointQueryParameters2D.new()
+	query.position = point
+	query.collision_mask = AIM_BLOCKING_MASK
+	return get_world_2d().direct_space_state.intersect_point(query, 1).is_empty()
+
+
 ## Damage entry point (Hurtbox routes here). `from_position` is where the hit
 ## originated — stored for the knockback pass, not applied yet.
 func take_damage(dmg: int, from_position: Vector2 = Vector2.INF) -> void:

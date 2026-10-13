@@ -6,8 +6,11 @@ extends Node
 ## player body on a synthetic baked room. The stages cover the untouched direct
 ## arc (contact kill on a clear lane), cover rounding (the missile crosses a
 ## walled column through its open rows and converges on the shadowed stub
-## instead of dying on the wall), and convergence while the stub drifts behind
-## cover (repath while blocked).
+## instead of dying on the wall), convergence while the stub drifts behind
+## cover (repath while blocked), spawn clearance (a necromancer volley parked
+## under an overhang fires only from the muzzle that is not buried), and the
+## width-aware routing exit (a tangent-clear center ray with a clipping wide
+## lane holds the route).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -23,6 +26,18 @@ const WALL_FIRST_ROW := 1
 const WALL_LAST_ROW := 7
 const SPAWN := Vector2(2.5, 5.5)
 const TARGET := Vector2(13.5, 5.5)
+## Buried-volley stage: a two-cell shelf buries the necromancer's left and
+## top muzzles ((-15,-25) and (0,-30) at this park position); only the
+## right shoulder (15,-25) is in the open.
+const NECRO_SCENE := "res://entities/enemies/necromancer/necromancer.tscn"
+const NECRO_PARK := Vector2(4.5, 6.5)
+const NECRO_SHELF_CELLS: Array[Vector2i] = [Vector2i(3, 4), Vector2i(4, 4)]
+const NECRO_CLEAR_MUZZLE := Vector2(87.0, 79.0)
+## Wide-exit stage: the block's bottom-right corner passes ~1 px under the
+## spawn-to-stub line — center ray clear, block-side lane clipping it.
+const GATE_MISSILE_AT := Vector2(6.0, 9.0)
+const GATE_STUB_AT := Vector2(14.0, 7.5)
+const GATE_BLOCK_CENTER := Vector2(10.0, 7.5)
 const CONTACT_BUDGET := 10.0
 const ROUTE_BUDGET := 14.0
 
@@ -78,6 +93,8 @@ func _run() -> void:
 	await _stage_cover_rounding_prep()
 	await _stage_cover_rounding()
 	await _stage_drift_behind_cover()
+	await _stage_buried_volley()
+	await _stage_wide_exit_gate()
 	_completed = true
 
 
@@ -137,6 +154,83 @@ func _stage_drift_behind_cover() -> void:
 	_check(outcome.min_distance < 24.0, label)
 	_log_flight(outcome)
 	await _clear_stage_actors(stub)
+
+
+## Spawn clearance: the necromancer parked under the shelf fires the volley
+## directly (blind fire is this enemy's design — no LOS gate). The buried
+## muzzles must be skipped by the point-clearance check, not clamped and
+## not spawned inside the wall to die on contact.
+func _stage_buried_volley() -> void:
+	for cell in NECRO_SHELF_CELLS:
+		_walls_layer.set_cell(cell, 0, Vector2i.ZERO)
+	var shelf := _make_block(Vector2(4.0, 4.5), Vector2i(2, 1))
+	var necro: Node2D = load(NECRO_SCENE).instantiate()
+	add_child(necro)
+	necro.global_position = NECRO_PARK * CELL_SIZE
+	var stub := _spawn_stub(TARGET)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var group_before := get_tree().get_nodes_in_group("Enemies")
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	attack_state._spawn_projectiles()
+	var spawned := get_tree().get_nodes_in_group("Enemies").filter(
+			func(node: Node) -> bool: return not group_before.has(node))
+	_check(spawned.size() == 1, "buried volley spawned only the clear muzzle")
+	if spawned.size() == 1:
+		var at_clear: bool = spawned[0].global_position.distance_to(
+				NECRO_CLEAR_MUZZLE) < 0.5
+		_check(at_clear, "survivor spawned at the right-shoulder muzzle")
+		# The survivor then flies a normal route — on this geometry its
+		# turn-capped corridor arc can later carry it into the wall column,
+		# which is ordinary wall contact, not a spawn defect. The airborne
+		# window only has to prove the spawn point itself was clear.
+		var airborne := true
+		for i in 12:
+			await get_tree().physics_frame
+			airborne = airborne and is_instance_valid(spawned[0])
+		_check(airborne, "survivor airborne past its first flight ticks")
+		if is_instance_valid(spawned[0]):
+			spawned[0].queue_free()
+	necro.queue_free()
+	shelf.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## Width-aware exit: with the block present the center ray to the stub is
+## clear but the block-side lane clips the corner, so routing must not
+## release (the ray-thin gate alone would). Freeing the block clears
+## every lane.
+func _stage_wide_exit_gate() -> void:
+	var stub := _spawn_stub(GATE_STUB_AT)
+	var missile := _spawn_missile(GATE_MISSILE_AT)
+	var block := _make_block(GATE_BLOCK_CENTER, Vector2i(2, 1))
+	await get_tree().physics_frame
+	_check(missile.call("_line_to_player_clear"),
+			"tangent corner: center ray reads clear")
+	_check(not missile.call("_lane_clear_wide"),
+			"tangent corner: wide exit lane reads blocked")
+	block.queue_free()
+	await get_tree().physics_frame
+	_check(missile.call("_lane_clear_wide"),
+			"no corner: every exit lane reads clear")
+	missile.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## Physical Environment block for the later stages: `center` in tile units,
+## `cells` spans the rectangle, mirroring the wall column's body.
+func _make_block(center: Vector2, cells: Vector2i) -> StaticBody2D:
+	var block := StaticBody2D.new()
+	block.collision_layer = 1 << 2
+	block.collision_mask = 0
+	var shape_node := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = Vector2(cells.x * CELL_SIZE, cells.y * CELL_SIZE)
+	shape_node.shape = shape
+	block.add_child(shape_node)
+	add_child(block)
+	block.position = center * CELL_SIZE
+	return block
 
 
 ## Flies one missile until freed or the budget runs out, sampling validity,
