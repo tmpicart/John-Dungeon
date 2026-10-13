@@ -163,9 +163,13 @@ func physics_update(delta: float) -> void:
 		return
 
 	if attack_state != null and _in_attack_range(to_player, distance):
-		if blind:
+		var attack := attack_state as EnemyAttack
+		if blind or (attack != null and not attack.fire_gate_open()):
 			# Keep closing on the player until the aim ray clears, then
-			# attack from wherever line of sight is gained.
+			# attack from wherever line of sight is gained. A settled
+			# whiffed volley suppresses the handover the same way (see
+			# EnemyAttack.fire_gate_open): travel reopens the gate, and
+			# the retry window reopens it for a body that cannot move.
 			_follow_path(delta, to_player)
 			return
 		_enter_attack()

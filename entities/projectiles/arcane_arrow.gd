@@ -7,6 +7,9 @@ extends Node2D
 @export var max_lifetime := 10.0
 
 var player: CharacterBody2D
+## Volley outcome telemetry, assigned by the spawner (see VolleyReport).
+var volley_report: VolleyReport
+var reflected := false
 var _lifetime := 0.0
 
 func _ready():
@@ -16,9 +19,23 @@ func _physics_process(delta):
 	var direction = Vector2.RIGHT.rotated(rotation)
 	global_position += speed * direction * delta
 
+	# Volley arrival telemetry (see magic_missile): never after reflection,
+	# when the arrow belongs to the player.
+	if volley_report != null and not volley_report.arrived and not reflected \
+			and global_position.distance_to(player.global_position) \
+					< volley_report.arrival_radius:
+		volley_report.settle_arrived()
+
 	_lifetime += delta
 	if _lifetime >= max_lifetime:
 		queue_free()
+
+## Volley bookkeeping: leaving the flight retires the arrow from its
+## volley's live count.
+func _exit_tree() -> void:
+	if volley_report != null:
+		volley_report.retire()
+
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
 	# The flight mask sweeps the player body (layer 1) and Environment
@@ -32,6 +49,12 @@ func _on_screen_exited() -> void:
 	queue_free()
 
 func reflect():
+	reflected = true
+	# The shot now belongs to the player: leave the shooter's volley.
+	if volley_report != null:
+		volley_report.retire()
+		volley_report = null
+
 	# The single surface now pairs with enemy hurtboxes and self-frees on
 	# enemy bodies and walls.
 	var hitbox = $Hitbox

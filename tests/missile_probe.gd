@@ -8,9 +8,11 @@ extends Node
 ## walled column through its open rows and converges on the shadowed stub
 ## instead of dying on the wall), convergence while the stub drifts behind
 ## cover (repath while blocked), spawn clearance (a necromancer volley parked
-## under an overhang fires only from the muzzle that is not buried), and the
+## under an overhang fires only from the muzzle that is not buried), the
 ## width-aware routing exit (a tangent-clear center ray with a clipping wide
-## lane holds the route).
+## lane holds the route), and the whiff gate (settled volleys that never
+## reached the player close the chase handover until the body repositions or
+## the retry window lapses; in-flight volleys and arrivals never close it).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -33,6 +35,9 @@ const NECRO_SCENE := "res://entities/enemies/necromancer/necromancer.tscn"
 const NECRO_PARK := Vector2(4.5, 6.5)
 const NECRO_SHELF_CELLS: Array[Vector2i] = [Vector2i(3, 4), Vector2i(4, 4)]
 const NECRO_CLEAR_MUZZLE := Vector2(87.0, 79.0)
+## Fourth shelf cell for the whiff-gate stage: with the stage-5 cells still
+## painted it buries the right shoulder, sealing every muzzle.
+const NECRO_RIGHT_SHELF_CELL := Vector2i(5, 4)
 ## Wide-exit stage: the block's bottom-right corner passes ~1 px under the
 ## spawn-to-stub line — center ray clear, block-side lane clipping it.
 const GATE_MISSILE_AT := Vector2(6.0, 9.0)
@@ -95,6 +100,7 @@ func _run() -> void:
 	await _stage_drift_behind_cover()
 	await _stage_buried_volley()
 	await _stage_wide_exit_gate()
+	await _stage_whiff_gate()
 	_completed = true
 
 
@@ -214,6 +220,88 @@ func _stage_wide_exit_gate() -> void:
 	_check(missile.call("_lane_clear_wide"),
 			"no corner: every exit lane reads clear")
 	missile.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## Spawns one volley through the attack state and returns the newly added
+## Enemies-group members (the probe reuses the group as its spawn ledger).
+func _fire_and_diff(attack_state: EnemyAttack) -> Array:
+	var before := get_tree().get_nodes_in_group("Enemies")
+	attack_state._spawn_projectiles()
+	return get_tree().get_nodes_in_group("Enemies").filter(
+			func(node: Node) -> bool: return not before.has(node))
+
+
+## Whiff-triggered repositioning: with the flag runtime-enabled, a settled
+## volley that never reached the player closes the chase handover gate; the
+## gate reopens on the configured travel, on the retry window lapsing, and
+## it never closes for in-flight volleys or arrived ones. The default-off
+## behavior is guarded first: without the flag a whiffed volley changes
+## nothing.
+func _stage_whiff_gate() -> void:
+	var stub := _spawn_stub(TARGET)
+	var necro: Node2D = load(NECRO_SCENE).instantiate()
+	add_child(necro)
+	necro.global_position = NECRO_PARK * CELL_SIZE
+	# Freeze the enemy's own state machine: this stage drives the attack
+	# state directly and must not race its live handover loop.
+	necro.process_mode = Node.PROCESS_MODE_DISABLED
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	_walls_layer.set_cell(NECRO_RIGHT_SHELF_CELL, 0, Vector2i.ZERO)
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+
+	# Every muzzle buried: nothing spawns, the volley settles whiffed at
+	# once, and the flag decides whether that matters. The off guard pins
+	# the script default explicitly — the necromancer scene ships enabled.
+	attack_state.reposition_after_whiff = false
+	attack_state._spawn_projectiles()
+	_check(attack_state.fire_gate_open(),
+			"default-off: a whiffed volley leaves the gate open")
+	attack_state.reposition_after_whiff = true
+	attack_state._spawn_projectiles()
+	_check(not attack_state.fire_gate_open(),
+			"zero-registered volley closes the gate at once")
+
+	# Travel from the fire position reopens; returning re-closes only via
+	# a fresh verdict.
+	necro.global_position += Vector2(48.0, 0.0)
+	_check(attack_state.fire_gate_open(),
+			"repositioning the full distance reopens the gate")
+	necro.global_position = NECRO_PARK * CELL_SIZE
+
+	# A live shot retired without arrival: settled whiff, gate closed. A
+	# fresh in-flight volley has no verdict: gate open.
+	_walls_layer.erase_cell(NECRO_RIGHT_SHELF_CELL)
+	await get_tree().physics_frame
+	var spawned := _fire_and_diff(attack_state)
+	_check(spawned.size() == 1, "clear muzzle spawns for the live-volley steps")
+	if spawned.size() == 1:
+		spawned[0].queue_free()
+	await get_tree().physics_frame
+	_check(not attack_state.fire_gate_open(),
+			"settled volley without arrival keeps the gate closed")
+	var airborne := _fire_and_diff(attack_state)
+	if airborne.size() == 1:
+		airborne[0].global_position = stub.global_position + Vector2(0.0, -10.0)
+		await get_tree().physics_frame
+		await get_tree().physics_frame
+	_check(attack_state.fire_gate_open(), "arrival never closes the gate")
+
+	# A fresh settled whiff closes again; only the retry window can reopen
+	# it from a body that has not moved.
+	var last := _fire_and_diff(attack_state)
+	if last.size() == 1:
+		last[0].queue_free()
+	await get_tree().physics_frame
+	_check(not attack_state.fire_gate_open(),
+			"a fresh whiff closes the gate again")
+	attack_state.whiff_retry_seconds = 0.4
+	for i in 30:
+		await get_tree().physics_frame
+	_check(attack_state.fire_gate_open(),
+			"retry-window lapse reopens the gate")
+	necro.queue_free()
 	await _clear_stage_actors(stub)
 
 

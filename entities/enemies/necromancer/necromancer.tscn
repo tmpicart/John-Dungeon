@@ -352,6 +352,10 @@ chase_state = NodePath("../EnemyChase")
 projectile = ExtResource("8_ctycn")
 aim_ray_cast = NodePath("../../AimRaycast")
 projectile_offsets = Array[Vector2]([Vector2(-15, -25), Vector2(0, -30), Vector2(15, -25)])
+reposition_after_whiff = true
+whiff_arrival_radius = 32.0
+whiff_reposition_distance = 48.0
+whiff_retry_seconds = 4.0
 
 [node name="EnemySummon" type="Node" parent="State Control" unique_id=2046692512 node_paths=PackedStringArray("chase_state", "summon_sfx")]
 script = ExtResource("9_vb21g")

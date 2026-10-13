@@ -44,6 +44,8 @@ var direction: Vector2
 var player: CharacterBody2D
 var target: Node2D
 var launch_angle := 0.0
+## Volley outcome telemetry, assigned by the spawner (see VolleyReport).
+var volley_report: VolleyReport
 
 ## Route mode: the direct line is blocked; steering follows baked-mesh
 ## waypoints until the line has been clear for the hysteresis window.
@@ -57,6 +59,13 @@ var _clear_clock := 0.0
 
 func _ready() -> void:
 	player = Global.player as CharacterBody2D
+
+
+## Volley bookkeeping: leaving the flight (any free path) retires the shot
+## from its volley's live count.
+func _exit_tree() -> void:
+	if volley_report != null:
+		volley_report.retire()
 
 
 func _physics_process(delta: float) -> void:
@@ -80,6 +89,13 @@ func _physics_process(delta: float) -> void:
 			and distance_to_player < leniency_threshold:
 		passed = true
 		_resume_tracking_later()
+
+	# Arrival telemetry runs in every flight mode — a routed missile that
+	# rounds cover and reaches the player's area is the volley succeeding —
+	# but never after reflection, when the shot belongs to the player.
+	if volley_report != null and not volley_report.arrived \
+			and not reflected and distance_to_player < volley_report.arrival_radius:
+		volley_report.settle_arrived()
 
 	$AnimationPlayer.play("Track")
 
@@ -221,6 +237,12 @@ func _resume_tracking_later() -> void:
 
 func reflect():
 	reflected = true
+
+	# The shot now belongs to the player: leave the shooter's volley so its
+	# verdict settles on the pre-reflection flight only.
+	if volley_report != null:
+		volley_report.retire()
+		volley_report = null
 
 	# The single surface now pairs with enemy hurtboxes and self-frees on
 	# enemy bodies and walls — reflected missiles no longer pierce.
