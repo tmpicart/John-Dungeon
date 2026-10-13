@@ -12,6 +12,15 @@ class_name EnemyRetreat
 ## a partial-gain route only counts within one flight length. When no
 ## candidate qualifies, geometry has cornered the enemy: it hands back
 ## to chase under a retreat-suppression latch and fights.
+##
+## Two desires share the fan machinery. ESCAPE (default) scores endpoints
+## by distance gained from the player. FIRING scores endpoints by firing
+## stance: the whole volley muzzle band must spawn clear at the candidate
+## position, with in-band endpoints outranking clear-but-out-of-band ones
+## — the chase hands over a blocked fire gate (buried muzzles, whiffed
+## volley) instead of closing on a player it cannot shoot.
+
+enum Desire { ESCAPE, FIRING }
 
 const ESCAPE_FAN_DEGREES: Array[float] = [
 	0.0, 30.0, -30.0, 60.0, -60.0, 90.0, -90.0, 120.0, -120.0, 150.0, -150.0,
@@ -22,6 +31,11 @@ const DOUBLETBACK_DOT_LIMIT := -0.2
 ## Fraction of retreat_distance a route must realize to count as escape;
 ## shorter routes squeeze into the nearest reachable spot, not out.
 const ESCAPE_ROOM_FRACTION := 0.6
+## Reach fractions the FIRING fan probes at. Unburying a muzzle band
+## usually needs a small shuffle off the burial geometry, not a full
+## flight: at a wall every full-length endpoint lands inside the tiles
+## and the scorer would come up empty.
+const FIRING_REACH_FRACTIONS: Array[float] = [1.0, 0.65, 0.35]
 ## Fraction of speed * progress_window the body must travel per window;
 ## less means it is snagged on something the navmesh does not model.
 const PROGRESS_FRACTION := 0.25
@@ -44,6 +58,17 @@ const PROGRESS_FRACTION := 0.25
 @export var progress_window := 1.0
 ## Hard flight cap against degenerate loops (probe determinism).
 @export var retreat_time_limit := 6.0
+## What the fan scores. ESCAPE: distance gained from the player. FIRING:
+## a stance the volley band spawns clear from (see attack_state).
+@export var desire: Desire = Desire.ESCAPE
+## FIRING only: the attack state owning the volley offsets — candidate
+## endpoints must pass its stance clearance check.
+@export var attack_state: EnemyAttack
+## FIRING only: preferred engagement band around the player, in px;
+## in-band endpoints outrank clear-but-out-of-band ones. A 0 max
+## disables the band preference.
+@export var band_min := 0.0
+@export var band_max := 0.0
 
 var player: CharacterBody2D
 var enemy: BaseEnemy
@@ -55,6 +80,11 @@ var _progress_reference := Vector2.ZERO
 
 func _ready() -> void:
 	enemy = actor
+
+
+func validate_exports() -> void:
+	if desire == Desire.FIRING and attack_state == null:
+		push_error("%s: FIRING desire requires attack_state" % get_path())
 
 
 func enter() -> void:
@@ -79,9 +109,9 @@ func physics_update(delta: float) -> void:
 
 	retreat_timer += delta
 
-	# Comfort reached: kite satisfied, chase resumes (and attacks while
-	# the player stays inside its range).
-	if _gap() >= retreat_distance:
+	# Flight done — comfort for ESCAPE, a firing stance for FIRING:
+	# chase resumes and attacks while the player stays inside its range.
+	if _flight_satisfied():
 		transition_to(chase_state)
 		return
 
@@ -128,11 +158,25 @@ func _gap() -> float:
 	return enemy.global_position.distance_to(player.global_position)
 
 
-## Scores the escape fan (see class doc) and retargets the agent. The
+## Flight exit condition. ESCAPE: comfort — the player is back at arm's
+## length. FIRING: the current stance spawns the whole volley band clear,
+## so the chase handover gate reopens and the volley fires from here.
+func _flight_satisfied() -> bool:
+	if desire == Desire.FIRING and attack_state != null \
+			and attack_state.band_clear_at(enemy.global_position):
+		return true
+	return _gap() >= retreat_distance
+
+
+## Scores the fan (see class doc) and retargets the agent. ESCAPE: the
 ## shortest comfort route wins; a partial-gain route only counts within
-## one flight length; no qualifier means cornered geometry: disengage
-## and fight.
+## one flight length. FIRING: the shortest route to a band-clear stance
+## wins, in-band endpoints outranking out-of-band ones. No qualifier
+## means cornered geometry: disengage and fight.
 func _pick_escape_route() -> void:
+	if desire == Desire.FIRING:
+		_pick_firing_route()
+		return
 	var away := (enemy.global_position - player.global_position).normalized()
 	var map: RID = enemy.get_world_2d().navigation_map
 	var comfort_target := Vector2.ZERO
@@ -180,6 +224,69 @@ func _pick_escape_route() -> void:
 		navigation_agent.target_position = partial_target
 		return
 	_disengage()
+
+
+## FIRING scorer: band-clear stances only. In-band beats out-of-band
+## regardless of length, then the shortest route wins. The escape
+## scorer's route floor and gain minimum do not apply — a reposition is
+## about the stance it lands on, not the distance it opens, so a short
+## lateral hop to open space qualifies. The first-step double-back
+## rejection stays: a firing solution stepped into the player's face is
+## not a solution. Endpoints score at the path's clamped end: an
+## unreachable goal folds onto the nearest reachable point and that
+## folded stance is the one the body actually lands on. A fold back to
+## the current spot self-rejects — the gate is closed, so the stance
+## here cannot spawn the band clear.
+func _pick_firing_route() -> void:
+	var away := (enemy.global_position - player.global_position).normalized()
+	var map: RID = enemy.get_world_2d().navigation_map
+	var in_band_target := Vector2.ZERO
+	var in_band_length := INF
+	var clear_target := Vector2.ZERO
+	var clear_length := INF
+	for offset_degrees in ESCAPE_FAN_DEGREES:
+		var direction := away.rotated(deg_to_rad(offset_degrees))
+		for reach in FIRING_REACH_FRACTIONS:
+			var candidate := enemy.global_position \
+					+ direction * retreat_distance * reach
+			var path := NavigationServer2D.map_get_path(
+					map, enemy.global_position, candidate, true)
+			if path.size() < 2:
+				continue
+			var first_step := (path[1] - path[0]).normalized()
+			if first_step.dot(away) < DOUBLETBACK_DOT_LIMIT:
+				continue
+			var stance: Vector2 = path[path.size() - 1]
+			if not attack_state.band_clear_at(stance):
+				continue
+			var route_length := 0.0
+			for i in path.size() - 1:
+				route_length += path[i].distance_to(path[i + 1])
+			if _candidate_in_band(stance):
+				if route_length < in_band_length:
+					in_band_length = route_length
+					in_band_target = stance
+			elif route_length < clear_length:
+				clear_length = route_length
+				clear_target = stance
+	# In-band outranks clear-but-out-of-band regardless of length.
+	if in_band_length < INF:
+		navigation_agent.target_position = in_band_target
+		return
+	if clear_length < INF:
+		navigation_agent.target_position = clear_target
+		return
+	_disengage()
+
+
+## True when the candidate sits inside the preferred engagement band
+## around the player. A 0 band_max accepts any distance at or beyond
+## band_min.
+func _candidate_in_band(candidate: Vector2) -> bool:
+	var gap := candidate.distance_to(player.global_position)
+	if gap < band_min:
+		return false
+	return band_max <= 0.0 or gap <= band_max
 
 
 ## Cornered exit: chase regains control with its retreat triggers

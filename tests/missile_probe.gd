@@ -309,7 +309,7 @@ func _stage_band_gate() -> void:
 	var shelf := _make_block(Vector2(4.0, 4.5), Vector2i(2, 1))
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	_check(not attack_state._muzzle_band_clear(),
+	_check(not attack_state.band_clear_at(necro.global_position),
 			"a stance with buried muzzles reads band-blocked")
 	_check(not attack_state.fire_gate_open(),
 			"band-blocked stance closes the handover before any volley")
@@ -322,7 +322,7 @@ func _stage_band_gate() -> void:
 	shelf.queue_free()
 	await get_tree().physics_frame
 	await get_tree().physics_frame
-	_check(attack_state._muzzle_band_clear(),
+	_check(attack_state.band_clear_at(necro.global_position),
 			"an all-muzzles-clear stance reads band-clear")
 	_check(attack_state.fire_gate_open(),
 			"band-clear stance with no whiff memory opens the handover")

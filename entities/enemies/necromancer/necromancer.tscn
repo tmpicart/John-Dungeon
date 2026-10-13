@@ -333,16 +333,19 @@ initial_state = NodePath("EnemyIdle")
 script = ExtResource("5_l3tat")
 chase_state = NodePath("../EnemyChase")
 
-[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "summon_state", "aim_ray_cast")]
+[node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "summon_state", "reposition_state", "aim_ray_cast")]
 script = ExtResource("6_eko0r")
 navigation_agent = NodePath("../../NavigationAgent2D")
 idle_state = NodePath("../EnemyIdle")
 attack_state = NodePath("../EnemyAttack")
 retreat_state = NodePath("../EnemyRetreat")
 summon_state = NodePath("../EnemySummon")
+reposition_state = NodePath("../EnemyRetreatFiring")
 chase_drop_distance = 300
 attempt_attack_range = 200
+speed = 33.0
 retreat_on_hit = true
+melee_press_range = 0.0
 aim_ray_cast = NodePath("../../AimRaycast")
 summon_chance = 0.25
 
@@ -370,6 +373,17 @@ navigation_agent = NodePath("../../NavigationAgent2D")
 chase_state = NodePath("../EnemyChase")
 speed = 100
 retreat_distance = 125
+
+[node name="EnemyRetreatFiring" type="Node" parent="State Control" node_paths=PackedStringArray("navigation_agent", "chase_state", "attack_state")]
+script = ExtResource("12_f46sl")
+navigation_agent = NodePath("../../NavigationAgent2D")
+chase_state = NodePath("../EnemyChase")
+attack_state = NodePath("../EnemyAttack")
+desire = 1
+speed = 100
+retreat_distance = 125
+band_min = 100.0
+band_max = 200.0
 
 [node name="EnemyHurt" type="Node" parent="State Control" unique_id=574359299 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("17_hurt")

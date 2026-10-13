@@ -67,7 +67,7 @@ func enter() -> void:
 ## window lapses. An in-flight volley has no verdict and never closes the
 ## gate.
 func fire_gate_open() -> bool:
-	if not _muzzle_band_clear():
+	if not band_clear_at(enemy.global_position):
 		return false
 	if not reposition_after_whiff or _last_volley == null:
 		return true
@@ -77,16 +77,18 @@ func fire_gate_open() -> bool:
 	var elapsed := (Time.get_ticks_msec() - _last_fire_msec) / 1000.0
 	return moved >= whiff_reposition_distance or elapsed >= whiff_retry_seconds
 
-## Band clearance: every volley muzzle must pass spawn clearance and the
-## body-to-muzzle line, so the enemy moves (down/away) until the whole
-## spawn band is in the open. Enemies without projectile offsets (melee)
-## are always clear. The per-muzzle skips in _spawn_projectile remain as
-## defense in depth for muzzles buried mid-animation.
-func _muzzle_band_clear() -> bool:
+## Band clearance at a stance position: every volley muzzle must pass
+## spawn clearance and the body-to-muzzle line, so the enemy repositions
+## until the whole spawn band is in the open. Enemies without projectile
+## offsets (melee) are always clear. The per-muzzle skips in
+## _spawn_projectile remain as defense in depth for muzzles buried
+## mid-animation; the reposition scorer (EnemyRetreat, FIRING desire)
+## evaluates hypothetical stances through this check.
+func band_clear_at(position: Vector2) -> bool:
 	for offset in projectile_offsets:
-		var muzzle := enemy.global_position + offset
+		var muzzle := position + offset
 		if not enemy.spawn_point_clear(muzzle) \
-				or not enemy.aim_line_clear(enemy.global_position, muzzle):
+				or not enemy.aim_line_clear(position, muzzle):
 			return false
 	return true
 

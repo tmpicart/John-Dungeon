@@ -21,6 +21,11 @@ const PRESS_PROGRESS_FRACTION := 0.25
 @export var attack_state: State
 @export var retreat_state: State
 @export var summon_state: State
+## Optional firing-solution reposition state (EnemyRetreat, FIRING
+## desire): takes the outcome-gate handover when the closure is not
+## line-of-sight — closing on the player cannot unbury a spawn band.
+## Unwired enemies keep the blind close-in.
+@export var reposition_state: State
 ## Pathfinding speed in px/s (physics-tick independent).
 @export var speed := 33
 ## Distance at which the chase is dropped back to idle.
@@ -163,16 +168,7 @@ func physics_update(delta: float) -> void:
 		return
 
 	if attack_state != null and _in_attack_range(to_player, distance):
-		var attack := attack_state as EnemyAttack
-		if blind or (attack != null and not attack.fire_gate_open()):
-			# Keep closing on the player until the aim ray clears, then
-			# attack from wherever line of sight is gained. A settled
-			# whiffed volley suppresses the handover the same way (see
-			# EnemyAttack.fire_gate_open): travel reopens the gate, and
-			# the retry window reopens it for a body that cannot move.
-			_follow_path(delta, to_player)
-			return
-		_enter_attack()
+		_handle_in_range(delta, to_player, blind)
 		return
 
 	_follow_path(delta, to_player)
@@ -213,6 +209,59 @@ func _has_ready_shot(to_player: Vector2, distance: float) -> bool:
 ## Cornered handoff from EnemyRetreat: hold ground for `duration`.
 func suppress_retreat(duration: float) -> void:
 	_retreat_suppressed = duration
+
+
+## The in-range gate. Sight-blocked enemies keep closing: travel is what
+## opens the aim ray. Outcome-blocked enemies (buried muzzles, whiffed
+## volley) hand the closure to the reposition state when one is wired —
+## approaching cannot unbury a spawn band — and a cornered latch from
+## that state holds the stance until geometry or the whiff retry window
+## reopens the gate. A ready stance on cooldown holds the standoff
+## instead of bouncing the attack handover every tick (the bounce
+## re-rolled the summon chance on every cooldown frame).
+func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
+	var attack := attack_state as EnemyAttack
+	if blind or (attack != null and not attack.fire_gate_open()):
+		if not blind and reposition_state != null:
+			if _retreat_suppressed <= 0.0:
+				transition_to(reposition_state)
+			else:
+				_bounded_close_in(delta, to_player)
+			return
+		_follow_path(delta, to_player)
+		return
+	if not enemy.can_attack() and melee_press_range <= 0.0:
+		# Ranged standoff hold: on cooldown in range, hold the stance
+		# instead of bouncing the attack handover every tick (the bounce
+		# re-rolled the summon chance on every cooldown frame). Melee
+		# pressers keep the handover — its press is the grind that
+		# re-ticks contact damage through the cooldown.
+		_hold_ground()
+		return
+	_enter_attack()
+
+
+## Standoff hold: zero both velocities (the avoidance server keeps
+## re-emitting the last desired vector, so the body would lean on it) and
+## pin facing to the player.
+func _hold_ground() -> void:
+	enemy.velocity = Vector2.ZERO
+	navigation_agent.velocity = Vector2.ZERO
+	enemy.face_toward(player.global_position)
+
+
+## Outcome-blocked closure after a cornered reposition (the fan offered
+## no firing stance): travel instead of dead-standing. Closing can
+## unbury a band pressed into wall geometry behind the body, feeds the
+## whiff retry's travel requirement, and stays alive while the cornered
+## cooldown throttles re-handovers. The press is bounded at half the
+## attack range so a never-opening gate cannot park the body in the
+## player's face.
+func _bounded_close_in(delta: float, to_player: Vector2) -> void:
+	if to_player.length() > attempt_attack_range * 0.5:
+		_follow_path(delta, to_player)
+	else:
+		_hold_ground()
 
 func _in_attack_range(to_player: Vector2, distance: float) -> bool:
 	if attack_range_shape == AttackRangeShape.AXIS_BOX:

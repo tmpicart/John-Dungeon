@@ -11,7 +11,13 @@ extends Node
 ## grinding the back wall), obstacle-backed flight (a wall at the archer's
 ## back keeps the flight local — hop to comfort or cornered stand, never
 ## a tour — with the width-aware aim gate and attack facing pinned against
-## the same wall), and the necromancer hit-triggered retreat.
+## the same wall), and the necromancer hit-triggered retreat. The firing
+## stages cover outcome-gated repositioning (an overhang buries the
+## necromancer's volley band, the chase routes the blocked gate into the
+## FIRING-desire retreat, and the flight lands a stance whose band spawns
+## clear) and the cooldown standoff (in range with an open gate on
+## cooldown, the caster holds the stance instead of churning the attack
+## handover).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -90,6 +96,10 @@ func _run() -> void:
 	await _stage_obstacle_hop()
 	await _teardown()
 	await _stage_hit_retreat()
+	await _teardown()
+	await _stage_firing_reposition()
+	await _teardown()
+	await _stage_standoff_cooldown()
 	_completed = true
 
 
@@ -272,7 +282,7 @@ func _stage_obstacle_hop() -> void:
 	# joins the group across the synchronous spawn call.
 	_player.global_position = Vector2(220.0, 80.0)
 	var projectiles_before := get_tree().get_nodes_in_group("Enemies").size()
-	attack_state._spawn_projectile(Vector2(30.0, 39.0))
+	attack_state._spawn_projectile(Vector2(30.0, 39.0), VolleyReport.new())
 	var projectiles_after := get_tree().get_nodes_in_group("Enemies").size()
 	_check(projectiles_after == projectiles_before,
 			"grazing muzzle line swallowed the shot")
@@ -313,6 +323,93 @@ func _stage_hit_retreat() -> void:
 	_check(back_to_chase, "comfort exit returned to chase")
 
 
+## Outcome-gated repositioning (necromancer): an overhang buries the whole
+## volley band at the park, so the chase handover gate closes while the
+## player stands in attack range. The chase must route the closure to the
+## FIRING-desire retreat (not approach the player it cannot shoot), the
+## flight must land a stance whose band spawns clear, and the state must
+## hand back to chase with the gate open.
+func _stage_firing_reposition() -> void:
+	_tee("  stage: buried muzzle band repositions to a firing stance")
+	_add_blocker(Vector2(128.0, 76.0), Vector2(64.0, 8.0))
+	_remove_bake_artifacts()
+	var nav_layer: TileMapLayer = NavBaker.bake(self)
+	_check(nav_layer != null, "rebake with overhang wall")
+	if nav_layer == null:
+		return
+	for i in FRAMES_TO_SETTLE:
+		await get_tree().physics_frame
+
+	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 96))
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	var firing: EnemyRetreat = necro.get_node(
+			"State Control/EnemyRetreatFiring")
+	_check(not attack_state.band_clear_at(necro.global_position),
+			"overhang park buries the volley band")
+	_player.global_position = Vector2(128, 32)
+	_force_chase(necro)
+	var routed := await _wait_until(
+			func() -> bool: return _current_state(necro) == firing, 2.0)
+	_check(routed, "blocked gate routed into the firing reposition")
+	var park := necro.global_position
+	var attack_entered := false
+	var cleared := false
+	var clock := 0.0
+	while clock < 4.0:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if _current_state(necro) is EnemyAttack:
+			attack_entered = true
+		if attack_state.band_clear_at(necro.global_position):
+			cleared = true
+			break
+	_check(not attack_entered, "no attack while the band was buried")
+	_check(cleared, "flight landed a band-clear stance (%.1f s)" % clock)
+	var displacement := necro.global_position.distance_to(park)
+	_check(displacement >= 20.0,
+			"reposition moved the body (%.0f px)" % displacement)
+	var handed_back := await _wait_until(
+			func() -> bool: return _current_state(necro) is EnemyChase, 1.0)
+	_check(handed_back, "clear stance handed back to chase")
+	necro.queue_free()
+	await get_tree().physics_frame
+
+
+## Cooldown standoff (necromancer): in attack range, gate open, attack on
+## cooldown — the chase must hold the stance (no attack-handover churn,
+## no drift toward the player) until the cooldown lapses.
+func _stage_standoff_cooldown() -> void:
+	_tee("  stage: cooldown standoff holds instead of churning")
+	_remove_bake_artifacts()
+	var nav_layer: TileMapLayer = NavBaker.bake(self)
+	_check(nav_layer != null, "rebake open room")
+	if nav_layer == null:
+		return
+	for i in FRAMES_TO_SETTLE:
+		await get_tree().physics_frame
+
+	_player.global_position = Vector2(248, 128)
+	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	necro.start_attack_cooldown()
+	_force_chase(necro)
+	_check(attack_state.band_clear_at(necro.global_position),
+			"open-field park keeps the band clear")
+	var chase := _chase_state(necro)
+	var held := true
+	var clock := 0.0
+	while clock < 0.75:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if _current_state(necro) != chase:
+			held = false
+		if necro.velocity.length() > 1.0:
+			held = false
+	_check(held, "standoff held chase with no state churn or drift")
+	necro.queue_free()
+	await get_tree().physics_frame
+
+
 func _build_corridor() -> void:
 	# Sealed flight pocket: a full-height west wall plus north/south walls
 	# spanning to the room's east edge leave a 48 px dead-end band — no
@@ -323,17 +420,24 @@ func _build_corridor() -> void:
 		[Vector2(138.0, 108.0), Vector2(236.0, 8.0)],
 	]
 	for spec in specs:
-		var wall := StaticBody2D.new()
-		wall.collision_layer = BLOCKER_MASK
-		wall.collision_mask = 0
-		var shape_node := CollisionShape2D.new()
-		var shape := RectangleShape2D.new()
-		shape.size = spec[1]
-		shape_node.shape = shape
-		wall.add_child(shape_node)
-		add_child(wall)
-		wall.position = spec[0]
-		_stage_actors.append(wall)
+		_add_blocker(spec[0], spec[1])
+
+
+## Rect blocker on the Environment layer: bodies carve their outlines into
+## the NavBaker bake, same as level walls.
+func _add_blocker(center: Vector2, size: Vector2) -> StaticBody2D:
+	var wall := StaticBody2D.new()
+	wall.collision_layer = BLOCKER_MASK
+	wall.collision_mask = 0
+	var shape_node := CollisionShape2D.new()
+	var shape := RectangleShape2D.new()
+	shape.size = size
+	shape_node.shape = shape
+	wall.add_child(shape_node)
+	add_child(wall)
+	wall.position = center
+	_stage_actors.append(wall)
+	return wall
 
 
 func _teardown() -> void:

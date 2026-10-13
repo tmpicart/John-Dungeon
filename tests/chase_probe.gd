@@ -16,7 +16,9 @@ extends Node
 ## box reopens), the NPC-pocket archer guard (a player shadowed
 ## beside a body-sized blocker: hold the mouth, fire when the shadow
 ## clears), and L-corner rounding - solo and as a pair - holding the
-## corridor line off the tile apices. The doorway battery
+## corridor line off the tile apices, and the wall-pocket reposition
+## (gate-closed ranged kit travels out of a buried band and fires).
+## The doorway battery
 ## (chase_probe_doorway.gd) adds open-gap threading and the door-open
 ## commit; the press battery (chase_probe_press.gd) covers the guard
 ## lifecycle through the route-improvement release.
@@ -34,6 +36,8 @@ const ARROW_SCRIPT_PATH := "res://entities/projectiles/arcane_arrow.gd"
 ## The blind-orbit wall column and the cover candle both sit on the archer's
 ## approach row, so the clamped aim ray crosses them.
 const WALL_COLUMN := 8
+## Corner stages live in their own file (pinned 1000-line lint cap).
+const Corners := preload("res://tests/chase_probe_corners.gd")
 
 var _failures := 0
 var _completed := false
@@ -89,6 +93,12 @@ func _run() -> void:
 
 	_spawn_player()
 	Global.player = _player
+
+	# Wall-pocket reposition regression: runs on the pristine wall
+	# column - the sealed-wall stage below removes it for the rest of
+	# the battery.
+	await Corners.stage_wall_pocket(self)
+	await _teardown()
 
 	await _stage_sealed_archer_guard()
 	await _teardown()
@@ -204,9 +214,9 @@ func _run() -> void:
 		_check(corner_mesh_ready, "corner mesh live at the archer spawn")
 		for i in FRAMES_TO_SETTLE:
 			await get_tree().physics_frame
-		await _stage_corner_round()
+		await Corners.stage_round(self)
 		await _teardown()
-		await _stage_corner_pair()
+		await Corners.stage_pair(self)
 		if is_instance_valid(_corner_body):
 			_corner_body.queue_free()
 	# Doorway battery (BUG-1): open-gap threading across the bake's 2px
@@ -846,77 +856,6 @@ func _place_corner_wall() -> void:
 		_corner_body.add_child(shape_node)
 	_corner_body.position = Vector2.ZERO
 	add_child(_corner_body)
-
-## Corner-rounding regression: early waypoint switching cuts the corner
-## chord inside the bake margin and the body grinds the tile apex — the
-## playtest "catches on obstacle blocks". The run must hold the corridor
-## line past both apices, never stall, and reach the attack gate.
-func _stage_corner_round() -> void:
-	_tee("  stage: solo archer rounds the block corner without grinding")
-	var archer := await _spawn_enemy(ARCHER_SCENE, Vector2(56, 88))
-	_player.global_position = Vector2(170, 130)
-	_force_chase(archer)
-	var apices := [Vector2(240, 96), Vector2(240, 104)]
-	var min_apex_clearance := INF
-	var stalled := false
-	var window_start := 0.0
-	var window_pos := archer.global_position
-	var clock := 0.0
-	var attacked := false
-	while clock < 10.0:
-		await get_tree().physics_frame
-		clock += get_physics_process_delta_time()
-		if _current_state(archer) is EnemyAttack:
-			attacked = true
-			break
-		for apex in apices:
-			min_apex_clearance = minf(min_apex_clearance,
-			archer.global_position.distance_to(apex))
-		if clock - window_start >= 0.6:
-			stalled = stalled or archer.global_position.distance_to(window_pos) < 2.0
-			window_start = clock
-			window_pos = archer.global_position
-	_check(attacked, "corner route reached the attack gate (%.1fs)" % clock)
-	_check(not stalled, "no stall window while rounding (0.6s probes)")
-	_check(min_apex_clearance >= 4.5,
-		"body held the corridor line past the apices (min %.1f px)" % min_apex_clearance)
-
-## Pair squeeze at the same corner: RVO separation smaller than the summed
-## body radii lets archers shove each other into the turn (the playtest
-## "catches near another enemy"). Both must round cleanly, keeping real
-## body separation, and reach the attack gate.
-func _stage_corner_pair() -> void:
-	_tee("  stage: archer pair rounds the corner without body contact")
-	var first := await _spawn_enemy(ARCHER_SCENE, Vector2(48, 80))
-	var second := await _spawn_enemy(ARCHER_SCENE, Vector2(24, 96))
-	_player.global_position = Vector2(170, 130)
-	_force_chase(first)
-	_force_chase(second)
-	var min_gap := INF
-	var window_start := 0.0
-	var window_first := first.global_position
-	var window_second := second.global_position
-	var clock := 0.0
-	var both_attacked := false
-	while clock < 18.0:
-		await get_tree().physics_frame
-		clock += get_physics_process_delta_time()
-		min_gap = minf(min_gap,
-			first.global_position.distance_to(second.global_position))
-		if _current_state(first) is EnemyAttack and _current_state(second) is EnemyAttack:
-			both_attacked = true
-			break
-		if clock - window_start >= 0.8:
-			var progressed := (first.global_position.distance_to(window_first) >= 2.0
-				or second.global_position.distance_to(window_second) >= 2.0)
-			if not progressed:
-				break
-			window_start = clock
-			window_first = first.global_position
-			window_second = second.global_position
-	_check(both_attacked, "both archers reached the attack gate (%.1fs)" % clock)
-	_check(min_gap >= 13.6,
-		"pair kept separation past the corner (min %.1f px)" % min_gap)
 
 func _build_room() -> void:
 	var tile_set := _build_plain_tile_set()
