@@ -28,7 +28,7 @@ Development phase: the remastered player, enemy, interaction, dialogue, and shop
 | Decision | Choice |
 |---|---|
 | File naming | `snake_case` for all files |
-| Level architecture | Rebuild the dungeon from modular room blocks; keep door/room layout generation-friendly (procedural generation is a possible future direction) |
+| Level architecture | Rebuild the dungeon from modular room blocks; descent levels are generated per the descent design; authored rooms (arenas, gate levels, final prep) are the exception |
 | Boss (The Sorceress) | Migrate onto the current enemy framework |
 | Global access | Formalize the `Global` autoload into a standard service-locator role |
 | Future systems | Summonable ally creatures — informs combat ownership, faction, and targeting design |

@@ -3,13 +3,21 @@
 > **Purpose:** The ordered feature task list; entries move to `progress.md` when shipped.
 > **Lifecycle:** Tasks are deleted on completion (noted in `progress.md`); keep this file under ~80 lines. Rules: `.clinerules/log-hygiene.md`.
 
+## Open Decisions
+
+| Topic | Status | Next look |
+|---|---|---|
+| Aim controller model | Decided: direction + soft lock (no reticle) | Revisit at task 2R (straight-launch reflect) |
+| Archer whiff repositioning | Ships OFF by default | Necromancer playtest verdict |
+
+Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
+
 ## Docs refinement — DOC- (current lead)
 
-One task per session; entries delete on ship. From the 2026-10-13 docs audit + decision round — all open decisions resolved; details land with DOC-1.
+One task per session; entries delete on ship. From the 2026-10-13 docs audit + decision round — all open decisions resolved.
 
 | ID | Task | Notes |
 |---|---|---|
-| DOC-1 | Decisions & register | Author Open Decisions section (top of this file); land resolved decisions into owning docs: aim = direction + soft lock, revisit at 2R (systemPatterns); wand/potion = owned collection + cycle inputs, keys at S-5/S-6 (productContext + task rows); S-2 unpark just-in-time at first consumer; unknown assets closed as-is; provenance→source wording sweep (skip dated log lines); fix projectbrief generator drift |
 | DOC-2 | Purpose charter & single-homing | One-line charter per memory file header; single-home: phase → projectbrief, mission → projectbrief, conventions → systemPatterns, engine facts → techContext; activeContext becomes pointer-snapshot |
 | DOC-3 | systemPatterns I | Architecture sections (~7.6K chars): one fact per bullet, strip R-ID/refactor commentary, telegraphic grammar; fact inventory verified before/after |
 | DOC-4 | systemPatterns II | Adopted Conventions table (~10.5K chars): split >400-char cells, merge rows duplicating Architecture facts, fold Known Trade-offs; file ≤ ~12 KB, zero mechanical facts lost |
@@ -47,11 +55,11 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 | ID | Task | Notes |
 |---|---|---|
 | S-1 | Hue-shift shader | Shared material, per-scene hue param — blue/yellow slimes + elite tints (`self_modulate` can't hue-rotate) |
-| S-2 | Status-effect framework | PARKED until variant/wand effect scope decides; application API, ticking, feedback, cleanse synergy |
+| S-2 | Status-effect framework | PARKED; unparks just-in-time at its first consumer (first variant or wand-effect task); application API, ticking, feedback, cleanse synergy |
 | S-3 | Stamina + action cancels | Chunk-costed rolls; mutual cancels roll ⇄ attack ⇄ block with hitbox hygiene; upgradeable; stamina HUD (design: productContext "Gear intent") |
 | S-4 | Armor | Blacksmith purchase, HUD icon; absorb semantics per productContext "Gear intent" |
-| S-5 | Loadout slots + potion belt | Unified slots per productContext "Gear intent"; typed potion inventory + HUD; input binding TBD |
-| S-6 | Wand secondary fire | Player-owned projectile (PlayerHitbox conventions); tiers + shop item; HUD icon; art: check `assets/items/weapons.png` first |
+| S-5 | Loadout slots + potion belt | Unified slots per productContext "Gear intent"; owned potion collection (typed belt) + cycle input, binding decided here; HUD |
+| S-6 | Wand secondary fire | Player-owned projectile (PlayerHitbox conventions); tiers + shop item; HUD icon; owned wand collection + cycle input, binding decided here; art: check `assets/items/weapons.png` first |
 | S-7 | Death VFX variety | Per-family particle colors/flash/tweens — no new frames |
 
 Build order: S-1 → E-1 → S-4 → S-3 → S-5 → S-6 → S-7 (S-2 parked)

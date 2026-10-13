@@ -28,7 +28,7 @@ Autoload `InteractionManager` (registry + screen-space prompt) and `Interactable
 - Physics layers 6–9: PlayerHitbox / PlayerHurtbox / EnemyHitbox / EnemyHurtbox (full map in `techContext.md`)
 - Damage roles: hurtboxes resolve `hitbox.get("damage")` first, falling back to `hitbox.owner.damage` — scripted `EnemyHitbox` surfaces (entities/enemies/hitbox.gd) carry per-surface values (boss swing 2 / slide 1); plain areas resolve the owner's export. `unblockable` (same probe) makes PlayerHurtbox skip its parry branch — waves, intervention light, and stars are dodge-only; magic missiles reflect
 - `Hurtbox` (enemies) → direct `take_damage` routing; `PlayerHurtbox` → mouse-angle check routes parry / reflect / stun / damage; block+facing a non-interruptible boss's body hitbox (melee/slide) routes her `stun()` → parry-stagger (freeze-frame + doubled damage); projectiles reflect (missiles) or are unblockable (waves/stars/light); beam recovery keeps the exposure-only window
-- Player aim API (`PlayerCombat`): `aim_direction()` (player→cursor vector; feeds the parry cone and reflect launches) and `get_aim_target()` — EnemyHurtbox shape query centered on the cursor within `aim_snap_radius`, nearest surface wins (layer-first, no group scans; physics-step only). Facing direction is the input-agnostic aim primitive; the controller model is an open decision (reticle vs direction + soft lock)
+- Player aim API (`PlayerCombat`): `aim_direction()` (player→cursor vector; feeds the parry cone and reflect launches) and `get_aim_target()` — EnemyHurtbox shape query centered on the cursor within `aim_snap_radius`, nearest surface wins (layer-first, no group scans; physics-step only). Facing direction is the input-agnostic aim primitive; the controller model is decided: direction + soft lock — the `get_aim_target()` cursor-snap is the lock, no reticle
 
 ### HUD
 Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and `item_hud`; no polling.
@@ -83,5 +83,5 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 - Player states receive the character via the injected `actor` reference; `Global.player` (property-backed; re-resolves freed/missing refs) remains the access path for non-state consumers.
 
 ## Asset Policy
-- Code-only repo; whitelist, provenance classes, and per-path mapping: `ASSETS.md`. Intake/renaming procedure: `.clinerules/assets.md`. Attribution and licences: `CREDITS.md`.
+- Code-only repo; whitelist, source classes, and per-path mapping: `ASSETS.md`. Intake/renaming procedure: `.clinerules/assets.md`. Attribution and licences: `CREDITS.md`.
 - Enemy sheets split (usage convention): scenes use the chibi derivatives (`enemy_*.png`); original pack sheets are reserved for planned boss appearances — both ship in-game; never redistribute the raw files.

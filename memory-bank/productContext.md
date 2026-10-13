@@ -16,7 +16,7 @@ A tight, readable top-down action crawl: clear rooms of enemies, manage consumab
 - **Coins** from kills/chests → **blacksmith** (weapon upgrade, bombs, armor, wands, stamina upgrades) and **potion seller** (potions, max HP up).
 - **Keys** gate doors/chests; a dedicated **boss key** gates each tier's arena (descent gates — see The Descent).
 - **Weapon upgrades** visibly track level (sprite frame, damage, hitbox growth).
-- **Gear intent (2026-09-09)**: **armor** (absorb = full negation incl. unblockables — effectively an i-frame with clank SFX + VFX + hitstop, no heart loss) · **wand** (secondary fire, one equipped; sword stays primary) · **loadout slots** (alt-weapon · potion · tool) · **potion types** (typed belt, equipped slot for quick-use) · **stamina** (chunk-costed rolls, no i-frames, upgradeable) with **mutual action cancels** (roll ⇄ attack ⇄ block; hitbox hygiene on cancel).
+- **Gear intent (2026-09-09)**: **armor** (absorb = full negation incl. unblockables — effectively an i-frame with clank SFX + VFX + hitstop, no heart loss) · **wand** (secondary fire; owned collection, one equipped, cycle input; sword stays primary) · **loadout slots** (alt-weapon · potion · tool) · **potion types** (owned collection belt, cycle input to select; equipped slot for quick-use) · **stamina** (chunk-costed rolls, no i-frames, upgradeable) with **mutual action cancels** (roll ⇄ attack ⇄ block; hitbox hygiene on cancel).
 
 ## The Descent — Structure (decided 2026-09-09)
 - One continuous descent: **endless generated levels** organized into **6 tiers**; each tier is a stretch of levels (depths) ending in an **authored boss arena** at its bottom. Authored rooms = arenas, gate levels, the final prep room; everything else is generated.

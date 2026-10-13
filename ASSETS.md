@@ -22,13 +22,13 @@ Fetch the packs below, place them at the listed paths, then run
 | LuizMelo — "Monsters Creatures Fantasy" (itch.io, CC0) | `assets/monsters_creatures_fantasy/` |
 | Pixel_Poem — enemy animations companion pack (itch.io) | `assets/enemy_animations_set/` |
 | Freesound / Pixabay / bundled SFX (see CREDITS.md) | `assets/sounds/` |
-| Unknown provenance — intentionally uncredited (see CREDITS.md policy in .clinerules) | `assets/hud/`, `assets/effects/slash.png` |
+| Unknown source — intentionally uncredited (see CREDITS.md policy in .clinerules) | `assets/hud/`, `assets/effects/slash.png` |
 
 ## Notes
 
 - `assets/fonts/` (VT323, SIL OFL 1.1) **is tracked**; do not delete it.
 - `assets/effects/on_hit_flash.gdshader` (+.uid) is project code (tutorial-derived) and tracked.
-- `assets/effects/slash.png` is untracked (provenance unverifiable) and lives
+- `assets/effects/slash.png` is untracked (source unverifiable) and lives
   in gitignored `assets/effects/` locally. If ever confirmed team-original,
   whitelist it in `.gitignore` and commit it.
 - On a fresh clone, Godot logs `ext_resource` UID warnings for missing
