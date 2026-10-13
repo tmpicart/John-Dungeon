@@ -3,7 +3,7 @@
 > **Purpose:** Feature status and a compact work log. One line per task; caps and archiving rules in `.clinerules/log-hygiene.md`.
 
 ## Status
-Migration complete: frameworks R-01..R-33 landed; development phase — task list in `devPlan.md` (R-40..R-42 lead).
+Migration complete: frameworks R-01..R-33 landed; current lead and task order: `devPlan.md`.
 
 ## Log
 - 2026-09-02 | setup | Audited codebase; established memory bank + clinerules; accepted Godot 4.7 importer metadata migration (240 `.import` files).
@@ -70,4 +70,5 @@ Migration complete: frameworks R-01..R-33 landed; development phase — task lis
 - 2026-10-13 | docs | Commit framing rules added to git.md; the ten unpushed combat commits reworded to match (trees unchanged; msg-backup held until push).
 - 2026-10-13 | docs | Docs-refinement program decided (aim, wand/potion, S-2, unknown assets); DOC-1..DOC-9 track landed as devPlan lead.
 - 2026-10-13 | docs | DOC-1: decisions register atop devPlan; aim/wand-potion/S-2/unknown-asset decisions landed; provenance→source sweep; projectbrief drift fix.
+- 2026-10-13 | docs | DOC-2: one-line charters; single-homed phase/mission/conventions/engine-facts; activeContext → pointer-snapshot.
 
