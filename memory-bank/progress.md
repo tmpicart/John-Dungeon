@@ -58,3 +58,12 @@ Migration complete: frameworks R-01..R-33 landed; development phase — task lis
 - 2026-09-30 | docs | Playtest findings logged as BUG-1..3: doorway pathing stall, doorway sprite vanish, necromancer missile rework.
 - 2026-10-04 | fix | Door standard: door_key matched to door_red colliders/link and seated in the west archway; deprecated door scenes removed.
 - 2026-10-04 | fix | Doorway sprite vanish resolved: character roots z 3 (enemies + NPCs), airborne projectiles z 4, per systemPatterns tiers.
+- 2026-10-12 | fix | Archway flank clipping: collision on the overhead arch atoms keeps bodies off the wall-layer arch segments; resolves BUG-1.
+- 2026-10-12 | feat | Hybrid missile routing: blind launch, baked-mesh steering around cover, outmaneuver crashes; missile_probe cover suite.
+- 2026-10-12 | fix | Buried volley muzzles skipped via spawn_point_clear (no clamp); width-aware 3-lane routing exit gate; missile_probe 6 stages.
+- 2026-10-12 | feat | Whiff-triggered repositioning: VolleyReport telemetry, attack-state fire gate consulted by the chase handover, necromancer enabled; BUG-3 closed.
+- 2026-10-12 | fix | Per-muzzle volley aim: each shot converges from its own muzzle; shared-rotation lanes inherited muzzle offsets and skimmed standing players.
+- 2026-10-12 | fix | Volley muzzles must be reachable from the shooter: through-wall spawns skipped beside buried ones; missile_probe through-wall stage.
+- 2026-10-12 | feat | Missile tuning from playtest: turn cap 5.5 (~15 px radius) and 12 px pass-by freeze; missed shots recover inside two-tile corridors.
+- 2026-10-13 | feat | Firing stance repositioning: chase FIRING scorer, retreat stance grading via band_clear_at, hit-only retreat; chase/retreat probe stages.
+- 2026-10-13 | fix | Missile consume pairs with damage: reflected shots die on the hurtbox that takes the hit; per-tick player sweep keeps same-frame parries alive.

@@ -58,12 +58,14 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - NavigationAgent2D's internal cursor only advances when the follower approaches the cursor point — custom anchors require owning the raw `get_current_navigation_path()` list.
 - GDScript lambdas capture by value at creation.
 - Headless probes must drive physics by frame count (tick-based assertions), not wall-clock waits.
+- Probe homing locks sit downrange past the assert stop: a lock on the flight line gets overshot and lerp_angle's wrap turns the return into an orbit.
 - Headless engine runs on this machine: `Start-Process -FilePath <engine> -ArgumentList ... -Wait -PassThru` to capture exit codes and redirected output.
 - `NavigationPolygon.agent_radius` erodes the baked surface: enemy discs run 5.88–7.14 px, inside `AGENT_RADIUS := 7.0` with 2 px slack in 16-px doorways; `NavigationAgent2D.radius` is avoidance-only and does not affect pathfinding.
 
 ## Tests
 - `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
-- Headless probes (manual diagnostics; the result `txt` files are the record, gitignored): `nav_probe` (bake invariants), `level_nav_probe` (room walk matrix + door-link archway sweeps), `chase_probe` (staging/chase/attack), `retreat_probe` (corner + standoff), `scene_probe` (scene staging audit)
+- Headless probes (manual diagnostics; the result `txt` files are the record, gitignored): `nav_probe` (bake invariants), `level_nav_probe` (room walk matrix + door-link archway sweeps), `chase_probe` (staging/chase/attack), `retreat_probe` (corner + standoff; obstacle-hop stage FAIL = known baseline), `scene_probe` (scene staging audit)
+- `tests/missile_probe.tscn` — hybrid missile routing suite (13 stages, 39 checks; exit 0 = pass): contact kill, cover rounding, drift repath, through-wall/buried/band spawn gating, width-aware exit gate, whiff-gate verdicts, reflect pairing (torso consume, shin graze, blocked back-hit, contact-flush parry)
 - gdlint baseline (repo-wide): all areas clean except `entities/player` (41 findings — opportunistic gate on rewrites) and `entities/projectiles` (3, `bomb.gd`)
 
 ## Repository
