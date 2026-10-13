@@ -76,9 +76,9 @@ func _spawn_projectiles() -> void:
 	if projectile == null or enemy.is_hit or enemy.is_dead:
 		return
 
-	# The aim rotation froze at the last chase tick; the player strafes
-	# during the attack wind-up, so re-aim or the shot flies the stale
-	# line into cover.
+	# The aim rotation froze at the last chase tick and the player strafes
+	# during the attack wind-up; re-aim so the null-player fallback and
+	# any ray reader carry a fresh line.
 	var player = Global.player as Node2D
 	if player != null:
 		aim_ray_cast.global_rotation = (
@@ -100,8 +100,7 @@ func _spawn_projectile(spawn_position: Vector2, volley: VolleyReport) -> void:
 	# The re-aimed line was never sight-gated: firing along it can cut a
 	# corner the gated line cleared. Sight-gated chasers hold fire instead;
 	# the chase blind handling repositions for the next shot. Checked per
-	# spawn against that spawn's muzzle line (offsets share the aim ray
-	# rotation, so the result is identical per shot).
+	# spawn against that spawn's muzzle line.
 	var player = Global.player as Node2D
 	if player != null and _requires_sight() \
 			and not enemy.aim_line_clear(spawn_position, player.global_position):
@@ -120,7 +119,14 @@ func _spawn_projectile(spawn_position: Vector2, volley: VolleyReport) -> void:
 	get_tree().current_scene.add_child(proj)
 	proj.add_to_group("Enemies")
 	proj.global_position = spawn_position
-	proj.global_rotation = aim_ray_cast.global_rotation
+	# Per-muzzle aim: one shared rotation turns the volley offsets into
+	# parallel lanes whose lateral error can exceed the shot's contact
+	# width — a standing player gets skimmed. Aiming from each spawn
+	# converges the fan; single spawns (at the aim ray) are unchanged.
+	var shot_rotation := aim_ray_cast.global_rotation
+	if player != null:
+		shot_rotation = (player.global_position - spawn_position).angle()
+	proj.global_rotation = shot_rotation
 
 ## Pins facing to the target for the whole attack flow (see
 ## BaseEnemy.face_toward for why movement flipping cannot own this).
