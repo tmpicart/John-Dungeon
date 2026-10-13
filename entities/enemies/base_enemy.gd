@@ -13,6 +13,11 @@ const AIM_BLOCKING_MASK := 1 << 2
 ## Projectiles are ~1 px wide, so aim rays need clearance past tangency:
 ## a thin gate ray clears corners the projectile body clips.
 const AIM_CLEARANCE_PX := 2.0
+## A spawn muzzle needs open space around its point, not just an empty
+## point: wall art can span physically hollow gaps (arch jamb halves), and
+## a missile born inside such a slot clips a wall face within its first
+## flight frames.
+const SPAWN_CLEARANCE_PX := 10.0
 
 @export var hp: int = 1
 @export var damage: int = 1
@@ -113,16 +118,23 @@ func aim_line_clear(from_point: Vector2, to_point: Vector2) -> bool:
 	return true
 
 
-## True when the world point is not inside blocking geometry (Environment
-## only; bodies never count). Volley muzzles sit at fixed body offsets, so
-## an overhang over the origin buries some spawns — callers skip buried
-## spawns rather than clamp them (the mesh's closest point can snap
-## through a thin wall to the far side).
+## True when the point sits clear of blocking geometry (Environment only;
+## bodies never count) with projectile-sized room to spare: a small disc
+## around the point must also be empty. A bare point check passes inside
+## physically hollow spans that wall art covers — the gap between arch jamb
+## halves — where a missile would clip a wall face on its first flight
+## frames. Volley muzzles sit at fixed body offsets, so an overhang over the
+## origin buries some spawns — callers skip buried spawns rather than clamp
+## them (the mesh's closest point can snap through a thin wall to the far
+## side).
 func spawn_point_clear(point: Vector2) -> bool:
-	var query := PhysicsPointQueryParameters2D.new()
-	query.position = point
+	var shape := CircleShape2D.new()
+	shape.radius = SPAWN_CLEARANCE_PX
+	var query := PhysicsShapeQueryParameters2D.new()
+	query.shape = shape
+	query.transform = Transform2D(0.0, point)
 	query.collision_mask = AIM_BLOCKING_MASK
-	return get_world_2d().direct_space_state.intersect_point(query, 1).is_empty()
+	return get_world_2d().direct_space_state.intersect_shape(query, 1).is_empty()
 
 
 ## Damage entry point (Hurtbox routes here). `from_position` is where the hit

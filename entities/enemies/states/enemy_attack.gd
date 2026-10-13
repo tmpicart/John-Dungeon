@@ -59,11 +59,16 @@ func enter() -> void:
 
 ## The chase handover consults this before entering the attack flow (same
 ## role as the chase's line-of-sight gate, fed by outcome instead of rays).
-## A settled volley that never reached the player proves the firing
-## position bad: the gate stays closed until the body has repositioned the
-## configured distance or the retry window lapses. An in-flight volley has
-## no verdict yet and never closes the gate.
+## The muzzle band closes it first: a stance with any buried or unreachable
+## muzzle repositions through chase instead of starting an attack flow that
+## could only fire a partial volley. A settled volley that never reached
+## the player then proves the firing position bad: the gate stays closed
+## until the body has repositioned the configured distance or the retry
+## window lapses. An in-flight volley has no verdict and never closes the
+## gate.
 func fire_gate_open() -> bool:
+	if not _muzzle_band_clear():
+		return false
 	if not reposition_after_whiff or _last_volley == null:
 		return true
 	if _last_volley.arrived or not _last_volley.is_whiffed():
@@ -71,6 +76,19 @@ func fire_gate_open() -> bool:
 	var moved := enemy.global_position.distance_to(_last_fire_position)
 	var elapsed := (Time.get_ticks_msec() - _last_fire_msec) / 1000.0
 	return moved >= whiff_reposition_distance or elapsed >= whiff_retry_seconds
+
+## Band clearance: every volley muzzle must pass spawn clearance and the
+## body-to-muzzle line, so the enemy moves (down/away) until the whole
+## spawn band is in the open. Enemies without projectile offsets (melee)
+## are always clear. The per-muzzle skips in _spawn_projectile remain as
+## defense in depth for muzzles buried mid-animation.
+func _muzzle_band_clear() -> bool:
+	for offset in projectile_offsets:
+		var muzzle := enemy.global_position + offset
+		if not enemy.spawn_point_clear(muzzle) \
+				or not enemy.aim_line_clear(enemy.global_position, muzzle):
+			return false
+	return true
 
 func _spawn_projectiles() -> void:
 	if projectile == null or enemy.is_hit or enemy.is_dead:

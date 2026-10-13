@@ -17,6 +17,7 @@ chase_probe_result.txt
 retreat_probe_result.txt
 slime_contact_probe_result.txt
 missile_probe_result.txt
+room_spawn_probe_result.txt
 
 # Asset policy (code-only repo, see ASSETS.md): game art/audio stay local.
 # Whitelist: assets/fonts/ is SIL OFL licensed and redistributable;
