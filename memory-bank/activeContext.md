@@ -12,8 +12,8 @@ Development phase. Missile/volley + firing repositioning series landed 2026-10-1
 - Firing stance repositioning: EnemyChase FIRING scorer (navmesh fan
   probes + `_bounded_close_in`), EnemyRetreat grades stances via
   `band_clear_at(position)`; necromancer retreat is hit-driven only
-- History rebuilt 2026-10-13: unpushed work re-landed as topical
-  commits (`reset-backup` tag held until the next push)
+- Ten unpushed combat commits reworded 2026-10-13 (trees verified
+  identical); framing standard in `.clinerules/git.md`; backup tags until push
 - missile_probe at 13 stages / 39 checks (reflect pairing set added)
 
 ## Working Agreements
