@@ -17,7 +17,6 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 
 | ID | Task | Notes |
 |---|---|---|
-| DOC-3 | systemPatterns I | Architecture sections (~7.6K chars): one fact per bullet, strip R-ID/refactor commentary, telegraphic grammar; fact inventory verified before/after |
 | DOC-4 | systemPatterns II | Adopted Conventions table (~10.5K chars): split >400-char cells, merge rows duplicating Architecture facts, fold Known Trade-offs; file ≤ ~12 KB, zero mechanical facts lost |
 | DOC-5 | techContext + productContext | Strip R-references; engine facts one per line; provisional design tables unchanged |
 | DOC-6 | devPlan restructure | Absorb 2R + necromancer playtest + archer flip as tasks; re-ID the D-1 grab-bag; subtasks for R-40 and D-9; size classes; archive Sept 2-13 log lines → memory-bank/archive/progress-2026-q3.md; return this file to ≤ ~80 lines |

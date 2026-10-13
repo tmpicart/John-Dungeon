@@ -6,10 +6,10 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- DOC-2 — one-line charters; single-homing; activeContext → pointer-snapshot (log: `progress.md`)
+- DOC-3 — systemPatterns Architecture Map: fact-per-bullet telegraphic rewrite, task IDs stripped (log: `progress.md`)
 
 ## Next Up
-1. DOC-3: systemPatterns I (architecture sections)
+1. DOC-4: systemPatterns II (Adopted Conventions table)
 2. 2R: straight-launch reflect + cone soft-seek
 3. Necromancer playtest → archer flip verdict
 4. R-40 room-block standard → R-41 tier-1 slice

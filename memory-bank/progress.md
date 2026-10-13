@@ -71,4 +71,5 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-13 | docs | Docs-refinement program decided (aim, wand/potion, S-2, unknown assets); DOC-1..DOC-9 track landed as devPlan lead.
 - 2026-10-13 | docs | DOC-1: decisions register atop devPlan; aim/wand-potion/S-2/unknown-asset decisions landed; provenance→source sweep; projectbrief drift fix.
 - 2026-10-13 | docs | DOC-2: one-line charters; single-homed phase/mission/conventions/engine-facts; activeContext → pointer-snapshot.
+- 2026-10-13 | docs | DOC-3: systemPatterns Architecture Map rewritten one-fact-per-bullet, telegraphic; task IDs stripped, facts kept plain-language.
 
