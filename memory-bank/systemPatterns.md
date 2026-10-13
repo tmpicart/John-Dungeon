@@ -1,6 +1,6 @@
 # System Patterns — Architecture & Conventions
 
-> **Purpose:** The agreed architecture and conventions. New code follows this file; superseded patterns are not to be extended.
+> **Purpose:** Agreed architecture and conventions — new code follows this file.
 
 ## Architecture Map
 
@@ -81,6 +81,8 @@ Signal-driven: `main_scene.gd` wires player subsystem signals to `heart_bar` and
 
 ## Known Trade-offs (accepted for now)
 - Player states receive the character via the injected `actor` reference; `Global.player` (property-backed; re-resolves freed/missing refs) remains the access path for non-state consumers.
+- The `Environment` container is not y-sorted — chests/props sort against the player as one block; deliberate fix planned in R-40/R-41.
+- Archway blockers stop projectiles at the west archway (Environment-blocker side effect, accepted).
 
 ## Asset Policy
 - Code-only repo; whitelist, source classes, and per-path mapping: `ASSETS.md`. Intake/renaming procedure: `.clinerules/assets.md`. Attribution and licences: `CREDITS.md`.

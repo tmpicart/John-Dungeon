@@ -1,6 +1,6 @@
 # Project Brief — John Dungeon: Remastered
 
-> **Purpose:** Source of truth for project scope and goals. All other memory files cascade from this one. Changes require an explicit decision.
+> **Purpose:** Scope, mission, and phase of record — every other memory file cascades from this one.
 
 ## Identity
 - **Engine:** Godot 4.7.2 (GDScript, Forward Plus)

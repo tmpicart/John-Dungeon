@@ -3,7 +3,7 @@
 The `memory-bank/` folder is the project's documentation system. The code shows what is; the memory bank records what is intended and decided.
 
 ## Reading (session start, before coding)
-1. `memory-bank/activeContext.md` — current phase, in-flight work, working agreements
+1. `memory-bank/activeContext.md` — session snapshot: in-flight work and next up
 2. `memory-bank/progress.md` — status of systems
 3. When making convention, architecture, engine, or design decisions, also read `systemPatterns.md`, `techContext.md`, and `productContext.md` / `projectbrief.md`.
 

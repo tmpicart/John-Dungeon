@@ -1,7 +1,6 @@
 # Development Plan — Task Backlog
 
-> **Purpose:** The ordered feature task list; entries move to `progress.md` when shipped.
-> **Lifecycle:** Tasks are deleted on completion (noted in `progress.md`); keep this file under ~80 lines. Rules: `.clinerules/log-hygiene.md`.
+> **Purpose:** The ordered feature task list and open-decisions register; shipped entries move to `progress.md`.
 
 ## Open Decisions
 
@@ -18,7 +17,6 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 
 | ID | Task | Notes |
 |---|---|---|
-| DOC-2 | Purpose charter & single-homing | One-line charter per memory file header; single-home: phase → projectbrief, mission → projectbrief, conventions → systemPatterns, engine facts → techContext; activeContext becomes pointer-snapshot |
 | DOC-3 | systemPatterns I | Architecture sections (~7.6K chars): one fact per bullet, strip R-ID/refactor commentary, telegraphic grammar; fact inventory verified before/after |
 | DOC-4 | systemPatterns II | Adopted Conventions table (~10.5K chars): split >400-char cells, merge rows duplicating Architecture facts, fold Known Trade-offs; file ≤ ~12 KB, zero mechanical facts lost |
 | DOC-5 | techContext + productContext | Strip R-references; engine facts one per line; provisional design tables unchanged |
@@ -54,7 +52,7 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 ## Player systems track — S- (one system per task)
 | ID | Task | Notes |
 |---|---|---|
-| S-1 | Hue-shift shader | Shared material, per-scene hue param — blue/yellow slimes + elite tints (`self_modulate` can't hue-rotate) |
+| S-1 | Hue-shift shader | Shared material, per-scene hue param — blue/yellow slimes + elite tints (see techContext) |
 | S-2 | Status-effect framework | PARKED; unparks just-in-time at its first consumer (first variant or wand-effect task); application API, ticking, feedback, cleanse synergy |
 | S-3 | Stamina + action cancels | Chunk-costed rolls; mutual cancels roll ⇄ attack ⇄ block with hitbox hygiene; upgradeable; stamina HUD (design: productContext "Gear intent") |
 | S-4 | Armor | Blacksmith purchase, HUD icon; absorb semantics per productContext "Gear intent" |

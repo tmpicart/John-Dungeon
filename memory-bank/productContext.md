@@ -1,6 +1,6 @@
 # Product Context — Design Intent
 
-> **Purpose:** Why features exist and how the game should feel. Read before design-adjacent changes. The code shows *what is*; this file records *what is intended*.
+> **Purpose:** Design intent — why features exist and how the game should feel; the code shows what is, this records what is intended.
 
 ## Core Fantasy
 A tight, readable top-down action crawl: clear rooms of enemies, manage consumables, unlock progression gates, and overcome multi-phase bosses.
@@ -52,7 +52,7 @@ A tight, readable top-down action crawl: clear rooms of enemies, manage consumab
 
 ## Asset Constraint (decided)
 - **No original art creation.** Sourced downloads allowed only through the intake policy (source + license → CREDITS/ASSETS). Pending sources: the Deity, the Nightborne + Knight family, wand sprites (check `assets/items/weapons.png` first).
-- Variety levers: hue-rotation shader (slime colors + elite tints — `self_modulate` cannot hue-shift), mood stack (per-tier CanvasModulate, torch-light palettes, banner/prop/decal sets — in-style Pixel_Poem props incl. spikes-as-hazards), composition (pairs/packs/hybrids), VFX deaths (particles/flash/tweens — never new frames).
+- Variety levers: hue-rotation shader (slime colors + elite tints — see techContext), mood stack (per-tier CanvasModulate, torch-light palettes, banner/prop/decal sets — in-style Pixel_Poem props incl. spikes-as-hazards), composition (pairs/packs/hybrids), VFX deaths (particles/flash/tweens — never new frames).
 - Chroma shifts are the Zelda-1 tradition (palette swaps; blue = tougher): enemies shift freely, at most one environment axis per tier.
 
 ## NPCs & Dialogue
