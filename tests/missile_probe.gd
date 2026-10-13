@@ -8,7 +8,9 @@ extends Node
 ## walled column through its open rows and converges on the shadowed stub
 ## instead of dying on the wall), convergence while the stub drifts behind
 ## cover (repath while blocked), spawn clearance (a necromancer volley parked
-## under an overhang fires only from the muzzle that is not buried), the
+## under an overhang fires only from the muzzle that is not buried, and
+## muzzles hanging past a thin strip of cover are skipped though their
+## points sit in open space), the
 ## width-aware routing exit (a tangent-clear center ray with a clipping wide
 ## lane holds the route), and the whiff gate (settled volleys that never
 ## reached the player close the chase handover until the body repositions or
@@ -38,6 +40,11 @@ const NECRO_CLEAR_MUZZLE := Vector2(87.0, 79.0)
 ## Fourth shelf cell for the whiff-gate stage: with the stage-5 cells still
 ## painted it buries the right shoulder, sealing every muzzle.
 const NECRO_RIGHT_SHELF_CELL := Vector2i(5, 4)
+## Through-wall stage: a one-cell strip between the body and the muzzle
+## band. Every muzzle point stays in open space above the strip, but each
+## body-to-muzzle line crosses it.
+const NECRO_STRIP_CELLS: Array[Vector2i] = [
+	Vector2i(3, 5), Vector2i(4, 5), Vector2i(5, 5)]
 ## Wide-exit stage: the block's bottom-right corner passes ~1 px under the
 ## spawn-to-stub line — center ray clear, block-side lane clipping it.
 const GATE_MISSILE_AT := Vector2(6.0, 9.0)
@@ -98,6 +105,7 @@ func _run() -> void:
 	await _stage_cover_rounding_prep()
 	await _stage_cover_rounding()
 	await _stage_drift_behind_cover()
+	await _stage_through_wall_muzzles()
 	await _stage_buried_volley()
 	await _stage_wide_exit_gate()
 	await _stage_whiff_gate()
@@ -159,6 +167,41 @@ func _stage_drift_behind_cover() -> void:
 	var label := "drifting stub was still rounded (min %.1f px)" % outcome.min_distance
 	_check(outcome.min_distance < 24.0, label)
 	_log_flight(outcome)
+	await _clear_stage_actors(stub)
+
+
+## Through-wall muzzles: the strip sits between the body and the muzzle
+## band, so every muzzle point hangs in open space but is unreachable from
+## the shooter. Nothing may spawn on the player's side of the cover; the
+## fully sealed volley registers zero, which the whiff gate reads as an
+## immediate repositioning trigger.
+func _stage_through_wall_muzzles() -> void:
+	for cell in NECRO_STRIP_CELLS:
+		_walls_layer.set_cell(cell, 0, Vector2i.ZERO)
+	var strip := _make_block(Vector2(4.5, 5.5), Vector2i(3, 1))
+	var stub := _spawn_stub(TARGET)
+	var necro: Node2D = load(NECRO_SCENE).instantiate()
+	add_child(necro)
+	necro.global_position = NECRO_PARK * CELL_SIZE
+	# Frozen like the whiff stage: exact muzzle geometry, no handover race.
+	necro.process_mode = Node.PROCESS_MODE_DISABLED
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var points_clear := true
+	for offset in attack_state.projectile_offsets:
+		var muzzle := necro.global_position + offset
+		points_clear = points_clear and attack_state.enemy.spawn_point_clear(muzzle)
+	_check(points_clear, "sealed muzzles all read point-clear")
+	var spawned := _fire_and_diff(attack_state)
+	_check(spawned.is_empty(),
+			"through-wall volley spawns nothing on the player's side")
+	_check(not attack_state.fire_gate_open(),
+			"sealed volley closes the whiff gate for repositioning")
+	for cell in NECRO_STRIP_CELLS:
+		_walls_layer.erase_cell(cell)
+	necro.queue_free()
+	strip.queue_free()
 	await _clear_stage_actors(stub)
 
 

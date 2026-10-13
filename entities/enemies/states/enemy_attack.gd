@@ -112,6 +112,12 @@ func _spawn_projectile(spawn_position: Vector2, volley: VolleyReport) -> void:
 	# through a thin wall to the far side.
 	if not enemy.spawn_point_clear(spawn_position):
 		return
+	# Point-clear is not side-clear: the offsets outrun thin cover, so a
+	# muzzle can land in open space on the player's side of a wall. A shot
+	# born there skips the travel the flight logic exists to provide; a
+	# fully sealed volley registers zero and the whiff gate repositions.
+	if not enemy.aim_line_clear(enemy.global_position, spawn_position):
+		return
 	var proj = projectile.instantiate()
 	if volley != null:
 		proj.volley_report = volley
