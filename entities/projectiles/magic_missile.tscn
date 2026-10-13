@@ -1,5 +1,4 @@
 [gd_scene load_steps=10 format=3 uid="uid://5dnflp2x3nl4"]
-
 [ext_resource type="Script" uid="uid://c6urgg1a0uscd" path="res://entities/projectiles/magic_missile.gd" id="1_oudw1"]
 [ext_resource type="Texture2D" uid="uid://ggor50uc1vrm" path="res://assets/effects/retro_impact_effect_pack_5_b.png" id="3_rjssa"]
 [ext_resource type="Shader" uid="uid://du5s436ct6q2q" path="res://assets/effects/on_hit_flash.gdshader" id="3_rrxm4"]
@@ -11,7 +10,7 @@ shader_parameter/flash_color = Color(0, 0.462745, 0.890196, 1)
 shader_parameter/flash_value = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_r4ntl"]
-radius = 5.33333
+radius = 9.3
 height = 21.3333
 
 [sub_resource type="Animation" id="Animation_rsxjp"]
@@ -81,3 +80,5 @@ color = Color(0.392157, 0.180392, 1, 1)
 texture = SubResource("GradientTexture2D_ua7vb")
 
 [connection signal="body_entered" from="Hitbox" to="." method="_on_hitbox_body_entered"]
+
+[connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

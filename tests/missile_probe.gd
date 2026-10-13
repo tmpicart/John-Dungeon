@@ -15,10 +15,13 @@ extends Node
 ## the chase handover before the attack flow starts; a clear stance opens
 ## it), the
 ## width-aware routing exit (a tangent-clear center ray with a clipping wide
-## lane holds the route), and the whiff gate at a muzzle-clear park (settled
+## lane holds the route), the whiff gate at a muzzle-clear park (settled
 ## volleys that never reached the player close the chase handover until the
 ## body repositions or the retry window lapses; in-flight volleys and
-## arrivals never close it).
+## arrivals never close it), and the reflect pairing set (a reflected torso
+## pass deals one damage and dies on the hurtbox that took it, a shin graze
+## passes under with neither, a blocked back-hit still consumes, and a
+## parried shot survives its own reflect flush).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -58,6 +61,16 @@ const NECRO_STRIP_CELLS: Array[Vector2i] = [
 const GATE_MISSILE_AT := Vector2(6.0, 9.0)
 const GATE_STUB_AT := Vector2(14.0, 7.5)
 const GATE_BLOCK_CENTER := Vector2(10.0, 7.5)
+## Reflected-pairing stages: an inline necromancer-shaped target (feet body
+## disc at 6.5,5.0 with a torso hurtbox capsule reaching up to row 4.25)
+## west of the wall column. The torso lane crosses the hurtbox 12 px above
+## the feet disc — the geometry that used to split damage from consumption;
+## the shin lane at row 5.75 clears both surfaces. Homing locks sit far
+## downrange so no flight reaches its target inside the measurement window.
+const REFLECT_ENEMY_AT := Vector2(6.5, 5.0)
+const REFLECT_TORSO_MARK := Vector2(6.5, 4.25)
+const REFLECT_MISSILE_AT := Vector2(4.5, 4.25)
+const REFLECT_SHIN_MISSILE_AT := Vector2(4.5, 5.75)
 const CONTACT_BUDGET := 10.0
 const ROUTE_BUDGET := 14.0
 
@@ -119,6 +132,10 @@ func _run() -> void:
 	await _stage_band_gate()
 	await _stage_wide_exit_gate()
 	await _stage_whiff_gate()
+	await _stage_reflected_torso_pairing()
+	await _stage_reflected_shin_graze()
+	await _stage_blocked_back_hit_pairing()
+	await _stage_parry_keeps_the_shot()
 	_completed = true
 
 
@@ -430,6 +447,188 @@ func _fire_and_free(attack_state: EnemyAttack) -> void:
 	for shot in _fire_and_diff(attack_state):
 		shot.queue_free()
 	await get_tree().physics_frame
+
+
+## Reflected-pairing stages: an inline necromancer-shaped target (feet
+## body disc, torso hurtbox area) west of the wall column. The torso pass
+## crosses the hurtbox 12 px above the feet disc — the exact geometry that
+## used to split damage from consumption after a reflect. The headless
+## mouse is meaningless, so each stage pins launch_angle and rotation after
+## reflect() and hands the missile a live lock node as its target (an
+## invalid target would push it into the stub's missing aim API).
+func _spawn_reflect_target(at: Vector2) -> Node2D:
+	var enemy := Node2D.new()
+	enemy.add_to_group("Enemies")
+	var body := StaticBody2D.new()
+	body.collision_layer = 1 << 1
+	body.collision_mask = 0
+	var body_shape := CollisionShape2D.new()
+	var body_circle := CircleShape2D.new()
+	body_circle.radius = 6.67
+	body_shape.shape = body_circle
+	body.add_child(body_shape)
+	enemy.add_child(body)
+	var hurtbox := Area2D.new()
+	hurtbox.collision_layer = 1 << 8
+	hurtbox.collision_mask = 1 << 5
+	var hurt_shape := CollisionShape2D.new()
+	var hurt_capsule := CapsuleShape2D.new()
+	hurt_capsule.radius = 8.0
+	hurt_capsule.height = 24.0
+	hurt_shape.shape = hurt_capsule
+	hurt_shape.position = Vector2(0, -12)
+	hurtbox.add_child(hurt_shape)
+	enemy.add_child(hurtbox)
+	enemy.set_meta("damage_count", 0)
+	hurtbox.area_entered.connect(_count_reflect_damage.bind(enemy))
+	add_child(enemy)
+	enemy.global_position = at * CELL_SIZE
+	return enemy
+
+
+func _count_reflect_damage(_area: Area2D, enemy: Node2D) -> void:
+	enemy.set_meta("damage_count", int(enemy.get_meta("damage_count")) + 1)
+
+
+## The flight crosses the torso hurtbox a full 12 px above the feet disc:
+## damage and consumption must pair on the hurtbox the old body-only
+## consume let the shot pierce past.
+func _stage_reflected_torso_pairing() -> void:
+	var stub := _spawn_stub(TARGET)
+	var enemy := _spawn_reflect_target(REFLECT_ENEMY_AT)
+	# Downrange lock far past the assert stop: the flight must consume on the
+	# hurtbox long before it could reach its homing target and orbit.
+	var lock := Node2D.new()
+	add_child(lock)
+	lock.global_position = Vector2(12.5, 4.25) * CELL_SIZE
+	var missile := _spawn_missile(REFLECT_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	missile.target = lock
+	var freed := false
+	var clock := 0.0
+	var min_hurt := INF
+	var last_pos: Vector2 = missile.global_position
+	while clock < CONTACT_BUDGET:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if not is_instance_valid(missile):
+			freed = true
+			break
+		last_pos = missile.global_position
+		min_hurt = minf(min_hurt,
+				missile.global_position.distance_to(REFLECT_TORSO_MARK * CELL_SIZE))
+		if missile.global_position.x > REFLECT_ENEMY_AT.x * CELL_SIZE + 24.0:
+			break
+	_tee("    torso flight end (%.0f, %.0f), hurtbox-center min %.1f px"
+			% [last_pos.x, last_pos.y, min_hurt])
+	_check(int(enemy.get_meta("damage_count")) == 1,
+			"reflected torso pass deals exactly one damage")
+	_check(freed, "reflected torso pass consumes on the hurtbox")
+	enemy.queue_free()
+	lock.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## The lane clears both surfaces by ~1.8 px: the shot must fly under with
+## no damage and no consume — the old shin-graze vanish, inverted.
+func _stage_reflected_shin_graze() -> void:
+	var stub := _spawn_stub(TARGET)
+	var enemy := _spawn_reflect_target(REFLECT_ENEMY_AT)
+	# Downrange lock far past the assert stop: a lock on the flight line gets
+	# overshot, and the wrap-around U-turn orbits straight into the enemy.
+	var lock := Node2D.new()
+	add_child(lock)
+	lock.global_position = Vector2(12.5, 5.75) * CELL_SIZE
+	var missile := _spawn_missile(REFLECT_SHIN_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	missile.target = lock
+	var passed_enemy := false
+	var clock := 0.0
+	var min_hurt := INF
+	var last_pos: Vector2 = missile.global_position
+	while clock < CONTACT_BUDGET:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if not is_instance_valid(missile):
+			break
+		last_pos = missile.global_position
+		min_hurt = minf(min_hurt,
+				missile.global_position.distance_to(REFLECT_TORSO_MARK * CELL_SIZE))
+		if missile.global_position.x > REFLECT_ENEMY_AT.x * CELL_SIZE + 16.0:
+			passed_enemy = true
+			break
+	_tee("    shin flight end (%.0f, %.0f), hurtbox-center min %.1f px"
+			% [last_pos.x, last_pos.y, min_hurt])
+	_check(passed_enemy and is_instance_valid(missile),
+			"reflected shin graze passes under with no consume")
+	_check(int(enemy.get_meta("damage_count")) == 0,
+			"reflected shin graze deals no damage")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	enemy.queue_free()
+	lock.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## A block held away from the hit still takes the damage without parrying;
+## the tick sweep must consume the shot the old flush handler refused to
+## free while blocking.
+func _stage_blocked_back_hit_pairing() -> void:
+	var stub := _spawn_stub(Vector2(4.0, 5.0))
+	stub.combat.blocking = true
+	var missile := _spawn_missile(Vector2(2.5, 5.0))
+	var freed := false
+	var clock := 0.0
+	while clock < CONTACT_BUDGET:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if not is_instance_valid(missile):
+			freed = true
+			break
+	_check(freed, "blocked back-hit consumes on the player body")
+	await _clear_stage_actors(stub)
+
+
+## A frontal parry reflects in the same window the flush reports the body
+## contact. The probe mirrors that ordering: physics_frame resumes before
+## the shot's next _physics_process, so reflecting on the first tick the
+## stub overlap is visible lands the parry before the tick sweep can read
+## a pre-reflection contact. The shot must keep flying with the flag set.
+func _stage_parry_keeps_the_shot() -> void:
+	var stub := _spawn_stub(Vector2(4.0, 5.0))
+	stub.combat.blocking = true
+	var lock := Node2D.new()
+	add_child(lock)
+	lock.global_position = Vector2(1.5, 5.0) * CELL_SIZE
+	var missile := _spawn_missile(Vector2(2.5, 5.0))
+	var reflect_clock := -1.0
+	var clock := 0.0
+	while clock < CONTACT_BUDGET:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if not is_instance_valid(missile):
+			break
+		if reflect_clock < 0.0:
+			var hitbox: Area2D = missile.get_node("Hitbox")
+			if hitbox.get_overlapping_bodies().has(stub):
+				missile.reflect()
+				missile.launch_angle = PI
+				missile.rotation = PI
+				missile.target = lock
+				reflect_clock = clock
+		elif clock - reflect_clock >= 0.4:
+			break
+	_check(reflect_clock >= 0.0, "parry reflect lands at the contact flush")
+	_check(is_instance_valid(missile) and missile.reflected,
+			"parried shot survives its reflect window")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	lock.queue_free()
+	await _clear_stage_actors(stub)
 
 
 ## Physical Environment block for the later stages: `center` in tile units,

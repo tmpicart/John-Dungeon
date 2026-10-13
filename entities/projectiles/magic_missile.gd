@@ -24,9 +24,11 @@ const EXIT_CLEARANCE_PX := 3.0
 ## Turn radius = speed / turn_speed (~15 px): a U-turn must fit a
 ## two-tile corridor.
 @export var turn_speed = 5.5
-## Launches the reflect this many degrees wide of the aim line (random side)
-## so the homing visibly arcs onto the lock.
-@export var reflect_arc_deg := 75.0
+## Launches the reflect this many degrees wide of the aim line (random
+## side) so the homing visibly arcs onto the lock. Kept well under a
+## quarter-turn: at the shared turn radius a wider fan splats the shot
+## into nearby geometry before tracking converges.
+@export var reflect_arc_deg := 35.0
 ## Seconds between blocked-line checks while flying direct arcs.
 @export var route_check_interval := 0.1
 ## Seconds between path re-queries while routing around cover.
@@ -87,6 +89,16 @@ func _physics_process(delta: float) -> void:
 					_enter_route()
 
 	global_position += direction * speed * delta
+
+	# Player contact consumes on the tick, after the physics flush: a
+	# same-frame parry has already set reflected and keeps the shot, while
+	# a blocked back-hit — damage without a parry — still pairs with the
+	# consume the way a plain hit does.
+	if not reflected:
+		for body in $Hitbox.get_overlapping_bodies():
+			if body == player:
+				queue_free()
+				break
 
 	var distance_to_player = global_position.distance_to(player.global_position)
 	if not passed and not reflected and not _routing \
@@ -248,11 +260,13 @@ func reflect():
 		volley_report.retire()
 		volley_report = null
 
-	# The single surface now pairs with enemy hurtboxes and self-frees on
-	# enemy bodies and walls — reflected missiles no longer pierce.
+	# The shot now hurts through enemy hurtboxes and self-frees on them and
+	# on walls: the consume surface equals the damage surface, so a torso
+	# pass can no longer pierce after dealing damage and a shin graze can
+	# no longer vanish without dealing any.
 	var hitbox = $Hitbox
 	hitbox.collision_layer = 1 << 5             # Layer 6 (PlayerHitbox)
-	hitbox.collision_mask = (1 << 1) | (1 << 2) # Collides with Layers 2 and 3
+	hitbox.collision_mask = (1 << 2) | (1 << 8) # Walls + enemy hurtboxes
 
 	var sprite = $Sprite2D  # Replace with your actual node path
 	var shader_material := sprite.material as ShaderMaterial
@@ -269,7 +283,16 @@ func reflect():
 	launch_angle = mouse_direction.angle()
 	rotation = launch_angle + deg_to_rad(reflect_arc_deg) * (1.0 if randf() < 0.5 else -1.0)
 
+## World-impact consume: walls and any non-player body end the flight.
+## Player contact is owned by the tick sweep in _physics_process, which
+## runs after the physics flush — see the sweep for why.
 func _on_hitbox_body_entered(body: Node2D) -> void:
-	# If it's the player and the player is not blocking, or it's another object, destroy the missile
-	if body != player or (body == player and not player.combat.blocking):
+	if body != player:
 		queue_free()
+
+
+## Reflected consume: dying on the hurtbox that takes the damage keeps
+## the consume surface identical to the damage surface. The pre-reflect
+## mask carries no area bits, so this only fires after a reflect.
+func _on_hitbox_area_entered(_area: Area2D) -> void:
+	queue_free()
