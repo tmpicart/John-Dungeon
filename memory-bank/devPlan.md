@@ -17,7 +17,6 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 
 | ID | Task | Notes |
 |---|---|---|
-| DOC-5 | techContext + productContext | Strip R-references; engine facts one per line; provisional design tables unchanged |
 | DOC-6 | devPlan restructure | Absorb 2R + necromancer playtest + archer flip as tasks; re-ID the D-1 grab-bag; subtasks for R-40 and D-9; size classes; archive Sept 2-13 log lines → memory-bank/archive/progress-2026-q3.md; return this file to ≤ ~80 lines; new row: code-comment sweep (7 pre-rework comment sites: enemy_summon legacy note, attack/block/max_hp parity rewrites) |
 | DOC-7 | Rules: git + loading | Commit protocol → memory-bank/commit-protocol.md with gate stub in git.md (draft only at user-confirmed DONE); session start reads activeContext only; when-to-read-what table; evaluate moving assets.md out of always-loaded rules |
 | DOC-8 | Rules: editor + hygiene | godot-collaboration rewrite per research: real conflict modes = cache-stale overwrites + two-writer lost updates (godot #75865, #24646), not general corruption; log-hygiene soft caps (systemPatterns, techContext, productContext) framed for AI memory — keep identifiers/intent/qualifiers, cut duplication/history/prose, dubious → delete; enforce by dedupe/rehome/split, never fact-trim; drop ai-rework-log reference |

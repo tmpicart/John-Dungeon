@@ -6,13 +6,12 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- DOC-4 — systemPatterns conventions restructured: one-fact rows, dupes merged, trade-offs folded, engine facts rehomed (log: `progress.md`)
+- DOC-5 — techContext task IDs stripped, engine facts one per line; productContext verified clean (log: `progress.md`)
 
 ## Next Up
-1. DOC-5: techContext + productContext (strip R-refs, engine facts one per line)
-2. 2R: straight-launch reflect + cone soft-seek
-3. Necromancer playtest → archer flip verdict
-4. R-40 room-block standard → R-41 tier-1 slice
+1. 2R: straight-launch reflect + cone soft-seek
+2. Necromancer playtest → archer flip verdict
+3. R-40 room-block standard → R-41 tier-1 slice
 
 ## Pointers
 - Conventions & architecture: `systemPatterns.md`

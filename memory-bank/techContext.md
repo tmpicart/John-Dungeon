@@ -4,11 +4,14 @@
 
 ## Engine
 - Godot **4.7.2 stable** (win64), Forward Plus renderer, GDScript
-- **Engine hazard (4.7.2):** editor saves omit `PackedStringArray`/`StringName` property values on scripted sub-resources in `.tres` — they silently revert to script defaults. The headless engine `ResourceSaver` is unaffected; the smoke suite's "shipped dialogue playable" canary guards this. Author shipped resource data with `String`/`Array[String]`/`int`/`Texture` fields (the ShopData pattern)
+- **Engine hazard (4.7.2):** editor saves omit `PackedStringArray`/`StringName` property values on scripted sub-resources in `.tres` — they silently revert to script defaults
+- The headless engine `ResourceSaver` is unaffected; the smoke suite's "shipped dialogue playable" canary guards this
+- Author shipped resource data with `String`/`Array[String]`/`int`/`Texture` fields (the ShopData pattern)
 - **Editor hazard (script cache):** a stale editor script cache strips unknown exported properties on save — restart the editor after agent-side disk edits
-- `self_modulate` cannot hue-shift — recoloring needs a shader (slime colors, elite tints; the S-1 hue-rotation material)
+- `self_modulate` cannot hue-shift — recoloring needs a shader (slime colors, elite tints; planned hue-rotation shader)
 - **Loader quirk (4.7):** bare sibling `NodePath`s in `.tscn` load as null — sibling references must be `../`-prefixed (typed state refs rely on this)
-- `AnimationPlayer.pause()` holds the current frame (applies no track values); `stop()` seeks to frame 0 and applies first-frame keys immediately — why mid-signal `stop()` is banned (systemPatterns interrupts)
+- `AnimationPlayer.pause()` holds the current frame (applies no track values)
+- `AnimationPlayer.stop()` seeks to frame 0 and applies first-frame keys immediately — why mid-signal `stop()` is banned (systemPatterns interrupts)
 - Editor path (VS Code setting): `c:\Users\Silent\Documents\Code\Godot_v4.7.2-stable_win64.exe`
 - Linting/formatting: `gdlint` / `gdformat` (gdtoolkit 4.5 via pip; config `gdlintrc`) — verification gate per `.clinerules/code-style.md`
 - Display: 1920×1080, `canvas_items` stretch mode, nearest texture filter (pixel art)
@@ -46,7 +49,7 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 ## Input Map
 `right/left/up/down` (WASD) · `attack` (LMB) · `block` (RMB) · `dash` (Space) · `interact` (E, physical) · `bomb` (Q) · `potion` (Shift) · `quit` (Esc — also closes modals)
 
-> `interact` is the single interaction action (R-30 consolidated the old `pickup`/`Interact` pair); controller support later = adding an event to the action. Prompts derive their key label from this binding.
+> `interact` is the single interaction action — the old `pickup`/`Interact` pair is consolidated into it; controller support later = adding an event to the action. Prompts derive their key label from this binding.
 
 ## Engine facts (4.7.2 — navigation & physics)
 - `PhysicsDirectSpaceState2D.intersect_ray` returns a single Dictionary (empty when clear) — not an array.
@@ -54,17 +57,21 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - `NavigationAgent2D.velocity_computed` emits continuously while avoidance is enabled; connect/disconnect it per owning state.
 - A hidden TileMapLayer stops updating its nav internals — hide baked nav layers via `modulate.a = 0`, not `visible = false`.
 - `simplify_path` corrupts tight-cover routes (corner cuts through blocked cells); leave simplification off for tile navmeshes.
-- Tile-navmesh paths hug cell boundaries (zero clearance) and obstacle tilesets can carry polygons overhanging past their cell — followers need half-cell margin (steer through walkable-verified cell centers) or slide-or-crash handling.
+- Tile-navmesh paths hug cell boundaries (zero clearance).
+- Obstacle tilesets can carry polygons overhanging past their cell.
+- Followers need half-cell margin (steer through walkable-verified cell centers) or slide-or-crash handling.
 - `local_to_map` floors boundary points into the +x/+y cell — verify the snapped cell against the layer (`get_cell_tile_data(cell) != null`).
 - A proximity waypoint window smaller than speed/turn-rate orbits; advance waypoints by projection past their plane.
-- `move_and_slide` on a projectile gives slide-vs-crash for free (impact steepness = velocity·normal) and needs a collision shape on the scene root.
+- `move_and_slide` on a projectile gives slide-vs-crash for free (impact steepness = velocity·normal).
+- `move_and_slide` projectiles need a collision shape on the scene root.
 - Long/forward-offset Area2D hitboxes detect walls early — keep damage hitboxes centered and small; let the body handle geometry.
 - NavigationAgent2D's internal cursor only advances when the follower approaches the cursor point — custom anchors require owning the raw `get_current_navigation_path()` list.
 - GDScript lambdas capture by value at creation.
 - Headless probes must drive physics by frame count (tick-based assertions), not wall-clock waits.
 - Probe homing locks sit downrange past the assert stop: a lock on the flight line gets overshot and lerp_angle's wrap turns the return into an orbit.
 - Headless engine runs on this machine: `Start-Process -FilePath <engine> -ArgumentList ... -Wait -PassThru` to capture exit codes and redirected output.
-- `NavigationPolygon.agent_radius` erodes the baked surface: enemy discs run 5.88–7.14 px, inside `AGENT_RADIUS := 7.0` with 2 px slack in 16-px doorways; `NavigationAgent2D.radius` is avoidance-only and does not affect pathfinding.
+- `NavigationPolygon.agent_radius` erodes the baked surface — enemy discs run 5.88–7.14 px, inside `AGENT_RADIUS := 7.0` with 2 px slack in 16-px doorways.
+- `NavigationAgent2D.radius` is avoidance-only and does not affect pathfinding.
 
 ## Tests
 - `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`

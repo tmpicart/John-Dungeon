@@ -73,4 +73,5 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-13 | docs | DOC-2: one-line charters; single-homed phase/mission/conventions/engine-facts; activeContext → pointer-snapshot.
 - 2026-10-13 | docs | DOC-3: systemPatterns Architecture Map rewritten one-fact-per-bullet, telegraphic; task IDs stripped, facts kept plain-language.
 - 2026-10-13 | docs | DOC-4: conventions table to one-fact rows, Architecture dupes merged, trade-offs folded, engine facts rehomed, IDs stripped.
+- 2026-10-13 | docs | DOC-5: techContext IDs stripped, engine facts one per line; productContext verified clean, design tables untouched.
 
