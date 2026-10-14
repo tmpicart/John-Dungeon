@@ -21,7 +21,10 @@ extends Node
 ## The doorway battery
 ## (chase_probe_doorway.gd) adds open-gap threading and the door-open
 ## commit; the press battery (chase_probe_press.gd) covers the guard
-## lifecycle through the route-improvement release.
+## lifecycle through the route-improvement release; the flip battery
+## (chase_probe_flicker.gd) covers the confirmed walk flip - per-tick
+## jitter never lands, a held turn lands once, and press-facing flips
+## stay a confirm window apart.
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -233,6 +236,12 @@ func _run() -> void:
 	press_battery.probe = self
 	await press_battery.run()
 	press_battery.queue_free()
+	# Flip battery: confirmed walk flip - see chase_probe_flicker.gd.
+	var flip_battery: Node = preload("res://tests/chase_probe_flicker.gd").new()
+	add_child(flip_battery)
+	flip_battery.probe = self
+	await flip_battery.run()
+	flip_battery.queue_free()
 	_completed = true
 
 func _stage_sealed_archer_guard() -> void:
@@ -701,10 +710,19 @@ func _stage_sealed_melee_guard() -> void:
 	var guard_anchor := Vector2.ZERO
 	var guard_drift := 0.0
 	var clock := 0.0
+	var sprite: Sprite2D = skeleton.get_node("Sprite2D")
+	var facing_sign := signf(sprite.scale.x)
+	var last_flip_clock := -INF
+	var min_flip_gap := INF
 	while clock < 6.0:
 		await get_tree().physics_frame
 		clock += get_physics_process_delta_time()
 		flipped = flipped or chase._press_flipped
+		var live_sign := signf(sprite.scale.x)
+		if live_sign != facing_sign:
+			min_flip_gap = minf(min_flip_gap, clock - last_flip_clock)
+			last_flip_clock = clock
+			facing_sign = live_sign
 		if chase._guarding:
 			if not guard_seen:
 				guard_seen = true
@@ -732,6 +750,9 @@ func _stage_sealed_melee_guard() -> void:
 	_check(guard_seen, "press guarded after both sides stalled")
 	_check(guard_drift <= 6.0,
 			"guard holds the pocket mouth (max drift %.1f px)" % guard_drift)
+	_check(min_flip_gap >= 0.05,
+			"press sprite flips stay a confirm window apart (min gap %.2fs)"
+			% min_flip_gap)
 	_check(skeleton.get_node("Sprite2D").scale.x > 0.0,
 			"guarding skeleton faces the player through the wall")
 	# Reveal: the player steps out of the pocket into the swing box.

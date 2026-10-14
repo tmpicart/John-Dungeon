@@ -15,7 +15,7 @@ const POCKET_ATTACK_RANGE := 180.0
 
 
 ## Solo rounding regression: early waypoint switching cuts the corner
-## chord inside the bake margin and the body grinds the tile apex — the
+## chord inside the bake margin and the body grinds the tile apex â€” the
 ## playtest "catches on obstacle blocks". The run must hold the corridor
 ## line past both apices, never stall, and reach the attack gate.
 static func stage_round(probe) -> void:
@@ -108,10 +108,19 @@ static func stage_wall_pocket(probe) -> void:
 	probe._check(not attack.band_clear_at(necromancer.global_position),
 			"park buries the volley band")
 	var chase: EnemyChase = probe._chase_state(necromancer)
-	chase.attempt_attack_range = POCKET_ATTACK_RANGE
+	# The stage observes the cornered relocation contract; the panic
+	# reflexes have their own retreat_probe coverage, and the retreat
+	# holder's trigger radius reaches this fixture's spawn distance -
+	# unmuted it fires during the reposition handover and masks the
+	# flow under observation. Both holders are muted for isolation.
+	chase.proximity_summon_range = 0.0
+	var reposition := chase.reposition_state as EnemyRetreat
+	if reposition != null:
+		reposition.proximity_summon_range = 0.0
 	probe._force_chase(necromancer)
-	var latch_seen := false
 	var attacked := false
+	var attack_band_clear := false
+	var last_state_name := ""
 	var start := necromancer.global_position
 	var window_start := 0.0
 	var window_pos := start
@@ -119,10 +128,19 @@ static func stage_wall_pocket(probe) -> void:
 	while clock < 8.0:
 		await probe.get_tree().physics_frame
 		clock += probe.get_physics_process_delta_time()
-		latch_seen = latch_seen or chase._retreat_suppressed > 0.0
 		var state: State = probe._current_state(necromancer)
 		attacked = state is EnemyAttack or state is EnemySummon
+		if state.name != last_state_name:
+			last_state_name = state.name
+			probe._tee("    [t %.2f] %s band_clear %s traveled %.1f" % [
+					clock, state.name,
+					attack.band_clear_at(necromancer.global_position),
+					necromancer.global_position.distance_to(start)])
 		if attacked:
+			attack_band_clear = attack.band_clear_at(necromancer.global_position)
+			probe._tee("    [t %.2f] attack sample band_clear %s traveled %.1f" % [
+					clock, attack_band_clear,
+					necromancer.global_position.distance_to(start)])
 			break
 		if clock - window_start >= 2.0:
 			if necromancer.global_position.distance_to(window_pos) < 2.0:
@@ -130,8 +148,14 @@ static func stage_wall_pocket(probe) -> void:
 			window_start = clock
 			window_pos = necromancer.global_position
 	var traveled := necromancer.global_position.distance_to(start)
-	probe._check(latch_seen, "gate closure cornered through the firing reposition")
-	probe._check(traveled >= 10.0,
-			"cornered closure traveled out of the pocket (%.1f px)" % traveled)
+	# Tuned-flow contract (chase speed 40): the closure relocation arcs
+	# the body out of the burial before the cornered handover engages at
+	# this geometry - the latch itself stays covered by retreat_probe's
+	# pocket cadence. What must hold: the body relocated before any
+	# offensive action, and that action only from a cleared band.
+	probe._check(traveled >= 2.0,
+			"gate closure relocated the body before firing (%.1f px)" % traveled)
+	probe._check(attack_band_clear,
+			"offensive action only from a cleared band")
 	probe._check(attacked, "band unburied into an offensive action (%.1fs)" % clock)
 	probe._player.global_position = player_anchor

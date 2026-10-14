@@ -7,6 +7,14 @@ class_name BaseEnemy
 ## through State Control via the typed state exports below.
 
 const FLIP_THRESHOLD := 0.1
+## Seconds the walk velocity must hold a sign opposite the committed
+## facing before the sprite follows it. Per-tick steering oscillates
+## around zero lateral error — the RVO flush in a melee crowd, the press
+## vector re-aimed at its level point each tick — and an instant flip
+## turns that oscillation into per-frame flicker; a genuine turn-out
+## holds the sign and confirms within a few physics ticks (same
+## medicine as EnemyChase's gate confirmations).
+const FLIP_CONFIRM_SECONDS := 0.08
 ## Environment layer (walls + props): the only geometry aim checks treat
 ## as blocking; bodies (player 1, enemies 2) never block aim.
 const AIM_BLOCKING_MASK := 1 << 2
@@ -45,6 +53,11 @@ var last_velocity_x := 0.0
 ## Held by states that pin the sprite to a point (standoff facing); the
 ## walk-tick flip yields so the two writers cannot fight per frame.
 var facing_pinned = false
+## Committed walk facing (-1/1); a flip request opposite it must hold
+## FLIP_CONFIRM_SECONDS before it lands (see _update_walk_facing).
+var _facing := 1
+var _flip_pending := 0
+var _flip_clock := 0.0
 
 ## Bumped by every interrupt; async flows compare their token to detect staleness.
 var _flow_id := 0
@@ -57,6 +70,7 @@ var _attack_cooldown: Timer
 @onready var animation_player = $AnimationPlayer
 
 func _ready() -> void:
+	_facing = 1 if $Sprite2D.scale.x >= 0.0 else -1
 	_attack_cooldown = Timer.new()
 	_attack_cooldown.one_shot = true
 	add_child(_attack_cooldown)
@@ -65,13 +79,13 @@ func _ready() -> void:
 		push_error("%s: state_control assigned but hurt_state/stun_state missing" % get_path())
 
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	if is_dead or is_hit or attacking or stunned:
 		return
 	move_and_slide()
-	handle_animations()
+	handle_animations(delta)
 
-func handle_animations():
+func handle_animations(delta: float) -> void:
 	if velocity.length() > 0:
 		if animation_player.has_animation("Walk"):
 			animation_player.play("Walk")
@@ -81,13 +95,41 @@ func handle_animations():
 		if animation_player.has_animation("Idle"):
 			animation_player.play("Idle")
 
-	if not facing_pinned and abs(velocity.x) > FLIP_THRESHOLD:
-		if velocity.x < 0:
-			$Sprite2D.scale.x = -1
-		else:
-			$Sprite2D.scale.x = 1
+	if not facing_pinned:
+		_update_walk_facing(delta)
 
+## Confirmed walk flip: a velocity sign opposite the committed facing
+## must hold continuously before the sprite follows it, so per-tick
+## steering noise never lands as a visible flip. Above-threshold ticks
+## always feed last_velocity_x — the press-side fallback reads it even
+## when no flip lands.
+func _update_walk_facing(delta: float) -> void:
+	if abs(velocity.x) > FLIP_THRESHOLD:
 		last_velocity_x = velocity.x
+	var direction := 0
+	if velocity.x < -FLIP_THRESHOLD:
+		direction = -1
+	elif velocity.x > FLIP_THRESHOLD:
+		direction = 1
+	if direction == 0 or direction == _facing:
+		_flip_pending = 0
+		_flip_clock = 0.0
+	elif _flip_pending != direction:
+		_flip_pending = direction
+		_flip_clock = delta
+	else:
+		_flip_clock += delta
+	if _flip_clock >= FLIP_CONFIRM_SECONDS:
+		_apply_facing(direction)
+
+## Single facing writer for the walk flip and the pin holders: the
+## commit updates the tracked facing, so a released pin resumes from
+## the sprite's real direction instead of re-confirming a stale one.
+func _apply_facing(direction: int) -> void:
+	_facing = direction
+	_flip_pending = 0
+	_flip_clock = 0.0
+	$Sprite2D.scale.x = direction
 
 ## Pins sprite facing to a world point. Attack flows use this: movement
 ## flipping is suspended while attacking, so the sprite would otherwise
@@ -95,10 +137,7 @@ func handle_animations():
 func face_toward(point: Vector2) -> void:
 	var to_point := point - global_position
 	if abs(to_point.x) > FLIP_THRESHOLD:
-		if to_point.x < 0:
-			$Sprite2D.scale.x = -1
-		else:
-			$Sprite2D.scale.x = 1
+		_apply_facing(-1 if to_point.x < 0 else 1)
 
 ## Width-aware aim check between two world points: the center ray plus
 ## +/- clearance parallels. True when none of the three hits blocking

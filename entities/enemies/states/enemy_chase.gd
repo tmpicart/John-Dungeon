@@ -190,6 +190,11 @@ func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
+	# The facing pin is re-decided every tick: the holders below set it
+	# while they own the body, and a flow that leaves them must not walk
+	# the sprite frozen until some other transition clears it.
+	enemy.facing_pinned = false
+
 	var to_player = player.global_position - enemy.global_position
 	var distance = to_player.length()
 
@@ -468,6 +473,7 @@ func _finish_or_press(to_player: Vector2, delta: float) -> void:
 		enemy.velocity = Vector2.ZERO
 		navigation_agent.velocity = Vector2.ZERO
 		enemy.face_toward(player.global_position)
+		enemy.facing_pinned = true
 		return
 
 	var press_direction := to_player.normalized()
@@ -502,6 +508,11 @@ func _finish_or_press(to_player: Vector2, delta: float) -> void:
 	# same vector still feeds the agent: neighbors' avoidance reads the press
 	# intent and parts around it instead of pathing straight through.
 	_bypass_flush = true
+	# The press vector re-aims at its level point every tick and can
+	# alternate its lateral sign around the target: the body faces the
+	# player it is grinding to swing at, under the facing pin.
+	enemy.face_toward(player.global_position)
+	enemy.facing_pinned = true
 	navigation_agent.velocity = press_direction * speed
 	enemy.velocity = press_direction * speed
 
