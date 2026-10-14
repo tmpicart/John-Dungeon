@@ -15,9 +15,11 @@ extends Node
 ## stages cover outcome-gated repositioning (an overhang buries the
 ## necromancer's volley band, the chase routes the blocked gate into the
 ## FIRING-desire retreat, and the flight lands a stance whose band spawns
-## clear) and the cooldown standoff (in range with an open gate on
-## cooldown, the caster holds the stance instead of churning the attack
-## handover).
+## clear), the sealed-pocket retry contract (no stance connects, so the
+## reposition retries on the attack cadence without thrashing), and the
+## cooldown standoff (in range with
+## an open gate on cooldown, the caster holds the stance instead of
+## churning the attack handover).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -98,6 +100,8 @@ func _run() -> void:
 	await _stage_hit_retreat()
 	await _teardown()
 	await _stage_firing_reposition()
+	await _teardown()
+	await _stage_pocket_fallback()
 	await _teardown()
 	await _stage_standoff_cooldown()
 	_completed = true
@@ -238,8 +242,10 @@ func _stage_obstacle_hop() -> void:
 	var max_gap := 0.0
 	var max_displacement := 0.0
 	var start := archer.global_position
+	# Outlives retreat entry (~0.6 s) plus the 6.0 s flight hard cap, so
+	# a cap-resolved cornered fight lands inside the sampling.
 	var clock := 0.0
-	while clock < 6.0:
+	while clock < 9.0:
 		await get_tree().physics_frame
 		clock += get_physics_process_delta_time()
 		_player.global_position = _player.global_position.move_toward(
@@ -301,6 +307,9 @@ func _stage_hit_retreat() -> void:
 		await get_tree().physics_frame
 
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
+	# The hit-retreat path is staged alone: the panic summon would play
+	# its animation detour inside the 0.3 s approach window.
+	_chase_state(necro).proximity_summon_range = 0.0
 	_player.global_position = Vector2(148, 80)
 	_force_chase(necro)
 	await _wait_seconds(0.3)
@@ -343,7 +352,10 @@ func _stage_firing_reposition() -> void:
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 96))
 	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
 	var firing: EnemyRetreat = necro.get_node(
-			"State Control/EnemyRetreatFiring")
+			"State Control/EnemyReposition")
+	# The player parks exactly at the panic-summon trigger radius, so the
+	# gate stays off: its summon detour would starve the routing window.
+	_chase_state(necro).proximity_summon_range = 0.0
 	_check(not attack_state.band_clear_at(necro.global_position),
 			"overhang park buries the volley band")
 	_player.global_position = Vector2(128, 32)
@@ -390,6 +402,9 @@ func _stage_standoff_cooldown() -> void:
 
 	_player.global_position = Vector2(248, 128)
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
+	# The hold pins drift: the shuffle would break the velocity
+	# assertion under test.
+	_chase_state(necro).standoff_shuffle = false
 	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
 	necro.start_attack_cooldown()
 	_force_chase(necro)
@@ -408,6 +423,54 @@ func _stage_standoff_cooldown() -> void:
 	_check(held, "standoff held chase with no state churn or drift")
 	necro.queue_free()
 	await get_tree().physics_frame
+
+
+## Sealed-pocket repositioning (necromancer): the pocket seals the volley
+## band off from the player, so no stance connects and volleys from the
+## band's clear edge die on the wall. The reposition must retry on the
+## attack cadence — bounded entries, no state-machine thrash, body held
+## inside the band — instead of grinding or freezing.
+func _stage_pocket_fallback() -> void:
+	_tee("  stage: sealed pocket retries without thrashing")
+	_add_blocker(Vector2(138.0, 40.0), Vector2(236.0, 8.0))
+	_add_blocker(Vector2(138.0, 140.0), Vector2(236.0, 8.0))
+	_add_blocker(Vector2(28.0, 90.0), Vector2(8.0, 116.0))
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	_remove_bake_artifacts()
+	var nav_layer: TileMapLayer = NavBaker.bake(self)
+	_check(nav_layer != null, "rebake with pocket walls")
+	if nav_layer == null:
+		return
+	for i in FRAMES_TO_SETTLE:
+		await get_tree().physics_frame
+
+	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(60, 52))
+	var chase := _chase_state(necro)
+	chase.proximity_summon_range = 0.0
+	_player.global_position = Vector2(220, 20)
+	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
+	var reposition := necro.get_node("State Control/EnemyReposition")
+	_check(not attack_state.band_clear_at(necro.global_position),
+			"the pocket park buries the volley band")
+	_force_chase(necro)
+	var entries := 0
+	var in_reposition := false
+	var clock := 0.0
+	while clock < 6.5:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		var current := _current_state(necro)
+		if current == reposition and not in_reposition:
+			entries += 1
+		in_reposition = current == reposition
+	_check(entries >= 2,
+			"the sealed pocket retried the reposition (%d entries)" % entries)
+	_check(entries <= 12,
+			"the retries held a bounded cadence (%d entries)" % entries)
+	var in_band := necro.global_position.y > 44.0 \
+			and necro.global_position.y < 136.0
+	_check(in_band, "the retries stayed inside the band")
 
 
 func _build_corridor() -> void:

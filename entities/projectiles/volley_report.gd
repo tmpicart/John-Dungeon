@@ -4,7 +4,8 @@ class_name VolleyReport
 ## Outcome telemetry for one enemy volley: did any projectile reach the
 ## player's area? The attack state records one per volley and consults it
 ## through fire_gate_open; a whiffed volley closes that gate until the
-## enemy repositions (moving after a proven-bad firing angle).
+## enemy reaches a firing-solution stance (whiff_satisfied) or the retry
+## window lapses.
 
 ## Radius around the player that counts as arrived. Generous by design:
 ## near-miss dodges inside it still read as success, so only volleys that

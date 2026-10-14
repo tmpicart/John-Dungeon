@@ -13,25 +13,22 @@ class_name EnemyAttack
 @export var projectile_offsets: Array[Vector2] = []
 ## Whiff-triggered repositioning: after a settled volley that never reached
 ## the player's area, the chase handover gate stays closed until the body
-## has moved whiff_reposition_distance from the fire position or
-## whiff_retry_seconds have lapsed. Opt-in — off keeps every other enemy's
-## behavior unchanged (see fire_gate_open).
+## reaches a firing-solution stance (the reposition state satisfies the
+## gate on arrival, see whiff_satisfied) or whiff_retry_seconds have
+## lapsed. Opt-in — off keeps every other enemy's behavior unchanged (see
+## fire_gate_open).
 @export var reposition_after_whiff := false
 ## Radius around the player that counts as the volley having arrived (see
 ## VolleyReport.arrival_radius).
 @export var whiff_arrival_radius := 32.0
-## Distance the body must travel from a whiffed volley's fire position
-## before the gate reopens.
-@export var whiff_reposition_distance := 48.0
 ## Seconds after a whiffed volley's launch the gate reopens even without
 ## movement: a cornered attacker is not permanently disarmed.
 @export var whiff_retry_seconds := 4.0
 
 var enemy: BaseEnemy
-## Outcome of the most recent volley (see VolleyReport) plus where/when it
-## was fired — the whiff gate's memory.
+## Outcome of the most recent volley (see VolleyReport) plus when it was
+## fired — the whiff gate's memory.
 var _last_volley: VolleyReport
-var _last_fire_position := Vector2.ZERO
 var _last_fire_msec := 0
 
 func _ready() -> void:
@@ -63,9 +60,9 @@ func enter() -> void:
 ## muzzle repositions through chase instead of starting an attack flow that
 ## could only fire a partial volley. A settled volley that never reached
 ## the player then proves the firing position bad: the gate stays closed
-## until the body has repositioned the configured distance or the retry
-## window lapses. An in-flight volley has no verdict and never closes the
-## gate.
+## until the body reaches a firing-solution stance (whiff_satisfied) or
+## the retry window lapses. An in-flight volley has no verdict and never
+## closes the gate.
 func fire_gate_open() -> bool:
 	if not band_clear_at(enemy.global_position):
 		return false
@@ -73,9 +70,15 @@ func fire_gate_open() -> bool:
 		return true
 	if _last_volley.arrived or not _last_volley.is_whiffed():
 		return true
-	var moved := enemy.global_position.distance_to(_last_fire_position)
 	var elapsed := (Time.get_ticks_msec() - _last_fire_msec) / 1000.0
-	return moved >= whiff_reposition_distance or elapsed >= whiff_retry_seconds
+	return elapsed >= whiff_retry_seconds
+
+
+## Arrival satisfaction: the reposition state calls this once the body has
+## landed on a stance the volley can fire from — the bad-position memory
+## clears outright instead of waiting out the retry window.
+func whiff_satisfied() -> void:
+	_last_volley = null
 
 ## Band clearance at a stance position: every volley muzzle must pass
 ## spawn clearance and the body-to-muzzle line, so the enemy repositions
@@ -113,7 +116,6 @@ func _spawn_projectiles() -> void:
 		for offset in projectile_offsets:
 			_spawn_projectile(enemy.global_position + offset, volley)
 	_last_volley = volley
-	_last_fire_position = enemy.global_position
 	_last_fire_msec = Time.get_ticks_msec()
 
 func _spawn_projectile(spawn_position: Vector2, volley: VolleyReport) -> void:

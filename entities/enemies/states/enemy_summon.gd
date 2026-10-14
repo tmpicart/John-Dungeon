@@ -60,6 +60,13 @@ func validate_exports() -> void:
 	if summon_effect == null:
 		push_error("%s: summon_effect is not assigned" % get_path())
 
+## Cooldown gate for the chase's proximity handover: a summoner mid-
+## cooldown must not be handed the body (enter would skip the animation
+## and bounce straight back to chase).
+func is_ready() -> bool:
+	return _summon_cooldown.is_stopped()
+
+
 func enter() -> void:
 	if _summon_cooldown.is_stopped() and not enemy.is_dead:
 		if await enemy.run_action_animation(summon_animation, summon_sfx):

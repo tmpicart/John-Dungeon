@@ -16,8 +16,8 @@ extends Node
 ## it), the
 ## width-aware routing exit (a tangent-clear center ray with a clipping wide
 ## lane holds the route), the whiff gate at a muzzle-clear park (settled
-## volleys that never reached the player close the chase handover until the
-## body repositions or the retry window lapses; in-flight volleys and
+## volleys that never reached the player close the chase handover until
+## arrival satisfaction or the retry window lapses; in-flight volleys and
 ## arrivals never close it), and the reflect pairing set (a reflected torso
 ## pass deals one damage and dies on the hurtbox that took it, a shin graze
 ## passes under with neither, a blocked back-hit still consumes, and a
@@ -428,11 +428,14 @@ func _stage_whiff_gate() -> void:
 	_check(not attack_state.fire_gate_open(),
 			"a settled volley that never arrived closes the gate")
 
-	# Travel from the fire position reopens; returning re-closes only via
-	# a fresh verdict.
+	# Travel alone no longer reopens: the gate trusts volley verdicts and
+	# the retry window, not displacement.
 	necro.global_position += Vector2(48.0, 0.0)
+	_check(not attack_state.fire_gate_open(),
+			"travel alone no longer reopens the gate")
+	attack_state.whiff_satisfied()
 	_check(attack_state.fire_gate_open(),
-			"repositioning the full distance reopens the gate")
+			"arrival satisfaction clears the whiff memory")
 	necro.global_position = NECRO_WHIFF_PARK * CELL_SIZE
 
 	# A fresh in-flight volley has no verdict: gate open.

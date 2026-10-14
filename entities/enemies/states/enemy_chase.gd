@@ -14,6 +14,12 @@ const MELEE_LEVEL_OFFSET := 10.0
 ## less means its level point is sealed and the press reacts (side flip,
 ## then guard hold) instead of grinding the wall forever.
 const PRESS_PROGRESS_FRACTION := 0.25
+## Seconds the outcome gate must stay closed before the closure routes to
+## the reposition state. The clearance predicate reads per-pixel near
+## band edges, so an unconfirmed handover thrashes reposition/chase on a
+## body drifting across the boundary; genuine burials hold continuously
+## and confirm within a handful of physics ticks.
+const REPOSITION_GATE_CONFIRM := 0.1
 
 @export var navigation_agent: NavigationAgent2D
 @export var idle_state: State
@@ -47,6 +53,19 @@ const PRESS_PROGRESS_FRACTION := 0.25
 @export var aim_ray_cast: RayCast2D
 ## Chance per in-range tick to summon instead of attacking; requires summon_state.
 @export var summon_chance := 0.0
+## Close-range panic summon: entering attack range with the player this
+## close always summons (roll bypassed, summon cooldown respected)
+## instead of attacking. Requires an EnemySummon state; 0 disables.
+@export var proximity_summon_state: State
+@export var proximity_summon_range := 0.0
+## Standoff hold shuffle: micro-drift inside shuffle_radius at reduced
+## speed instead of the statue hold, facing pinned to the player.
+@export var standoff_shuffle := false
+## Shuffle drift radius around the hold position, in px.
+@export var shuffle_radius := 12.0
+## Seconds between shuffle retargets (randomized in the interval).
+@export var shuffle_interval_min := 0.8
+@export var shuffle_interval_max := 1.5
 @export var path_update_interval := 0.5
 ## New-path commitment: a re-query while the player merely drifts flips the
 ## route to the other side of a small obstruction (candle, chest) and the
@@ -99,6 +118,12 @@ var _guard_final_distance := 0.0
 ## Countdown set by EnemyRetreat on a cornered exit: geometry offered no
 ## escape, so both retreat triggers stand down while it decays.
 var _retreat_suppressed := 0.0
+## Continuous seconds the outcome gate has read closed on this stance
+## (see REPOSITION_GATE_CONFIRM).
+var _gate_closed_for := 0.0
+## Standoff shuffle drift target and seconds until the next retarget.
+var _shuffle_target := Vector2.ZERO
+var _shuffle_clock := 0.0
 
 func _ready() -> void:
 	enemy = actor
@@ -114,6 +139,8 @@ func enter() -> void:
 	_press_clock = 0.0
 	_press_flipped = false
 	_guarding = false
+	_gate_closed_for = 0.0
+	_shuffle_clock = 0.0
 	# RVO steering runs only while a movement state owns the agent; the
 	# signal keeps emitting while avoidance is enabled, so leave it clean.
 	navigation_agent.velocity_computed.connect(_on_velocity_computed)
@@ -141,6 +168,8 @@ func validate_exports() -> void:
 		push_error("%s: require_line_of_sight set but aim_ray_cast is not assigned" % get_path())
 	if summon_state != null and summon_chance <= 0.0:
 		push_error("%s: summon_state assigned but summon_chance is 0" % get_path())
+	if proximity_summon_range > 0.0 and proximity_summon_state == null:
+		push_error("%s: proximity_summon_range set without a proximity_summon_state" % get_path())
 
 func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
@@ -220,10 +249,22 @@ func suppress_retreat(duration: float) -> void:
 ## instead of bouncing the attack handover every tick (the bounce
 ## re-rolled the summon chance on every cooldown frame).
 func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
+	# Proximity summon: the player inside the trigger radius always calls
+	# the close-range set — roll bypassed, summon cooldown respected — and
+	# even a blind summoner senses the body at its back.
+	var summon := proximity_summon_state as EnemySummon
+	if summon != null and proximity_summon_range > 0.0 \
+			and to_player.length() <= proximity_summon_range \
+			and summon.is_ready():
+		transition_to(proximity_summon_state)
+		return
 	var attack := attack_state as EnemyAttack
-	if blind or (attack != null and not attack.fire_gate_open()):
+	var gate_open := attack == null or attack.fire_gate_open()
+	_gate_closed_for = 0.0 if gate_open else _gate_closed_for + delta
+	if blind or not gate_open:
 		if not blind and reposition_state != null:
-			if _retreat_suppressed <= 0.0:
+			if _retreat_suppressed <= 0.0 \
+					and _gate_closed_for >= REPOSITION_GATE_CONFIRM:
 				transition_to(reposition_state)
 			else:
 				_bounded_close_in(delta, to_player)
@@ -236,18 +277,42 @@ func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
 		# re-rolled the summon chance on every cooldown frame). Melee
 		# pressers keep the handover — its press is the grind that
 		# re-ticks contact damage through the cooldown.
-		_hold_ground()
+		_hold_ground(delta)
 		return
 	_enter_attack()
 
 
 ## Standoff hold: zero both velocities (the avoidance server keeps
 ## re-emitting the last desired vector, so the body would lean on it) and
-## pin facing to the player.
-func _hold_ground() -> void:
-	enemy.velocity = Vector2.ZERO
-	navigation_agent.velocity = Vector2.ZERO
+## pin facing to the player. With standoff_shuffle the body micro-drifts
+## inside shuffle_radius at reduced speed — a live stance beats a statue
+## — under the same facing pin.
+func _hold_ground(delta: float) -> void:
 	enemy.face_toward(player.global_position)
+	if not standoff_shuffle:
+		_bypass_flush = false
+		enemy.velocity = Vector2.ZERO
+		navigation_agent.velocity = Vector2.ZERO
+		return
+	_shuffle_clock -= delta
+	var to_target := _shuffle_target - enemy.global_position
+	if _shuffle_clock <= 0.0 or to_target.length() < 2.0:
+		_shuffle_target = enemy.global_position \
+				+ Vector2.from_angle(randf() * TAU) * randf() * shuffle_radius
+		_shuffle_clock = randf_range(shuffle_interval_min, shuffle_interval_max)
+		to_target = _shuffle_target - enemy.global_position
+	if to_target.length() < 2.0:
+		_bypass_flush = false
+		enemy.velocity = Vector2.ZERO
+		navigation_agent.velocity = Vector2.ZERO
+		return
+	# The flush only delivers while a path is active; at the standoff the
+	# path has finished and the server emits zero, so the drift writes the
+	# body directly (same contract as the melee press) while the vector
+	# still feeds the agent for the neighbors' avoidance.
+	_bypass_flush = true
+	navigation_agent.velocity = to_target.normalized() * speed * 0.5
+	enemy.velocity = to_target.normalized() * speed * 0.5
 
 
 ## Outcome-blocked closure after a cornered reposition (the fan offered
@@ -261,7 +326,7 @@ func _bounded_close_in(delta: float, to_player: Vector2) -> void:
 	if to_player.length() > attempt_attack_range * 0.5:
 		_follow_path(delta, to_player)
 	else:
-		_hold_ground()
+		_hold_ground(delta)
 
 func _in_attack_range(to_player: Vector2, distance: float) -> bool:
 	if attack_range_shape == AttackRangeShape.AXIS_BOX:

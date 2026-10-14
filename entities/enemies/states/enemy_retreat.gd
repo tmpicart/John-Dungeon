@@ -9,9 +9,12 @@ class_name EnemyRetreat
 ## distance from the player, and its first step does not double back
 ## toward them. Among qualifiers the shortest route to comfort wins —
 ## flight is a backpedal to arm's length, not a tour around cover — and
-## a partial-gain route only counts within one flight length. When no
-## candidate qualifies, geometry has cornered the enemy: it hands back
-## to chase under a retreat-suppression latch and fights.
+## a partial-gain route only counts within one flight length. When the
+## opening fan finds no candidate, geometry has cornered the enemy: it
+## hands back to chase under a retreat-suppression latch and fights. A
+## mid-flight repath with no qualifiers keeps the current route instead —
+## no better escape exists from here, but the body is already flying a
+## validated one.
 ##
 ## Two desires share the fan machinery. ESCAPE (default) scores endpoints
 ## by distance gained from the player. FIRING scores endpoints by firing
@@ -69,11 +72,20 @@ const PROGRESS_FRACTION := 0.25
 ## disables the band preference.
 @export var band_min := 0.0
 @export var band_max := 0.0
+## FIRING only: a stance qualifies when the mesh path from it to the
+## player runs no longer than this multiple of the straight line — the
+## same mesh the volleys route through. Longer detours read as stances
+## the shots cannot actually follow to the player.
+@export var max_detour_ratio := 1.8
 
 var player: CharacterBody2D
 var enemy: BaseEnemy
 var time_since_last_path := 0.0
 var retreat_timer := 0.0
+## Whether the escape scorer currently holds a validated target: the
+## cornered contract disengages on an empty opening fan, while a
+## mid-flight empty fan keeps the route already being flown.
+var _has_escape_target := false
 var _progress_clock := 0.0
 var _progress_reference := Vector2.ZERO
 
@@ -92,6 +104,7 @@ func enter() -> void:
 	navigation_agent.path_desired_distance = NavBaker.PATH_SWITCH_DISTANCE
 	time_since_last_path = 0.0
 	retreat_timer = 0.0
+	_has_escape_target = false
 	_progress_clock = 0.0
 	_progress_reference = enemy.global_position
 	# RVO steering runs only while a movement state owns the agent; the
@@ -112,6 +125,8 @@ func physics_update(delta: float) -> void:
 	# Flight done — comfort for ESCAPE, a firing stance for FIRING:
 	# chase resumes and attacks while the player stays inside its range.
 	if _flight_satisfied():
+		if desire == Desire.FIRING and attack_state != null:
+			attack_state.whiff_satisfied()
 		transition_to(chase_state)
 		return
 
@@ -159,10 +174,13 @@ func _gap() -> float:
 
 
 ## Flight exit condition. ESCAPE: comfort — the player is back at arm's
-## length. FIRING: the current stance spawns the whole volley band clear,
-## so the chase handover gate reopens and the volley fires from here.
+## length. FIRING: the flight has arrived at the stance the scorer chose
+## and it spawns the whole volley band clear — requiring arrival keeps
+## the body from satisfying on a boundary pixel it was handed over on,
+## which would let the standoff shuffle oscillate the handover.
 func _flight_satisfied() -> bool:
 	if desire == Desire.FIRING and attack_state != null \
+			and navigation_agent.is_navigation_finished() \
 			and attack_state.band_clear_at(enemy.global_position):
 		return true
 	return _gap() >= retreat_distance
@@ -185,7 +203,12 @@ func _pick_escape_route() -> void:
 	var partial_length := INF
 	for offset_degrees in ESCAPE_FAN_DEGREES:
 		var direction := away.rotated(deg_to_rad(offset_degrees))
-		var candidate := enemy.global_position + direction * retreat_distance
+		# An off-mesh endpoint queries to an empty path (the mesh holds no
+		# route to it), so every candidate clamps to the mesh first: a
+		# full-length flight through open space stays itself, one into a
+		# wall folds onto the reachable face and the route filters judge it.
+		var candidate := NavigationServer2D.map_get_closest_point(map,
+				enemy.global_position + direction * retreat_distance)
 		var path := NavigationServer2D.map_get_path(
 				map, enemy.global_position, candidate, true)
 		if path.size() < 2:
@@ -219,9 +242,17 @@ func _pick_escape_route() -> void:
 	# Comfort outranks partial regardless of length.
 	if comfort_length < INF:
 		navigation_agent.target_position = comfort_target
+		_has_escape_target = true
 		return
 	if partial_length < INF:
 		navigation_agent.target_position = partial_target
+		_has_escape_target = true
+		return
+	# A mid-flight fan that comes up empty means no better route from
+	# here, not cornered geometry: the body is already flying a validated
+	# escape, so keep it. Cornered stays an entry contract — with no
+	# target at all, hand back to the suppression latch and fight.
+	if _has_escape_target and not navigation_agent.is_navigation_finished():
 		return
 	_disengage()
 
@@ -232,18 +263,31 @@ func _pick_escape_route() -> void:
 ## about the stance it lands on, not the distance it opens, so a short
 ## lateral hop to open space qualifies. The first-step double-back
 ## rejection stays: a firing solution stepped into the player's face is
-## not a solution. Endpoints score at the path's clamped end: an
+## not a solution. A stance must also connect: its mesh path to the
+## player stays within max_detour_ratio of the straight line, with
+## connectable in-band stances outranking connectable clear ones and a
+## bare band-clear stance the volleys could not follow as the last
+## resort. Endpoints score at the path's clamped end: an
 ## unreachable goal folds onto the nearest reachable point and that
 ## folded stance is the one the body actually lands on. A fold back to
 ## the current spot self-rejects — the gate is closed, so the stance
-## here cannot spawn the band clear.
+## here cannot spawn the band clear. A current stance that already
+## spawns the band clear and connects satisfies the whiff memory and
+## hands straight back to chase.
 func _pick_firing_route() -> void:
+	if attack_state.band_clear_at(enemy.global_position) \
+			and _stance_connectable(enemy.global_position):
+		attack_state.whiff_satisfied()
+		transition_to(chase_state)
+		return
 	var away := (enemy.global_position - player.global_position).normalized()
 	var map: RID = enemy.get_world_2d().navigation_map
 	var in_band_target := Vector2.ZERO
 	var in_band_length := INF
 	var clear_target := Vector2.ZERO
 	var clear_length := INF
+	var fallback_target := Vector2.ZERO
+	var fallback_length := INF
 	for offset_degrees in ESCAPE_FAN_DEGREES:
 		var direction := away.rotated(deg_to_rad(offset_degrees))
 		for reach in FIRING_REACH_FRACTIONS:
@@ -262,19 +306,28 @@ func _pick_firing_route() -> void:
 			var route_length := 0.0
 			for i in path.size() - 1:
 				route_length += path[i].distance_to(path[i + 1])
-			if _candidate_in_band(stance):
+			var connectable := _stance_connectable(stance)
+			if _candidate_in_band(stance) and connectable:
 				if route_length < in_band_length:
 					in_band_length = route_length
 					in_band_target = stance
-			elif route_length < clear_length:
-				clear_length = route_length
-				clear_target = stance
-	# In-band outranks clear-but-out-of-band regardless of length.
+			elif connectable:
+				if route_length < clear_length:
+					clear_length = route_length
+					clear_target = stance
+			elif route_length < fallback_length:
+				fallback_length = route_length
+				fallback_target = stance
+	# Connectable in-band outranks connectable clear, which outranks a
+	# bare band-clear stance.
 	if in_band_length < INF:
 		navigation_agent.target_position = in_band_target
 		return
 	if clear_length < INF:
 		navigation_agent.target_position = clear_target
+		return
+	if fallback_length < INF:
+		navigation_agent.target_position = fallback_target
 		return
 	_disengage()
 
@@ -287,6 +340,24 @@ func _candidate_in_band(candidate: Vector2) -> bool:
 	if gap < band_min:
 		return false
 	return band_max <= 0.0 or gap <= band_max
+
+
+## A stance connects when the mesh path from it to the player runs no
+## longer than max_detour_ratio times the straight line. Queries mirror
+## the volley's own routing (closest-point clamped, optimize=false): a
+## stance the shots could not follow is not a firing solution.
+func _stance_connectable(stance: Vector2) -> bool:
+	var map: RID = enemy.get_world_2d().navigation_map
+	var from := NavigationServer2D.map_get_closest_point(map, stance)
+	var to := NavigationServer2D.map_get_closest_point(
+			map, player.global_position)
+	var path := NavigationServer2D.map_get_path(map, from, to, false)
+	if path.size() < 2:
+		return false
+	var route_length := 0.0
+	for i in path.size() - 1:
+		route_length += path[i].distance_to(path[i + 1])
+	return route_length <= from.distance_to(to) * max_detour_ratio
 
 
 ## Cornered exit: chase regains control with its retreat triggers
