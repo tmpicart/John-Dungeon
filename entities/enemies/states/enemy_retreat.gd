@@ -67,6 +67,12 @@ const PROGRESS_FRACTION := 0.25
 ## FIRING only: the attack state owning the volley offsets — candidate
 ## endpoints must pass its stance clearance check.
 @export var attack_state: EnemyAttack
+## Panic-summon reflex: the player inside this range during a flight
+## hands the body to the close-range summon state (its own cooldown
+## respected). 0 disables; state + range mirror the chase trigger so the
+## reflex also runs while a flight owns the body.
+@export var proximity_summon_state: State
+@export var proximity_summon_range := 0.0
 ## FIRING only: preferred engagement band around the player, in px;
 ## in-band endpoints outrank clear-but-out-of-band ones. A 0 max
 ## disables the band preference.
@@ -120,6 +126,13 @@ func physics_update(delta: float) -> void:
 	if not navigation_agent or not player:
 		return
 
+	# Panic-summon reflex (see the exports): fires on both desires, so a
+	# flee or a reposition under pursuit bursts the close-range set
+	# instead of running empty-handed.
+	if _panic_summon_due():
+		transition_to(proximity_summon_state)
+		return
+
 	retreat_timer += delta
 
 	# Flight done — comfort for ESCAPE, a firing stance for FIRING:
@@ -160,17 +173,29 @@ func physics_update(delta: float) -> void:
 		return
 
 	var next_position = navigation_agent.get_next_path_position()
-	if next_position.is_zero_approx():
-		return
-
-	var path_direction = (next_position - enemy.global_position).normalized()
-	# Desired velocity feeds the RVO avoidance flush; the safe result lands
-	# on the body through _on_velocity_computed before move_and_slide.
-	navigation_agent.velocity = path_direction * speed
+	if not next_position.is_zero_approx():
+		# Desired velocity feeds the RVO avoidance flush; the safe result
+		# lands on the body through _on_velocity_computed before
+		# move_and_slide. A zero next position means no usable step this
+		# tick, so the last velocity stands instead of feeding the flush
+		# a degenerate direction.
+		var path_direction = (next_position - enemy.global_position).normalized()
+		navigation_agent.velocity = path_direction * speed
 
 
 func _gap() -> float:
 	return enemy.global_position.distance_to(player.global_position)
+
+
+## True when the player stands inside the panic-summon trigger and the
+## close-range summon state is off cooldown (see the exports).
+func _panic_summon_due() -> bool:
+	if proximity_summon_state == null or proximity_summon_range <= 0.0:
+		return false
+	var summon := proximity_summon_state as EnemySummon
+	return summon != null and summon.is_ready() \
+			and player.global_position.distance_to(enemy.global_position) \
+			<= proximity_summon_range
 
 
 ## Flight exit condition. ESCAPE: comfort — the player is back at arm's

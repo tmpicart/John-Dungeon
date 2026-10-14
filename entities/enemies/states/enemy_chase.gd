@@ -20,6 +20,16 @@ const PRESS_PROGRESS_FRACTION := 0.25
 ## body drifting across the boundary; genuine burials hold continuously
 ## and confirm within a handful of physics ticks.
 const REPOSITION_GATE_CONFIRM := 0.1
+## Seconds the player must hold inside retreat_range before the proximity
+## flight triggers — same boundary logic as REPOSITION_GATE_CONFIRM: a
+## body straddling the radius edge must not flap retreat/chase.
+const PROXIMITY_RETREAT_CONFIRM := 0.1
+## Shuffle steps never come tighter than this, so a retarget landing next
+## to the body cannot re-roll the drift direction almost every tick.
+const SHUFFLE_MIN_STEP := 8.0
+## Drift speed as a fraction of chase speed: a live-looking wander that
+## still reads as holding the stance.
+const SHUFFLE_SPEED_FRACTION := 0.75
 
 @export var navigation_agent: NavigationAgent2D
 @export var idle_state: State
@@ -121,6 +131,9 @@ var _retreat_suppressed := 0.0
 ## Continuous seconds the outcome gate has read closed on this stance
 ## (see REPOSITION_GATE_CONFIRM).
 var _gate_closed_for := 0.0
+## Continuous seconds the player has held inside retreat_range (see
+## PROXIMITY_RETREAT_CONFIRM).
+var _retreat_trigger_for := 0.0
 ## Standoff shuffle drift target and seconds until the next retarget.
 var _shuffle_target := Vector2.ZERO
 var _shuffle_clock := 0.0
@@ -140,12 +153,14 @@ func enter() -> void:
 	_press_flipped = false
 	_guarding = false
 	_gate_closed_for = 0.0
+	_retreat_trigger_for = 0.0
 	_shuffle_clock = 0.0
 	# RVO steering runs only while a movement state owns the agent; the
 	# signal keeps emitting while avoidance is enabled, so leave it clean.
 	navigation_agent.velocity_computed.connect(_on_velocity_computed)
 
 func exit() -> void:
+	enemy.facing_pinned = false
 	navigation_agent.velocity_computed.disconnect(_on_velocity_computed)
 
 func validate_exports() -> void:
@@ -193,7 +208,21 @@ func physics_update(delta: float) -> void:
 
 	var blind := _line_to_player_blocked()
 	_blind_now = blind
-	if _should_retreat(to_player, distance, blind):
+	# The panic summon outranks the proximity flight — the trigger radius
+	# sits outside it, so the close-range set bursts before the body
+	# breaks away — and the check runs here rather than in the in-range
+	# branch, so it also fires on ticks the other branches own.
+	var summon := proximity_summon_state as EnemySummon
+	if summon != null and proximity_summon_range > 0.0 \
+			and distance <= proximity_summon_range and summon.is_ready():
+		transition_to(proximity_summon_state)
+		return
+	var want_flight := not blind and retreat_range > 0.0 \
+			and distance < retreat_range \
+			and not _has_ready_shot(to_player, distance)
+	_retreat_trigger_for = _retreat_trigger_for + delta \
+			if want_flight else 0.0
+	if _should_retreat(blind):
 		return
 
 	if attack_state != null and _in_attack_range(to_player, distance):
@@ -208,7 +237,7 @@ func physics_update(delta: float) -> void:
 ## sight can open only inside retreat_range (NPC-shadowed pockets), and
 ## fleeing from that shot starves the attack gate entirely. Hit-triggered
 ## retreat always applies.
-func _should_retreat(to_player: Vector2, distance: float, blind: bool) -> bool:
+func _should_retreat(blind: bool) -> bool:
 	if retreat_state == null:
 		return false
 
@@ -217,8 +246,7 @@ func _should_retreat(to_player: Vector2, distance: float, blind: bool) -> bool:
 	if _retreat_suppressed > 0.0:
 		return false
 
-	if not blind and retreat_range > 0.0 and distance < retreat_range \
-		and not _has_ready_shot(to_player, distance):
+	if not blind and _retreat_trigger_for >= PROXIMITY_RETREAT_CONFIRM:
 		transition_to(retreat_state)
 		return true
 
@@ -249,15 +277,6 @@ func suppress_retreat(duration: float) -> void:
 ## instead of bouncing the attack handover every tick (the bounce
 ## re-rolled the summon chance on every cooldown frame).
 func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
-	# Proximity summon: the player inside the trigger radius always calls
-	# the close-range set — roll bypassed, summon cooldown respected — and
-	# even a blind summoner senses the body at its back.
-	var summon := proximity_summon_state as EnemySummon
-	if summon != null and proximity_summon_range > 0.0 \
-			and to_player.length() <= proximity_summon_range \
-			and summon.is_ready():
-		transition_to(proximity_summon_state)
-		return
 	var attack := attack_state as EnemyAttack
 	var gate_open := attack == null or attack.fire_gate_open()
 	_gate_closed_for = 0.0 if gate_open else _gate_closed_for + delta
@@ -289,6 +308,7 @@ func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
 ## — under the same facing pin.
 func _hold_ground(delta: float) -> void:
 	enemy.face_toward(player.global_position)
+	enemy.facing_pinned = true
 	if not standoff_shuffle:
 		_bypass_flush = false
 		enemy.velocity = Vector2.ZERO
@@ -296,23 +316,20 @@ func _hold_ground(delta: float) -> void:
 		return
 	_shuffle_clock -= delta
 	var to_target := _shuffle_target - enemy.global_position
-	if _shuffle_clock <= 0.0 or to_target.length() < 2.0:
+	if _shuffle_clock <= 0.0 or to_target.length() < SHUFFLE_MIN_STEP:
+		var step := randf_range(SHUFFLE_MIN_STEP, shuffle_radius)
 		_shuffle_target = enemy.global_position \
-				+ Vector2.from_angle(randf() * TAU) * randf() * shuffle_radius
+				+ Vector2.from_angle(randf() * TAU) * step
 		_shuffle_clock = randf_range(shuffle_interval_min, shuffle_interval_max)
 		to_target = _shuffle_target - enemy.global_position
-	if to_target.length() < 2.0:
-		_bypass_flush = false
-		enemy.velocity = Vector2.ZERO
-		navigation_agent.velocity = Vector2.ZERO
-		return
 	# The flush only delivers while a path is active; at the standoff the
 	# path has finished and the server emits zero, so the drift writes the
 	# body directly (same contract as the melee press) while the vector
 	# still feeds the agent for the neighbors' avoidance.
 	_bypass_flush = true
-	navigation_agent.velocity = to_target.normalized() * speed * 0.5
-	enemy.velocity = to_target.normalized() * speed * 0.5
+	navigation_agent.velocity = to_target.normalized() \
+			* speed * SHUFFLE_SPEED_FRACTION
+	enemy.velocity = to_target.normalized() * speed * SHUFFLE_SPEED_FRACTION
 
 
 ## Outcome-blocked closure after a cornered reposition (the fan offered

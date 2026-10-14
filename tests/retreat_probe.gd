@@ -308,8 +308,11 @@ func _stage_hit_retreat() -> void:
 
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
 	# The hit-retreat path is staged alone: the panic summon would play
-	# its animation detour inside the 0.3 s approach window.
+	# its animation detour inside the 0.3 s approach window. Both the
+	# chase trigger and the flight reflex are pinned off.
 	_chase_state(necro).proximity_summon_range = 0.0
+	(necro.get_node("State Control/EnemyRetreat") as EnemyRetreat) \
+			.proximity_summon_range = 0.0
 	_player.global_position = Vector2(148, 80)
 	_force_chase(necro)
 	await _wait_seconds(0.3)
@@ -330,6 +333,21 @@ func _stage_hit_retreat() -> void:
 	var back_to_chase := await _wait_until(
 			func() -> bool: return _current_state(necro) is EnemyChase, 3.0)
 	_check(back_to_chase, "comfort exit returned to chase")
+	# Panic reflex live: a hit with the player inside the trigger radius
+	# bursts the close-range set even though the flight wants out.
+	_chase_state(necro).proximity_summon_range = 112.0
+	(necro.get_node("State Control/EnemyRetreat") as EnemyRetreat) \
+			.proximity_summon_range = 112.0
+	_player.global_position = necro.global_position + Vector2(60, 0)
+	necro.take_damage(1, _player.global_position)
+	var panicked := await _wait_until(
+			func() -> bool: return _current_state(necro) is EnemySummon, 2.0)
+	_check(panicked, "the fleeing necromancer panic-summoned under pressure")
+	await _wait_seconds(0.8)
+	for stray in get_tree().get_nodes_in_group("Enemies"):
+		if stray != necro:
+			stray.queue_free()
+	await get_tree().physics_frame
 
 
 ## Outcome-gated repositioning (necromancer): an overhang buries the whole
@@ -353,9 +371,12 @@ func _stage_firing_reposition() -> void:
 	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
 	var firing: EnemyRetreat = necro.get_node(
 			"State Control/EnemyReposition")
-	# The player parks exactly at the panic-summon trigger radius, so the
-	# gate stays off: its summon detour would starve the routing window.
+	# The player parks inside the panic-summon trigger radius: the summon
+	# detour would starve the routing window, so both the chase trigger
+	# and the flight reflex are pinned off.
 	_chase_state(necro).proximity_summon_range = 0.0
+	(necro.get_node("State Control/EnemyReposition") as EnemyRetreat) \
+			.proximity_summon_range = 0.0
 	_check(not attack_state.band_clear_at(necro.global_position),
 			"overhang park buries the volley band")
 	_player.global_position = Vector2(128, 32)
@@ -421,6 +442,17 @@ func _stage_standoff_cooldown() -> void:
 		if necro.velocity.length() > 1.0:
 			held = false
 	_check(held, "standoff held chase with no state churn or drift")
+	# The shuffle drift must not fight the facing pin: sprite scale.x may
+	# not flip while the body wanders the stance.
+	_chase_state(necro).standoff_shuffle = true
+	var sprite := necro.get_node("Sprite2D") as Sprite2D
+	var facing_sign := signf(sprite.scale.x)
+	var stable := true
+	for i in 90:
+		await get_tree().physics_frame
+		if signf(sprite.scale.x) != facing_sign:
+			stable = false
+	_check(stable, "the shuffle drift never flipped the sprite")
 	necro.queue_free()
 	await get_tree().physics_frame
 
@@ -448,6 +480,12 @@ func _stage_pocket_fallback() -> void:
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(60, 52))
 	var chase := _chase_state(necro)
 	chase.proximity_summon_range = 0.0
+	# The shuffle drift straddling the band-clear boundary would dominate
+	# the entry count with micro-repositions; the stage pins the whiff
+	# retry cadence, so the wander is pinned off here.
+	chase.standoff_shuffle = false
+	(necro.get_node("State Control/EnemyReposition") as EnemyRetreat) \
+			.proximity_summon_range = 0.0
 	_player.global_position = Vector2(220, 20)
 	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
 	var reposition := necro.get_node("State Control/EnemyReposition")

@@ -330,8 +330,8 @@ initial_state = NodePath("EnemyIdle")
 
 [node name="EnemyIdle" type="Node" parent="State Control" unique_id=654133669 node_paths=PackedStringArray("chase_state")]
 script = ExtResource("5_l3tat")
-chase_state = NodePath("../EnemyChase")
 detection_range = 250
+chase_state = NodePath("../EnemyChase")
 
 [node name="EnemyChase" type="Node" parent="State Control" unique_id=571093863 node_paths=PackedStringArray("navigation_agent", "idle_state", "attack_state", "retreat_state", "summon_state", "reposition_state", "aim_ray_cast", "proximity_summon_state")]
 script = ExtResource("6_eko0r")
@@ -341,18 +341,20 @@ attack_state = NodePath("../EnemyAttack")
 retreat_state = NodePath("../EnemyRetreat")
 summon_state = NodePath("../EnemySummon")
 reposition_state = NodePath("../EnemyReposition")
+speed = 40
 chase_drop_distance = 300
 attempt_attack_range = 200
+retreat_range = 96.0
 retreat_on_hit = true
 aim_ray_cast = NodePath("../../AimRaycast")
 summon_chance = 0.25
-melee_press_range = 0.0
 proximity_summon_state = NodePath("../EnemySummonClose")
-proximity_summon_range = 64.0
+proximity_summon_range = 112.0
 standoff_shuffle = true
+shuffle_radius = 40.0
+melee_press_range = 0.0
 
 [node name="EnemyAttack" type="Node" parent="State Control" unique_id=1960133276 node_paths=PackedStringArray("chase_state", "aim_ray_cast")]
-reposition_after_whiff = true
 script = ExtResource("7_woxk7")
 chase_state = NodePath("../EnemyChase")
 projectile = ExtResource("8_ctycn")
@@ -369,24 +371,26 @@ max_summons = 3
 summon_cooldown_duration = 12.0
 summon_sfx = NodePath("../../summon_sfx")
 
-[node name="EnemySummonClose" type="Node" parent="State Control" node_paths=PackedStringArray("chase_state", "summon_sfx")]
+[node name="EnemySummonClose" type="Node" parent="State Control" unique_id=1002713575 node_paths=PackedStringArray("chase_state", "summon_sfx")]
 script = ExtResource("9_vb21g")
 chase_state = NodePath("../EnemyChase")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
-summon_radius = 2
+summon_radius = 3
 max_summons = 3
-summon_cooldown_duration = 12.0
+summon_cooldown_duration = 6.0
 summon_sfx = NodePath("../../summon_sfx")
 
-[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state")]
+[node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "proximity_summon_state")]
 script = ExtResource("12_f46sl")
 navigation_agent = NodePath("../../NavigationAgent2D")
 chase_state = NodePath("../EnemyChase")
 speed = 100
 retreat_distance = 225
+proximity_summon_state = NodePath("../EnemySummonClose")
+proximity_summon_range = 112.0
 
-[node name="EnemyReposition" type="Node" parent="State Control" unique_id=87440818 node_paths=PackedStringArray("navigation_agent", "chase_state", "attack_state")]
+[node name="EnemyReposition" type="Node" parent="State Control" unique_id=87440818 node_paths=PackedStringArray("navigation_agent", "chase_state", "attack_state", "proximity_summon_state")]
 script = ExtResource("12_f46sl")
 navigation_agent = NodePath("../../NavigationAgent2D")
 chase_state = NodePath("../EnemyChase")
@@ -394,6 +398,8 @@ speed = 100
 retreat_distance = 125
 desire = 1
 attack_state = NodePath("../EnemyAttack")
+proximity_summon_state = NodePath("../EnemySummonClose")
+proximity_summon_range = 112.0
 band_min = 100.0
 band_max = 200.0
 

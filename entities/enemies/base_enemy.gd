@@ -42,6 +42,9 @@ var retreat_requested = false
 ## Position the last hit came from; consumed by the knockback pass (D-1).
 var last_hit_from := Vector2.INF
 var last_velocity_x := 0.0
+## Held by states that pin the sprite to a point (standoff facing); the
+## walk-tick flip yields so the two writers cannot fight per frame.
+var facing_pinned = false
 
 ## Bumped by every interrupt; async flows compare their token to detect staleness.
 var _flow_id := 0
@@ -78,7 +81,7 @@ func handle_animations():
 		if animation_player.has_animation("Idle"):
 			animation_player.play("Idle")
 
-	if abs(velocity.x) > FLIP_THRESHOLD:
+	if not facing_pinned and abs(velocity.x) > FLIP_THRESHOLD:
 		if velocity.x < 0:
 			$Sprite2D.scale.x = -1
 		else:
