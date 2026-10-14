@@ -349,7 +349,7 @@ retreat_on_hit = true
 aim_ray_cast = NodePath("../../AimRaycast")
 summon_chance = 0.25
 proximity_summon_state = NodePath("../EnemySummonClose")
-proximity_summon_range = 112.0
+proximity_summon_range = 50.0
 standoff_shuffle = true
 shuffle_radius = 40.0
 melee_press_range = 0.0
@@ -367,7 +367,7 @@ script = ExtResource("9_vb21g")
 chase_state = NodePath("../EnemyChase")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
-max_summons = 3
+min_summons = 3
 summon_cooldown_duration = 12.0
 summon_sfx = NodePath("../../summon_sfx")
 
@@ -378,7 +378,7 @@ summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 summon_radius = 3
 max_summons = 3
-summon_cooldown_duration = 6.0
+summon_cooldown_duration = 8.0
 summon_sfx = NodePath("../../summon_sfx")
 
 [node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "proximity_summon_state")]
