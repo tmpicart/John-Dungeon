@@ -8,6 +8,7 @@
 |---|---|---|
 | Aim controller model | Decided: direction + soft lock (no reticle) | Revisit at task 2R (straight-launch reflect) |
 | Archer whiff repositioning | Ships OFF by default | Necromancer playtest verdict |
+| Necromancer fires from bad spots | Resolved: arrival-satisfied whiff gate + EnemyReposition + panic reflexes shipped (cd7473a..2260066) | Tuning continues via scene exports |
 
 Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
 
@@ -39,6 +40,10 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 | D-10 | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
 
 ## D-1 Combat feel pass
+- On-hit flash: increase duration and timeout across the board
+- Stunned enemies: attack hitbox + body collision off during stun — they must not eat projectiles, and the player phases through them (anti-crowding)
+- Screen shake: turn down damage scaling; turn up time-freeze (frame_freeze)
+- Flail skeleton: scale back down (an early-development change enlarged him)
 - Knockback on hit for enemies (uses the knockback-ready damage signature); player knockback evaluation
 - Hit-stop / frame-freeze tuning pass
 - Coin behavior feel (pickup magnetism, drop arcs) and enemies dropping coins/loot

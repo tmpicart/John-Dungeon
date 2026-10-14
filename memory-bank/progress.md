@@ -75,3 +75,6 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-13 | docs | DOC-4: conventions table to one-fact rows, Architecture dupes merged, trade-offs folded, engine facts rehomed, IDs stripped.
 - 2026-10-13 | docs | DOC-5: techContext IDs stripped, engine facts one per line; productContext verified clean, design tables untouched.
 
+- 2026-10-14 | fix | Necromancer standoff wander and panic reflexes: facing pin ends drift-flip flicker, wider shuffle, dedicated close summon, hybrid proximity flight.
+- 2026-10-14 | fix | Confirmed walk flip ends melee sprite flicker: 80ms sign persistence, press and guard face the player, flip battery, wall-pocket stage realigned.
+- 2026-10-14 | fix | Necromancer panic and summon pacing: panic trigger 50px, main summon rolls 3-5, close-summon cooldown 8s.
