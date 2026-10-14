@@ -21,7 +21,12 @@ extends Node
 ## arrivals never close it), and the reflect pairing set (a reflected torso
 ## pass deals one damage and dies on the hurtbox that took it, a shin graze
 ## passes under with neither, a blocked back-hit still consumes, and a
-## parried shot survives its own reflect flush).
+## parried shot survives its own reflect flush). The cone-seek set covers
+## the reworked reflect: an empty cone settles straight, an in-cone enemy
+## is acquired and consumed, an enemy dead behind the launch line stays
+## excluded, a live lock suppresses acquisition until freed, and a launch
+## buried into a slab still rounds the cover onto its no-line-of-sight
+## target.
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -73,6 +78,17 @@ const REFLECT_MISSILE_AT := Vector2(4.5, 4.25)
 const REFLECT_SHIN_MISSILE_AT := Vector2(4.5, 5.75)
 const CONTACT_BUDGET := 10.0
 const ROUTE_BUDGET := 14.0
+## Cone-seek stages run east of the wall column or in the open bottom band.
+const CONE_EMPTY_AT := Vector2(4.5, 8.75)
+const CONE_EXCL_MISSILE_AT := Vector2(4.5, 8.75)
+const CONE_ACQ_MISSILE_AT := Vector2(3.0, 8.75)
+const CONE_ACQ_ENEMY_AT := Vector2(10.0, 8.5)
+const CONE_EXCL_ENEMY_AT := Vector2(1.5, 8.75)
+const CONE_RELEASE_MISSILE_AT := Vector2(3.0, 9.0)
+const CONE_RELEASE_ENEMY_AT := Vector2(10.0, 9.0)
+const CONE_TRICK_MISSILE_AT := Vector2(9.25, 3.375)
+const CONE_TRICK_SLAB := Vector2(13.0, 3.0)
+const CONE_TRICK_ENEMY_AT := Vector2(15.5, 8.0)
 
 var _failures := 0
 var _completed := false
@@ -136,6 +152,11 @@ func _run() -> void:
 	await _stage_reflected_shin_graze()
 	await _stage_blocked_back_hit_pairing()
 	await _stage_parry_keeps_the_shot()
+	await _stage_cone_empty_flight()
+	await _stage_cone_acquisition()
+	await _stage_cone_exclusion()
+	await _stage_cone_lock_release()
+	await _stage_cone_around_cover()
 	_completed = true
 
 
@@ -433,7 +454,10 @@ func _stage_whiff_gate() -> void:
 	_check(not attack_state.fire_gate_open(),
 			"a fresh whiff closes the gate again")
 	attack_state.whiff_retry_seconds = 0.4
-	for i in 30:
+	# fire_gate_open reads wall time (Time.get_ticks_msec), so the wait must
+	# be wall-time-bounded too — frame counts pace differently headless.
+	var lapse_start := Time.get_ticks_msec()
+	while Time.get_ticks_msec() - lapse_start < 450:
 		await get_tree().physics_frame
 	_check(attack_state.fire_gate_open(),
 			"retry-window lapse reopens the gate")
@@ -628,6 +652,142 @@ func _stage_parry_keeps_the_shot() -> void:
 	if is_instance_valid(missile):
 		missile.queue_free()
 	lock.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## A parked necromancer: a real BaseEnemy behind the EnemyHurtbox. Freeze the
+## brain's State Control, not the whole body — a PROCESS_MODE_DISABLED
+## ancestor takes the hurtbox area out of space-query visibility.
+func _spawn_cone_enemy(at: Vector2) -> Node2D:
+	var necro: Node2D = load(NECRO_SCENE).instantiate()
+	add_child(necro)
+	necro.global_position = at * CELL_SIZE
+	var brain: Node = necro.get_node_or_null("State Control")
+	if brain != null:
+		brain.process_mode = Node.PROCESS_MODE_DISABLED
+	return necro
+
+
+## Shared cone-stage flight: ticks until the missile frees or the budget
+## lapses, tracking acquisition of `necro` and the last live position.
+func _fly_cone(missile: Node2D, necro: Node2D, budget: float) -> Dictionary:
+	var acquired := false
+	var freed := false
+	var clock := 0.0
+	var last_pos: Vector2 = missile.global_position
+	while clock < budget and not freed:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+		if not is_instance_valid(missile):
+			freed = true
+		else:
+			last_pos = missile.global_position
+			acquired = acquired or (necro != null and missile.target == necro)
+	return {"acquired": acquired, "freed": freed, "end": last_pos}
+
+
+## Nothing alive inside the cone: the shot stays targetless and never
+## bends off the launch line.
+func _stage_cone_empty_flight() -> void:
+	var stub := _spawn_stub(TARGET)
+	var missile := _spawn_missile(CONE_EMPTY_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	var out := await _fly_cone(missile, null, 0.9)
+	_check(not out.freed, "empty-cone flight survives the window")
+	_check(not out.acquired, "empty-cone flight never acquires")
+	_check(is_instance_valid(missile) and absf(missile.rotation) < 0.001,
+			"empty-cone flight keeps the launch heading")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## A living enemy inside the cone is picked up while targetless and the
+## shot converges onto the hurtbox.
+func _stage_cone_acquisition() -> void:
+	var stub := _spawn_stub(TARGET)
+	var necro := _spawn_cone_enemy(CONE_ACQ_ENEMY_AT)
+	var missile := _spawn_missile(CONE_ACQ_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	var out := await _fly_cone(missile, necro, CONTACT_BUDGET)
+	_check(out.acquired, "cone acquisition picks the in-cone enemy")
+	_check(out.freed, "cone acquisition consumes on the enemy hurtbox")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	necro.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## In range but dead behind the launch heading (outside the half-angle):
+## never acquired — the cone, not the range, gates the lock.
+func _stage_cone_exclusion() -> void:
+	var stub := _spawn_stub(TARGET)
+	var necro := _spawn_cone_enemy(CONE_EXCL_ENEMY_AT)
+	var missile := _spawn_missile(CONE_EXCL_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	var out := await _fly_cone(missile, necro, 0.8)
+	_check(not out.freed, "cone exclusion survives the window")
+	_check(not out.acquired, "an enemy dead behind the launch line is never acquired")
+	_check(is_instance_valid(missile) and absf(missile.rotation) < 0.001,
+			"cone exclusion flight stays on the launch line")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	necro.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## Sticky lock: a handed lock suppresses acquisition entirely; freeing it
+## hands the shot to the cone, which picks up the enemy it was ignoring.
+func _stage_cone_lock_release() -> void:
+	var stub := _spawn_stub(TARGET)
+	var necro := _spawn_cone_enemy(CONE_RELEASE_ENEMY_AT)
+	var lock := Node2D.new()
+	add_child(lock)
+	lock.global_position = Vector2(12.5, 9.0) * CELL_SIZE
+	var missile := _spawn_missile(CONE_RELEASE_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	missile.target = lock
+	for i in 3:
+		await get_tree().physics_frame
+	_check(is_instance_valid(missile) and missile.target == lock,
+			"a live lock suppresses cone acquisition")
+	lock.queue_free()
+	var out := await _fly_cone(missile, necro, CONTACT_BUDGET)
+	_check(out.acquired, "releasing the lock hands the shot to the cone")
+	_check(out.freed, "re-acquired cone lock consumes on the enemy hurtbox")
+	if is_instance_valid(missile):
+		missile.queue_free()
+	necro.queue_free()
+	await _clear_stage_actors(stub)
+
+
+## The trick shot: launched dead-straight INTO a slab, the shot acquires a
+## target it has no line of sight to and swings under the slab corner to
+## collect it — launch committed, steering earns the corner.
+func _stage_cone_around_cover() -> void:
+	var stub := _spawn_stub(TARGET)
+	var slab := _make_block(CONE_TRICK_SLAB, Vector2i(1, 1))
+	var necro := _spawn_cone_enemy(CONE_TRICK_ENEMY_AT)
+	var missile := _spawn_missile(CONE_TRICK_MISSILE_AT)
+	missile.reflect()
+	missile.launch_angle = 0.0
+	missile.rotation = 0.0
+	var out := await _fly_cone(missile, necro, CONTACT_BUDGET)
+	_tee("    trick flight end (%.0f, %.0f)" % [out.end.x, out.end.y])
+	_check(out.acquired, "the buried launch still acquires through cover")
+	_check(out.freed, "the trick shot ends in the enemy hurtbox")
+	_check(out.freed and out.end.x > CONE_TRICK_SLAB.x * CELL_SIZE,
+			"the trick shot rounds the slab instead of dying on it")
+	slab.queue_free()
+	necro.queue_free()
 	await _clear_stage_actors(stub)
 
 

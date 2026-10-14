@@ -3,8 +3,9 @@ extends Node2D
 ## Hybrid missile flight: direct-seek homing arcs wherever the line to the
 ## player is clear; while cover blocks that line the missile paths through
 ## the runtime-baked mesh at the same turn cap, so volleys round cover
-## instead of splatting on it. Reflected missiles never route — their
-## targets are enemies in the open — and keep the reflect homing.
+## instead of splatting on it. Reflected missiles never route: they launch
+## dead-straight along the parry aim and hunt through a forward cone off
+## their own heading (no cursor reads after launch, no line-of-sight gate).
 
 ## Environment bit: the only geometry the mode check treats as blocking
 ## (walls and prop bodies, per the aim-gate convention).
@@ -24,11 +25,18 @@ const EXIT_CLEARANCE_PX := 3.0
 ## Turn radius = speed / turn_speed (~15 px): a U-turn must fit a
 ## two-tile corridor.
 @export var turn_speed = 5.5
-## Launches the reflect this many degrees wide of the aim line (random
-## side) so the homing visibly arcs onto the lock. Kept well under a
-## quarter-turn: at the shared turn radius a wider fan splats the shot
-## into nearby geometry before tracking converges.
-@export var reflect_arc_deg := 35.0
+## Reflected seek cone: aggressive by design — range is a screen and a
+## half at the 6x camera zoom and the half-angle covers every direction
+## short of a rear quarter, so a parry hunts targets beside and nearly
+## behind the shooter. The acquisition query carries no line-of-sight
+## gate on purpose: locks behind corners are the trick-shot identity that
+## separates the missile from the straight-flying arrow (walls still end
+## the flight; the tight turn radius is what earns the corner). Tuned at
+## the necromancer playtest.
+@export var seek_range := 480.0
+## Half-angle of the acquisition cone, measured off the missile's own
+## heading.
+@export var seek_cone_deg := 120.0
 ## Seconds between blocked-line checks while flying direct arcs.
 @export var route_check_interval := 0.1
 ## Seconds between path re-queries while routing around cover.
@@ -232,17 +240,50 @@ func _lane_clear_wide() -> bool:
 	return true
 
 
-## Reflected homing: the chase never gives up — targetless missiles keep
-## polling the player's aim (this is the physics step) and settle onto
-## the aim line between locks; only contact ends them.
+## Reflected homing: the lock lives for the shot's lifetime; while
+## targetless the shot hunts through the forward seek cone (this is the
+## physics step) and settles onto the launch line when the cone is empty.
+## Only contact ends it.
 func _steer_reflected(delta: float) -> void:
 	if not is_instance_valid(target):
-		target = player.combat.get_aim_target()
+		target = _acquire_cone_target()
 	var desired_angle := launch_angle
 	if target != null:
 		desired_angle = (target.global_position - global_position).normalized().angle()
 	rotation = lerp_angle(rotation, desired_angle, delta * turn_speed)
 	direction = Vector2.RIGHT.rotated(rotation)
+
+
+## Forward-cone acquisition: the nearest living BaseEnemy owning an
+## EnemyHurtbox surface inside seek_range and within the seek_cone_deg
+## half-angle of the current heading. No line-of-sight gate — around-corner
+## locks are the design; steering must earn them.
+func _acquire_cone_target() -> Node2D:
+	var query := PhysicsShapeQueryParameters2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = seek_range
+	query.shape = circle
+	query.transform = Transform2D(0.0, global_position)
+	query.collision_mask = 1 << 8 # EnemyHurtbox
+	query.collide_with_areas = true
+	query.collide_with_bodies = false
+
+	var heading := Vector2.RIGHT.rotated(rotation)
+	var best: Node2D = null
+	var best_distance := INF
+	for hit in get_world_2d().direct_space_state.intersect_shape(query):
+		var surface := hit.collider as Area2D
+		var enemy := surface.owner as BaseEnemy
+		if enemy == null or enemy.is_dead:
+			continue
+		var to_enemy := surface.global_position - global_position
+		if absf(heading.angle_to(to_enemy)) > deg_to_rad(seek_cone_deg):
+			continue
+		var distance := to_enemy.length()
+		if distance < best_distance:
+			best = enemy
+			best_distance = distance
+	return best
 
 
 ## Pauses homing briefly after passing the player; one timer per pass instead
@@ -281,7 +322,7 @@ func reflect():
 
 	var mouse_direction: Vector2 = (get_global_mouse_position() - global_position).normalized()
 	launch_angle = mouse_direction.angle()
-	rotation = launch_angle + deg_to_rad(reflect_arc_deg) * (1.0 if randf() < 0.5 else -1.0)
+	rotation = launch_angle
 
 ## World-impact consume: walls and any non-player body end the flight.
 ## Player contact is owned by the tick sweep in _physics_process, which
