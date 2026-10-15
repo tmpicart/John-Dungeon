@@ -66,7 +66,8 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - `move_and_slide` projectiles need a collision shape on the scene root.
 - Long/forward-offset Area2D hitboxes detect walls early — keep damage hitboxes centered and small; let the body handle geometry.
 - NavigationAgent2D's internal cursor only advances when the follower approaches the cursor point — custom anchors require owning the raw `get_current_navigation_path()` list.
-- GDScript lambdas capture by value at creation.
+- GDScript lambdas capture by value at creation; a freed captured object passes `null` and logs a capture error per call — poll freed lifetimes via `get_instance_id()` + `instance_from_id()`.
+- Typed parameters reject freed objects at the call boundary — guard with `is_instance_valid` at the call site on the value itself (short-circuit first); a callee-side guard never runs.
 - Headless probes must drive physics by frame count (tick-based assertions), not wall-clock waits.
 - Probe homing locks sit downrange past the assert stop: a lock on the flight line gets overshot and lerp_angle's wrap turns the return into an orbit.
 - Headless engine runs on this machine: `Start-Process -FilePath <engine> -ArgumentList ... -Wait -PassThru` to capture exit codes and redirected output.
@@ -75,7 +76,7 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 
 ## Tests
 - `tests/interaction_smoke.tscn` — headless regression suite (66 assertions; exit 0 = pass): interaction framework, dialogue stage flow, shipped-resource canary, prompt anchoring + tracking. Run: `Godot --headless --path . res://tests/interaction_smoke.tscn`
-- Headless probes (manual diagnostics; the result txt files are the record, gitignored): nav_probe (bake invariants), level_nav_probe (room walk matrix + door-link archway sweeps), chase_probe (staging/chase/attack/walk-flip), retreat_probe (corner + standoff + panic reflex + pocket cadence), scene_probe (scene staging audit)
+- Headless probes (manual diagnostics; the result txt files are the record, gitignored): nav_probe (bake invariants), level_nav_probe (room walk matrix + door-link archway sweeps), chase_probe (staging/chase/attack/walk-flip), retreat_probe (corner + standoff + panic reflex + pocket cadence + summon-cap clamp/bounce/slot-release), scene_probe (scene staging audit)
 - `tests/missile_probe.tscn` — hybrid missile routing suite (13 stages, 39 checks; exit 0 = pass): contact kill, cover rounding, drift repath, through-wall/buried/band spawn gating, width-aware exit gate, whiff-gate verdicts, reflect pairing (torso consume, shin graze, blocked back-hit, contact-flush parry)
 - gdlint baseline (repo-wide): all areas clean except `entities/player` (41 findings — opportunistic gate on rewrites) and `entities/projectiles` (3, `bomb.gd`)
 

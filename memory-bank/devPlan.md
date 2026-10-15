@@ -37,6 +37,7 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 | R-44 | Width-cast aim query | `cast_motion` ignores already-overlapping shapes — pair with an origin `intersect_shape` / center-ray guard |
 | R-45 | Const-derivation pass | Runtime-derive cell-size/roster/projectile constants; per-entity values become exports |
 | R-46 | Tileset nav-polygon cleanup | Delete the dead painted nav polygons from `custom_dungeon.tres` (runtime bakes instead); optional bake debug draw |
+| R-47 | Visual range toggles | Tuning aids over the numeric exports — the numbers stay the source of truth (runtime + scene values unchanged); a toggleable overlay draws each range as a shape (summon_radius tiles, proximity/panic/retreat ranges, attack ranges, volley muzzle band) so "3" reads as a disc on the tiles; draggable handles write the exports where practical; pairs with R-45's export surface |
 | D-10 | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
 
 ## D-1 Combat feel pass

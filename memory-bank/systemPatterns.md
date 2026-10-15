@@ -29,9 +29,11 @@ Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a stat
 - bundles hold scene + scripts + states together
 - per-enemy behavior = exported configuration
 - `EnemyChase` — proximity/hit retreat, line-of-sight, radial/axis-box ranges, approach stop, summon rolls; unassigned `attack_state` = validated pacifist
+- `EnemyChase` reads the outcome gate through a 0.1 s cached clock on the in-range tick path; the reposition scorer and the probes query raw
 - `EnemyAttack` — projectile sets
 - `EnemySummon` — composition + cooldown owned by the state; same-room flood-fill over summonable tiles
 - `EnemySummon` occupancy guard (bodies/areas): spawns never land inside props, entities, or the player
+- Summon live-cap ledger: slots tracked per summoner on `BaseEnemy` (pending telegraphs hold budget); rolls clamp to the remaining budget — partial casts fire; at-cap reads not-ready so chase and flight handovers stand down
 - summon tile scanning pending migration to room markers
 - summon telegraph: the flourish effect — creatures materialize `spawn_delay` later; dead summoner cancels
 - state subclasses only for genuinely unique behavior (`EnemyPounce` lunge; red slime's death/explode semantics live on its enemy script)

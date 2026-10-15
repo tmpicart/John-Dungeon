@@ -78,3 +78,6 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-14 | fix | Necromancer standoff wander and panic reflexes: facing pin ends drift-flip flicker, wider shuffle, dedicated close summon, hybrid proximity flight.
 - 2026-10-14 | fix | Confirmed walk flip ends melee sprite flicker: 80ms sign persistence, press and guard face the player, flip battery, wall-pocket stage realigned.
 - 2026-10-14 | fix | Necromancer panic and summon pacing: panic trigger 50px, main summon rolls 3-5, close-summon cooldown 8s.
+- 2026-10-14 | feat | Summon ledger caps live skeletons at 8 (partial casts fire, at-cap stands down); cast cooldowns 12->4s/8->3s; probe covers clamp and bounce.
+- 2026-10-14 | perf | Outcome-gate 0.1s cache, firing-fan stance dedup, cone sweep 0.1s + 10s missile lifetime; Track plays once.
+- 2026-10-14 | planning | R-47 visual range toggles: exported ranges draw as shapes for tuning.
