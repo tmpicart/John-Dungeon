@@ -47,7 +47,7 @@ var is_dead = false
 var is_hit = false
 ## Set on hit; consumed by EnemyChase when configured to retreat after damage.
 var retreat_requested = false
-## Position the last hit came from; consumed by the knockback pass (D-1).
+## Position the last hit came from; consumed by the knockback pass (F-7).
 var last_hit_from := Vector2.INF
 var last_velocity_x := 0.0
 ## Held by states that pin the sprite to a point (standoff facing); the

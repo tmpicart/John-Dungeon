@@ -1,58 +1,53 @@
 # Development Plan — Task Backlog
-
-> **Purpose:** The ordered feature task list and open-decisions register; shipped entries move to `progress.md`.
-
+> **Purpose:** The ordered feature task list and open-decisions register; shipped entries move to `progress.md`. Sizes (F-/R-/D-9 tables): S = one sitting, no playtest · M = one session incl. playtest/probe · L = multi-session or blocked.
 ## Open Decisions
-
 | Topic | Status | Next look |
 |---|---|---|
-| Aim controller model | Decided: direction + soft lock (no reticle) | Revisit at task 2R (straight-launch reflect) |
-| Archer whiff repositioning | Ships OFF by default | Necromancer playtest verdict |
+| Aim controller model | Decided: direction + soft lock (no reticle) | Revisit at F-3 (straight-launch reflect) |
+| Archer whiff repositioning | Ships OFF by default | F-1 playtest verdict |
 | Necromancer fires from bad spots | Resolved: arrival-satisfied whiff gate + EnemyReposition + panic reflexes shipped (cd7473a..2260066) | Tuning continues via scene exports |
 
 Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
-
-## Docs refinement — DOC- (current lead)
-
-One task per session; entries delete on ship. From the 2026-10-13 docs audit + decision round — all open decisions resolved.
-
+## Docs refinement — DOC- (current lead; one task per session, entries delete on ship)
 | ID | Task | Notes |
 |---|---|---|
-| DOC-6 | devPlan restructure | Absorb 2R + necromancer playtest + archer flip as tasks; re-ID the D-1 grab-bag; subtasks for R-40 and D-9; size classes; archive Sept 2-13 log lines → memory-bank/archive/progress-2026-q3.md; return this file to ≤ ~80 lines; new row: code-comment sweep (7 pre-rework comment sites: enemy_summon legacy note, attack/block/max_hp parity rewrites) |
 | DOC-7 | Rules: git + loading | Commit protocol → memory-bank/commit-protocol.md with gate stub in git.md (draft only at user-confirmed DONE); session start reads activeContext only; when-to-read-what table; evaluate moving assets.md out of always-loaded rules |
 | DOC-8 | Rules: editor + hygiene | godot-collaboration rewrite per research: real conflict modes = cache-stale overwrites + two-writer lost updates (godot #75865, #24646), not general corruption; log-hygiene soft caps (systemPatterns, techContext, productContext) framed for AI memory — keep identifiers/intent/qualifiers, cut duplication/history/prose, dubious → delete; enforce by dedupe/rehome/split, never fact-trim; drop ai-rework-log reference |
 | DOC-9 | README refresh | Align Current Status with shipped state; trim duplicated goals list; stays self-contained |
-
-## Room-block & descent foundations — R- (lead tasks)
-| ID | Task | Notes |
-|---|---|---|
-| R-40 | Room-block standard | `TileMapLayer`-only stack, shared navigation, door anchors, spawn markers, HUD at level root; `test_room.tscn` is the reference stack; author new templates on `custom_dungeon.tres` (16px atoms + patterns); conventions must cover descent room types (combat / treasure / shop / hallway / duel / gate) |
-| R-41 | Tier-1 vertical slice | Hand-assemble the first descent tier from standardized blocks — combat rooms + gate level + arena — proving the standard before the generator exists |
-| R-42 | Boss arena encounter flow | Trigger, lock/unlock, victory handling; per-arena death checkpoints; remove `Global.door` flag coupling |
-
-## Design-review follow-ups (2026-09-30)
-| ID | Task | Trigger / note |
-|---|---|---|
-| R-43 | Per-size-class nav maps | When B-1 lands or the first body >8 px wide ships; today's discs (5.88–7.14 px) fit one map (`AGENT_RADIUS := 7.0`) |
-| R-44 | Width-cast aim query | `cast_motion` ignores already-overlapping shapes — pair with an origin `intersect_shape` / center-ray guard |
-| R-45 | Const-derivation pass | Runtime-derive cell-size/roster/projectile constants; per-entity values become exports |
-| R-46 | Tileset nav-polygon cleanup | Delete the dead painted nav polygons from `custom_dungeon.tres` (runtime bakes instead); optional bake debug draw |
-| R-47 | Visual range toggles | Tuning aids over the numeric exports — the numbers stay the source of truth (runtime + scene values unchanged); a toggleable overlay draws each range as a shape (summon_radius tiles, proximity/panic/retreat ranges, attack ranges, volley muzzle band) so "3" reads as a disc on the tiles; draggable handles write the exports where practical; pairs with R-45's export surface |
-| D-10 | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
-
-## D-1 Combat feel pass
-- On-hit flash: increase duration and timeout across the board
-- Stunned enemies: attack hitbox + body collision off during stun — they must not eat projectiles, and the player phases through them (anti-crowding)
-- Screen shake: turn down damage scaling; turn up time-freeze (frame_freeze)
-- Flail skeleton: scale back down (an early-development change enlarged him)
-- Knockback on hit for enemies (uses the knockback-ready damage signature); player knockback evaluation
-- Hit-stop / frame-freeze tuning pass
-- Coin behavior feel (pickup magnetism, drop arcs) and enemies dropping coins/loot
-- Death/restart flow: restart prompt/option on player death
-- Boss pacing: inter-attack cooldowns, magic missile lifetime
-- Projectile PointLight2D optimization (burst render cost during volleys)
-
-## Player systems track — S- (one system per task)
+## Combat feel & verdicts — F-
+| ID | Sz | Task | Notes |
+|---|---|---|---|
+| F-1 | M | Necromancer playtest verdict | Hard-8 summon cap + 4s/3s cast cadence — the lag verdict for the missile/necromancer rework; decides F-2 and the tuning exports |
+| F-2 | S | Archer whiff-flip decision | Enable or keep OFF the archer whiff-repositioning default, from F-1 |
+| F-3 | L | Straight-launch reflect | Alternative to the aim-locked arcing reflect; revisit the aim-controller decision here |
+| F-4 | S | Hit feedback pass | On-hit flash duration/timeout up across the board; hit-stop/frame-freeze tuning; damage-scaled shake down, time-freeze up |
+| F-5 | M | Stun collision-off | Stunned enemies drop attack hitbox + body collision — they stop eating projectiles and the player phases through (anti-crowding) |
+| F-6 | S | Flail skeleton scale | Scale back down (early-development enlargement) |
+| F-7 | M | Knockback | Enemy knockback via the knockback-ready damage signature; player knockback evaluation |
+| F-8 | M | Coin feel + enemy drops | Pickup magnetism, drop arcs; enemies drop coins/loot |
+| F-9 | M | Death/restart flow | Restart prompt/option on player death |
+| F-10 | S | Boss pacing | Inter-attack cooldowns, magic missile lifetime |
+| F-11 | M | Volley light cost | Projectile PointLight2D burst render cost during volleys |
+| F-12 | S | Code-comment sweep | 7 pre-rework comment sites → current-behavior voice: enemy_summon.gd:161,199; player_attack.gd:5; player_block.gd:5; max_hp_item.gd:5; player_movement.gd:4; nav_baker.gd:489; dedupe the doubled R-40-debt note |
+## Frameworks — R- room blocks & descent · D-9 group retirement
+D-9 convention (Godot docs + Game Programming Patterns "Service Locator"): `Global.player` at point of use — the `"Player"` group stays private to `global.gd`; physics-contact identity uses collision-layer bits; groups are broadcast/tagging only.
+| ID | Sz | Task | Notes |
+|---|---|---|---|
+| R-40a | M | Layer-stack standard | `TileMapLayer`-only stack + shared navigation; `test_room.tscn` is the reference stack |
+| R-40b | M | Room-block anatomy | Door anchors, spawn markers, HUD at level root |
+| R-40c | L | Descent room-type templates | Combat / treasure / shop / hallway / duel / gate authored on `custom_dungeon.tres` (16px atoms + patterns) |
+| R-41 | L | Tier-1 vertical slice | Hand-assemble the first descent tier from standardized blocks — combat rooms + gate level + arena — proving the standard before the generator exists |
+| R-42 | M | Boss arena encounter flow | Trigger, lock/unlock, victory handling; per-arena death checkpoints; remove `Global.door` flag coupling |
+| R-43 | S | Per-size-class nav maps | When B-1 lands or the first body >8 px wide ships; today's discs (5.88–7.14 px) fit one map (`AGENT_RADIUS := 7.0`) |
+| R-44 | S | Width-cast aim query | `cast_motion` ignores already-overlapping shapes — pair with an origin `intersect_shape` / center-ray guard |
+| R-45 | M | Const-derivation pass | Runtime-derive cell-size/roster/projectile constants; per-entity values become exports |
+| R-46 | S | Tileset nav-polygon cleanup | Delete the dead painted nav polygons from `custom_dungeon.tres` (runtime bakes instead); optional bake debug draw |
+| D-10 | — | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
+| D-9a | M | `Global.player` migration | Boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat), projectiles (magic_missile/curse_glyph) |
+| D-9b | S | `interactable.gd` layer check | `is_in_group("Player")` → collision-layer check |
+| D-9c | M | Vestigial tag strip | `"Enemies"` (Sorceress + 4 projectile scenes, `add_to_group` on 5 boss-spawn scripts, `beam.gd` exception loop), `"health"` (HeartBars — verify main_scene wiring first); keep smoke stubs' `"Player"` |
+## Content tracks — S- systems · E- enemies · W- descent slices · B- bosses
+Variants = new/modified attack + additional effects (S-2 when unparked) + shading — not config-only tints. Build order: S-1 → E-1 → S-4 → S-3 → S-5 → S-6 → S-7 (S-2 parked).
 | ID | Task | Notes |
 |---|---|---|
 | S-1 | Hue-shift shader | Shared material, per-scene hue param — blue/yellow slimes + elite tints (see techContext) |
@@ -62,60 +57,29 @@ One task per session; entries delete on ship. From the 2026-10-13 docs audit + d
 | S-5 | Loadout slots + potion belt | Unified slots per productContext "Gear intent"; owned potion collection (typed belt) + cycle input, binding decided here; HUD |
 | S-6 | Wand secondary fire | Player-owned projectile (PlayerHitbox conventions); tiers + shop item; HUD icon; owned wand collection + cycle input, binding decided here; art: check `assets/items/weapons.png` first |
 | S-7 | Death VFX variety | Per-family particle colors/flash/tweens — no new frames |
-
-Build order: S-1 → E-1 → S-4 → S-3 → S-5 → S-6 → S-7 (S-2 parked)
-
-## D-3 Dialogue & world content
-- More `DialogueData` stages and NPCs on the shipped resource format; new story beats
-- Boss intro cutscene/dialogue for The Sorceress (dormancy + door flow removed in R-24)
-- Knight taunt stages (escalating per tier via PlayerProgress flags) + deity summoning beat
-
-## Enemy track — E- (one enemy per task; tier order per productContext tier table)
-| ID | Task |
-|---|---|
-| E-1 | Lesser skelly — sheet pick pending; doubles as the player summon (see D-5) |
-| E-2 | Blue slime (S-1; new attack/effect) |
-| E-3 | Lesser skelly variant |
-| E-4 | Flail skelly variant |
-| E-5 | Archer variant |
-| E-6 | Yellow slime (S-1) |
-| E-7 | Lesser skelly variant 2 |
-| E-8 | Necromancer variant |
-
-Variants = new/modified attack + additional effects (S-2 when unparked) + shading — not config-only tints
-
-## D-5 Ally summons
-- Summonable ally creatures that fight alongside the player (faction/targeting groundwork from the state-core/enemy frameworks)
-- Likely reuses E-1's lesser-skelly sheet — pick art that serves both roles
-
-## World track — W- (descent generator; one slice per task)
-| ID | Task |
-|---|---|
+| E-1 | Lesser skelly | Sheet pick pending; doubles as the player summon (see D-5) |
+| E-2 | Blue slime | S-1; new attack/effect |
+| E-3 | Lesser skelly variant | |
+| E-4 | Flail skelly variant | |
+| E-5 | Archer variant | |
+| E-6 | Yellow slime | S-1 |
+| E-7 | Lesser skelly variant 2 | |
+| E-8 | Necromancer variant | |
 | W-1 | `TierProfile` resource + `(tier, depth)` run state | Absorbed R-43: `EnemyData` metadata + spawn markers (room markers supersede EnemySummon tile scanning) |
-| W-2 | Room-type library from R-40 blocks (combat / treasure / shop / hallway / duel / gate) |
-| W-3 | Level graph generator (seeded; key-conservation + reachability validation) |
-| W-4 | Budget spawner (EnemyData costs, tier-gated pools, marker placement) |
-| W-5 | Gate flow: key pity, gate levels, arena entry, per-arena checkpoints |
-| W-6 | Per-tier loot tables + shop stock tiering |
-| W-7 | Post-victory endless (frozen dials, full pool) |
-| W-8 | Knight roaming + duel-room spawn rules (art pending) |
-
-## Boss track — B- (one boss each; R-42 encounter flow = shared foundation)
-| ID | Task |
-|---|---|
-| B-1 | Slime King — scaled slime art, split mechanic |
-| B-2 | Skeleton Lord (AstroBob sheet) |
-| B-3 | Archer King (AstroBob sheet) |
-| B-4 | Nightborne (art to be sourced — intake) |
-| B-5 | Sorceress finale polish + rift passage |
-| B-6 | Deity — 3-phase, cosmic arena (art to be sourced — intake) |
-
-## D-7 / D-8 — late passes
-- Audio: complete sound and music design pass
-- Lighting & VFX: item glows, projectile light budget, room mood lighting (a boss-key glow was explored and shelved 2026-09-06)
-
-## D-9 Retire group-based lookups
-Convention (Godot docs + Game Programming Patterns "Service Locator"): `Global.player` at point of use — the `"Player"` group stays private to `global.gd`; physics-contact identity uses collision-layer bits; groups are broadcast/tagging only.
-- Replace direct `get_first_node_in_group("Player")` with `Global.player`: boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat), projectiles (magic_missile/curse_glyph)
-- `interactable.gd`: `is_in_group("Player")` → collision-layer check
-- Strip vestigial tags: `"Enemies"` (Sorceress + 4 projectile scenes, `add_to_group` on 5 boss-spawn scripts, `beam.gd` exception loop), `"health"` (HeartBars — verify main_scene wiring first); keep smoke stubs' `"Player"`
+| W-2 | Room-type library from R-40 blocks | Combat / treasure / shop / hallway / duel / gate |
+| W-3 | Level graph generator | Seeded; key-conservation + reachability validation |
+| W-4 | Budget spawner | EnemyData costs, tier-gated pools, marker placement |
+| W-5 | Gate flow | Key pity, gate levels, arena entry, per-arena checkpoints |
+| W-6 | Per-tier loot tables + shop stock tiering | |
+| W-7 | Post-victory endless | Frozen dials, full pool |
+| W-8 | Knight roaming + duel-room spawn rules | Art pending |
+| B-1 | Slime King | Scaled slime art, split mechanic |
+| B-2 | Skeleton Lord | AstroBob sheet |
+| B-3 | Archer King | AstroBob sheet |
+| B-4 | Nightborne | Art to be sourced — intake |
+| B-5 | Sorceress finale polish + rift passage | |
+| B-6 | Deity | 3-phase, cosmic arena; art to be sourced — intake |
+| D-3 | Dialogue & world content | More DialogueData stages/NPCs on the shipped resource format; Sorceress boss intro (dormancy + door flow removed in R-24); Knight taunt stages (escalating per tier via PlayerProgress flags) + deity summoning beat |
+| D-5 | Ally summons | Summonable allies fighting alongside the player (faction/targeting groundwork from the state-core/enemy frameworks); likely reuses E-1's lesser-skelly sheet — pick art serving both roles |
+| D-7 | Audio | Complete sound and music design pass |
+| D-8 | Lighting & VFX | Item glows, projectile light budget, room mood lighting (boss-key glow explored and shelved 2026-09-06) |
