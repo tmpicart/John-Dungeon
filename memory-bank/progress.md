@@ -43,3 +43,4 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-15 | docs | Rules: editor conflict model (cache-stale overwrite, two-writer lost update); soft caps 180/100/60 + compression rules (DOC-8).
 - 2026-10-15 | docs | DOC-9: README status reframed against the original-game baseline; goals condensed to four fronts; pck baseline noted in techContext.
 - 2026-10-15 | docs | README recast as a feature comparison of original vs remaster; reflect claim scoped to magic missiles.
+- 2026-10-15 | docs | Quality-audit program chartered: 170-file pass in segments QA-0..QA-X (quality-audit.md); history context-only; F-12 absorbed.
