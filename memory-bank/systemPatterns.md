@@ -156,5 +156,5 @@ Hub-and-subsystems: `Character.gd` delegates to child subsystem nodes and a stat
 | Dialogue | `npc.gd` opens its dialogue on interact, hands off to `shop_data` when the dialogue finishes normally; boss keys play their taunt via the shared box (`boss_key.gd`) |
 
 ## Asset Policy
-- Code-only repo; whitelist, source classes, and per-path mapping: `ASSETS.md`. Intake/renaming procedure: `.clinerules/assets.md`. Attribution and licences: `CREDITS.md`.
+- Code-only repo; whitelist, source classes, and per-path mapping: `ASSETS.md`. Intake/renaming procedure: `memory-bank/asset-intake.md`. Attribution and licences: `CREDITS.md`.
 - Enemy sheets split (usage convention): scenes use the chibi derivatives (`enemy_*.png`); original pack sheets are reserved for planned boss appearances — both ship in-game; never redistribute the raw files.

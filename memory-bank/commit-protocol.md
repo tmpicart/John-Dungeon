@@ -1,0 +1,36 @@
+# Commit Protocol
+
+> **Purpose:** The full commit workflow — message drafting, staging discipline, and post-approval sequence. The always-loaded gates live in `.clinerules/git.md`.
+
+## Workflow (drafting begins when the user confirms DONE)
+1. Inspect `git status` and review the full diff.
+2. Draft a conventional commit message (format below).
+3. Present the drafted message and stop — no commit until user approval.
+4. After approval, in one uninterrupted sequence with no second approval: commit the code work, update the memory bank (see `memory-bank.md`), then commit those updates as a `docs(memory):` commit.
+   - Exception: convention changes in `systemPatterns.md` / `techContext.md` that are inseparable from the code introducing them ride in that code commit.
+5. Never push to the remote unless explicitly instructed.
+
+## Message format
+- `type(scope): imperative subject` — ≤50 characters, no trailing period.
+- Blank line, then a structured body: short context paragraph + bulleted changes.
+- `BREAKING CHANGE:` footer when applicable.
+- Types: `feat`, `fix`, `refactor`, `docs`, `chore`, `style`, `perf`, `test`, `assets`.
+
+## Staging discipline
+- Review status before every staging; stage with explicit pathspecs.
+- Never stage: `.godot/`, temp/backup files, or unrelated working-tree changes.
+- Godot sidecar files (`.import`, `.uid`) belong with the change that caused them.
+- Mass `.import` rewrites after a Godot upgrade are a normal migration: verify the diff is importer metadata only, then commit as an isolated `chore(assets):` commit immediately.
+- Before committing scene files, confirm the user has saved their work in the Godot editor so no half-saved state is committed.
+
+## Message style
+Plain, factual, informative — the commit history doubles as project documentation.
+
+- Standalone documentation: messages describe the change as it lands, never how it came to be. No references to iterations, review or playtest rounds, prior attempts, superseded drafts, session/agent workflow, or verification reporting ("round 2", "follow-up", "kept from the earlier pass", "Gates:", "Tested:" are all excluded — gate results belong in the task summary, not history). A reader with only the diff and the message must fully understand the change. The same rule applies to `progress.md` one-liners.
+
+## Message framing (subject and body)
+- Subject: imperative, completing "If applied, this commit will ___" — the commit is the actor; name in-game entities only when it aids clarity. Cap 50 characters, no trailing period.
+- Body: blank line after the subject, wrapped at 72. First paragraph states the observable problem, bullets carry the changes. The body explains what and why — the diff shows how.
+- Define project jargon at first use (volley, muzzle, whiff, reflect, consume) — one parenthetical is enough.
+- No task-plan IDs (R-N, BUG-N) as framing; plain language first, an ID at most as a trailing pointer.
+- `docs(memory):` commits describe their content and always carry a body; status voice ("done", "complete", "snapshot") is not a description.

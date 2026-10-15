@@ -2,10 +2,20 @@
 
 The `memory-bank/` folder is the project's documentation system. The code shows what is; the memory bank records what is intended and decided.
 
-## Reading (session start, before coding)
-1. `memory-bank/activeContext.md` — session snapshot: in-flight work and next up
-2. `memory-bank/progress.md` — status of systems
-3. When making convention, architecture, engine, or design decisions, also read `systemPatterns.md`, `techContext.md`, and `productContext.md` / `projectbrief.md`.
+## Reading (when-to-read-what)
+Session start reads `activeContext.md` only — its pointers route every other read.
+
+| When | Read |
+|---|---|
+| Session start | `memory-bank/activeContext.md` (only) |
+| Task order, open decisions | `memory-bank/devPlan.md` |
+| What shipped when | `memory-bank/progress.md` |
+| Convention / architecture choices | `memory-bank/systemPatterns.md` |
+| Engine behavior, tests, gates | `memory-bank/techContext.md` |
+| Product / design intent | `memory-bank/productContext.md`, `memory-bank/projectbrief.md` |
+| Any commit | `memory-bank/commit-protocol.md` |
+| Asset work (`assets/`, `CREDITS.md`, `ASSETS.md`, `.gitignore`) | `memory-bank/asset-intake.md` |
+| Updating memory-bank files | `.clinerules/log-hygiene.md` |
 
 ## Source-of-truth hierarchy
 - **Memory bank** owns intent, decisions, and conventions.

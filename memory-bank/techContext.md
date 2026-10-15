@@ -86,4 +86,4 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - `.gitattributes`: `* text=auto eol=lf` · `.gitignore`: `.godot/`, `*.tmp`, `*~`, `.vscode/`, plus the asset policy block (`/assets/*` with whitelists — see `ASSETS.md`)
 - Asset policy: code-only repo (manifest + whitelist: `ASSETS.md`); asset blobs purged from history 2026-09-08
 - `.uid` sidecar files are tracked (Godot 4.4+); always move them together with their script/scene
-- Godot upgrades rewrite `.import` sidecars with new importer metadata — a normal one-time migration (commit procedure: `.clinerules/git.md`)
+- Godot upgrades rewrite `.import` sidecars with new importer metadata — a normal one-time migration (commit procedure: `memory-bank/commit-protocol.md`)
