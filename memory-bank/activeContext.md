@@ -6,14 +6,12 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- Necromancer playtest verdict (F-1): pass — hard-8 summon cap + 4s/3s cast cadence ship as-is; F-2 and the archer Open Decision re-pointed to a dedicated archer look
-- Rules rehome (DOC-7): commit protocol → `memory-bank/commit-protocol.md`, asset intake → `memory-bank/asset-intake.md`, gate stubs stay in `.clinerules`; session start reads activeContext only via the when-to-read-what table in `.clinerules/memory-bank.md`
+- Rules rewrite: editor conflict model (cache-stale overwrite + two-writer lost update — godot #75865/#24646) and log-hygiene soft caps (~180/~100/~60) with AI-memory compression rules
 
 ## Next Up
 1. F-4 hit feedback pass (flash, hit-stop, shake) — start of the F- feel backlog
-2. DOC-8 rules: editor + hygiene — godot-collaboration + log-hygiene rewrite per research
-3. DOC-9 README refresh
-4. R-40a layer-stack standard when content work resumes — `devPlan.md`
+2. DOC-9 README refresh
+3. R-40a layer-stack standard when content work resumes — `devPlan.md`
 
 F-2 (archer whiff-flip) stays parked until a dedicated archer look.
 

@@ -11,7 +11,6 @@ Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wan
 ## Docs refinement — DOC- (current lead; one task per session, entries delete on ship)
 | ID | Task | Notes |
 |---|---|---|
-| DOC-8 | Rules: editor + hygiene | godot-collaboration rewrite per research: real conflict modes = cache-stale overwrites + two-writer lost updates (godot #75865, #24646), not general corruption; log-hygiene soft caps (systemPatterns, techContext, productContext) framed for AI memory — keep identifiers/intent/qualifiers, cut duplication/history/prose, dubious → delete; enforce by dedupe/rehome/split, never fact-trim; drop ai-rework-log reference |
 | DOC-9 | README refresh | Align Current Status with shipped state; trim duplicated goals list; stays self-contained |
 ## Combat feel & verdicts — F-
 | ID | Sz | Task | Notes |
