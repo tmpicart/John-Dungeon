@@ -368,7 +368,8 @@ chase_state = NodePath("../EnemyChase")
 summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 min_summons = 3
-summon_cooldown_duration = 12.0
+max_alive_summons = 8
+summon_cooldown_duration = 4.0
 summon_sfx = NodePath("../../summon_sfx")
 
 [node name="EnemySummonClose" type="Node" parent="State Control" unique_id=1002713575 node_paths=PackedStringArray("chase_state", "summon_sfx")]
@@ -378,7 +379,8 @@ summoned_creature = ExtResource("10_eo0t0")
 summon_effect = ExtResource("11_eupuc")
 summon_radius = 3
 max_summons = 3
-summon_cooldown_duration = 8.0
+max_alive_summons = 8
+summon_cooldown_duration = 3.0
 summon_sfx = NodePath("../../summon_sfx")
 
 [node name="EnemyRetreat" type="Node" parent="State Control" unique_id=1442401496 node_paths=PackedStringArray("navigation_agent", "chase_state", "proximity_summon_state")]

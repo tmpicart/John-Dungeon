@@ -53,6 +53,12 @@ var last_velocity_x := 0.0
 ## Held by states that pin the sprite to a point (standoff facing); the
 ## walk-tick flip yields so the two writers cannot fight per frame.
 var facing_pinned = false
+## Summoned creatures tracked against this summoner's live-summon cap (see
+## summon_budget); slots release when the creature dies or frees.
+var _summons: Array[Node] = []
+## Spawns scheduled but still materializing through the telegraph; they
+## hold budget so overlapping casts cannot overshoot the cap.
+var _pending_summons := 0
 ## Committed walk facing (-1/1); a flip request opposite it must hold
 ## FLIP_CONFIRM_SECONDS before it lands (see _update_walk_facing).
 var _facing := 1
@@ -260,6 +266,48 @@ func kill():
 	queue_free()
 
 
+## Summon ledger: shared by every EnemySummon state under one summoner, so
+## the live cap spans all of its summon states together (see summon_budget).
+
+## Counts a materialized summon against the live cap.
+func register_summon(creature: Node) -> void:
+	_summons.append(creature)
+
+
+## Reserves a telegraph slot: the spawn is scheduled but not alive yet, so
+## it holds budget until it materializes (or its cast is cancelled).
+func reserve_pending_summon() -> void:
+	_pending_summons += 1
+
+
+## Releases a telegraph reservation once the spawn resolved.
+func release_pending_summon() -> void:
+	_pending_summons = maxi(_pending_summons - 1, 0)
+
+
+## Remaining live-summon budget: the cap minus tracked living summons minus
+## pending telegraphs. A cap of 0 or less is uncapped. Dead creatures
+## release their slot immediately — kill() sets is_dead before the death
+## animation plays out — and freed ones are pruned on read.
+func summon_budget(max_alive_summons: int) -> int:
+	if max_alive_summons <= 0:
+		return 1 << 30
+	# The guards run on the loop value itself, is_instance_valid first:
+	# a typed parameter (or any method call) rejects a freed reference at
+	# the call boundary, so a callee-side guard never gets the chance.
+	var alive: Array[Node] = []
+	for creature in _summons:
+		if not is_instance_valid(creature) \
+				or creature.is_queued_for_deletion():
+			continue
+		var base := creature as BaseEnemy
+		if base != null and base.is_dead:
+			continue
+		alive.append(creature)
+	_summons = alive
+	return maxi(max_alive_summons - _summons.size() - _pending_summons, 0)
+
+
 ## Returns true when the attack completed; false when blocked or interrupted.
 func attack() -> bool:
 	if not can_attack():
@@ -327,4 +375,3 @@ func _wait_for_animation(anim_name: String, flow: int) -> bool:
 
 	var finished_name: StringName = await animation_player.animation_finished
 	return flow == _flow_id and finished_name == anim_name
-

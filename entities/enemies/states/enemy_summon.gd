@@ -26,6 +26,11 @@ const OCCUPANCY_RADIUS := 8.0
 @export var summon_radius := 5
 @export var min_summons := 2
 @export var max_summons := 5
+## Live-summon cap shared across the summoner's EnemySummon states (tracked
+## on the enemy — see BaseEnemy.summon_budget). Rolls clamp to the remaining
+## budget, so a cast near the cap fires a partial set instead of skipping.
+## 0 disables the cap.
+@export var max_alive_summons := 0
 ## Seconds before this summoner may summon again; 0 disables the cooldown
 ## (roll-gated summoners such as the boss).
 @export var summon_cooldown_duration := 10.0
@@ -60,15 +65,20 @@ func validate_exports() -> void:
 	if summon_effect == null:
 		push_error("%s: summon_effect is not assigned" % get_path())
 
-## Cooldown gate for the chase's proximity handover: a summoner mid-
-## cooldown must not be handed the body (enter would skip the animation
-## and bounce straight back to chase).
+## Readiness gate for the chase's proximity handover and the flight panic
+## reflex: a summoner mid-cooldown or at its live-summon cap must not be
+## handed the body (enter would skip the animation and bounce straight
+## back to chase).
 func is_ready() -> bool:
-	return _summon_cooldown.is_stopped()
+	return _summon_cooldown.is_stopped() and _has_budget()
+
+
+func _has_budget() -> bool:
+	return enemy.summon_budget(max_alive_summons) > 0
 
 
 func enter() -> void:
-	if _summon_cooldown.is_stopped() and not enemy.is_dead:
+	if _summon_cooldown.is_stopped() and not enemy.is_dead and _has_budget():
 		if await enemy.run_action_animation(summon_animation, summon_sfx):
 			_spawn_creatures()
 		if summon_cooldown_duration > 0.0:
@@ -82,7 +92,12 @@ func _spawn_creatures() -> void:
 		push_error("%s: no TileMapLayer found for summon placement" % get_path())
 		return
 
-	var summon_count = randi_range(min_summons, max_summons)
+	var summon_count := randi_range(min_summons, max_summons)
+	# The live cap clamps the roll before placement: near the cap the cast
+	# still fires with whatever budget remains.
+	summon_count = mini(summon_count, enemy.summon_budget(max_alive_summons))
+	if summon_count <= 0:
+		return
 	var positions = _get_valid_summon_positions(summon_count, tilemap_layer)
 
 	if positions.size() < summon_count:
@@ -95,12 +110,18 @@ func _spawn_creatures() -> void:
 ## Fire-and-forget coroutine: callers schedule whole sets at once while each
 ## creature materializes after its own telegraph. A dead summoner cancels.
 func _spawn_summon(position: Vector2, creature: PackedScene) -> void:
+	# The reservation holds budget through the telegraph so a second cast
+	# in the window cannot push the set past the live cap.
+	enemy.reserve_pending_summon()
 	if summon_effect:
 		var effect = summon_effect.instantiate()
 		get_tree().current_scene.add_child(effect)
 		effect.global_position = position
 
 	await get_tree().create_timer(spawn_delay).timeout
+	if not is_instance_valid(enemy):
+		return
+	enemy.release_pending_summon()
 	if enemy.is_dead:
 		return
 	# The telegraph window lets others move in; skip rather than overlap.
@@ -109,6 +130,7 @@ func _spawn_summon(position: Vector2, creature: PackedScene) -> void:
 
 	var instance = creature.instantiate()
 	get_tree().current_scene.add_child(instance)
+	enemy.register_summon(instance)
 	instance.global_position = position
 
 ## Flood-fills from the summoner's cell through connected summonable tiles,
@@ -135,8 +157,16 @@ func _get_valid_summon_positions(max_count: int, tilemap: TileMapLayer) -> Array
 			_enqueue_neighbors(cell, visited, frontier)
 
 	valid_positions.shuffle()
-	var clear_positions := valid_positions.filter(_is_position_clear)
-	return clear_positions.slice(0, mini(max_count, clear_positions.size()))
+	# Already shuffled: collecting the first max_count clears samples the
+	# same distribution the old filter-then-slice did, at one occupancy
+	# query per accepted cell instead of one per cell in the radius.
+	var chosen: Array = []
+	for position in valid_positions:
+		if chosen.size() >= max_count:
+			break
+		if _is_position_clear(position):
+			chosen.append(position)
+	return chosen
 
 func _enqueue_neighbors(cell: Vector2i, visited: Dictionary, frontier: Array[Vector2i]) -> void:
 	for offset in CELL_NEIGHBORS:

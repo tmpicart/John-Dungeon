@@ -19,7 +19,9 @@ extends Node
 ## reposition retries on the attack cadence without thrashing), and the
 ## cooldown standoff (in range with
 ## an open gate on cooldown, the caster holds the stance instead of
-## churning the attack handover).
+## churning the attack handover), and the live-summon cap (the roll clamps
+## to the remaining budget — a near-cap cast fires a partial set, an
+## at-cap cast bounces without the flourish).
 
 const CELL_SIZE := 16
 const ROOM_COLUMNS := 16
@@ -29,6 +31,8 @@ const BLOCKER_MASK := 1 << 2
 const FRAMES_TO_SETTLE := 5
 const ARCHER_SCENE := "res://entities/enemies/arcane_archer/arcane_archer.tscn"
 const NECROMANCER_SCENE := "res://entities/enemies/necromancer/necromancer.tscn"
+const FLAIL_SKELETON_SCENE := \
+		"res://entities/enemies/flail_skeleton/flail_skeleton.tscn"
 ## Kite-stage press speed: light pressure, so flight must open distance on
 ## its own merits instead of merely outrunning the press.
 const KITE_PLAYER_SPEED := 12.0
@@ -104,6 +108,8 @@ func _run() -> void:
 	await _stage_pocket_fallback()
 	await _teardown()
 	await _stage_standoff_cooldown()
+	await _teardown()
+	await _stage_summon_cap()
 	_completed = true
 
 
@@ -424,8 +430,10 @@ func _stage_standoff_cooldown() -> void:
 	_player.global_position = Vector2(248, 128)
 	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
 	# The hold pins drift: the shuffle would break the velocity
-	# assertion under test.
+	# assertion under test. The summon roll is pinned off with it — a
+	# cast would hijack the held state.
 	_chase_state(necro).standoff_shuffle = false
+	_chase_state(necro).summon_chance = 0.0
 	var attack_state: EnemyAttack = necro.get_node("State Control/EnemyAttack")
 	necro.start_attack_cooldown()
 	_force_chase(necro)
@@ -484,6 +492,10 @@ func _stage_pocket_fallback() -> void:
 	# the entry count with micro-repositions; the stage pins the whiff
 	# retry cadence, so the wander is pinned off here.
 	chase.standoff_shuffle = false
+	# A summon roll detours the attack handover into a cast, so the roll
+	# is pinned off — this stage tests the whiff retry cadence alone (and
+	# a materialized set would roam into the later stages).
+	chase.summon_chance = 0.0
 	(necro.get_node("State Control/EnemyReposition") as EnemyRetreat) \
 			.proximity_summon_range = 0.0
 	_player.global_position = Vector2(220, 20)
@@ -509,6 +521,105 @@ func _stage_pocket_fallback() -> void:
 	var in_band := necro.global_position.y > 44.0 \
 			and necro.global_position.y < 136.0
 	_check(in_band, "the retries stayed inside the band")
+
+
+## Live-summon cap (necromancer): the close summon rolls 3-5 against four
+## budget slots with three live summons already held, so the cast must
+## fire a partial set, and an at-cap cast must bounce without the
+## flourish.
+func _stage_summon_cap() -> void:
+	_tee("  stage: summon cap clamps the roll to the remaining budget")
+	_remove_bake_artifacts()
+	var nav_layer: TileMapLayer = NavBaker.bake(self)
+	_check(nav_layer != null, "rebake open room")
+	if nav_layer == null:
+		return
+	for i in FRAMES_TO_SETTLE:
+		await get_tree().physics_frame
+
+	# Earlier stages can leave stray summons behind (a summon roll inside
+	# the pocket or standoff stage materializes them, and teardown only
+	# tracks what it spawned itself): sweep them so the budget count is
+	# deterministic.
+	for child in get_tree().current_scene.get_children():
+		if child.scene_file_path == FLAIL_SKELETON_SCENE:
+			child.queue_free()
+	await get_tree().physics_frame
+
+	_player.global_position = Vector2(240, 144)
+	var necro := await _spawn_enemy(NECROMANCER_SCENE, Vector2(128, 80))
+	var close_summon := necro.get_node(
+			"State Control/EnemySummonClose") as EnemySummon
+	# The cap stage drives the close summon directly: every other summon
+	# faucet is pinned off, the attack flow parks on a long cooldown, and
+	# the cast cooldown zeroes so the at-cap bounce cannot hide behind it.
+	close_summon.max_alive_summons = 4
+	close_summon.min_summons = 3
+	close_summon.max_summons = 5
+	close_summon.summon_cooldown_duration = 0.0
+	_chase_state(necro).proximity_summon_range = 0.0
+	_chase_state(necro).summon_chance = 0.0
+	(necro.get_node("State Control/EnemyRetreat") as EnemyRetreat) \
+			.proximity_summon_range = 0.0
+	(necro.get_node("State Control/EnemyReposition") as EnemyRetreat) \
+			.proximity_summon_range = 0.0
+	necro.attack_cooldown_duration = 60.0
+	necro.start_attack_cooldown()
+	# Three live summons hold three of the four budget slots.
+	var held: Array[BaseEnemy] = []
+	for offset in [Vector2(-32, 0), Vector2(32, 0), Vector2(0, 32)]:
+		var skeleton := await _spawn_enemy(
+				FLAIL_SKELETON_SCENE, Vector2(128, 80) + offset)
+		held.append(skeleton)
+		necro.register_summon(skeleton)
+
+	necro.get_node("State Control").transition_to(close_summon)
+	var cast_seen := await _wait_until(
+			func() -> bool: return _current_state(necro) is EnemySummon, 2.0)
+	_check(cast_seen, "the capped cast entered the summon state")
+	var cast_done := await _wait_until(
+			func() -> bool: return _current_state(necro) is EnemyChase, 4.0)
+	_check(cast_done, "the capped cast resolved back to chase")
+	# The clamped single spawn materializes after the 0.5 s telegraph.
+	await _wait_seconds(1.2)
+	_check(_count_flail_skeletons() == 4,
+			"cap clamps the roll: 3 held + one partial spawn")
+	_check(not close_summon.is_ready(),
+			"at cap the close summon reads not ready")
+	necro.get_node("State Control").transition_to(close_summon)
+	await _wait_seconds(0.3)
+	_check(_current_state(necro) is EnemyChase,
+			"at cap the cast bounced without the flourish")
+	_check(_count_flail_skeletons() == 4,
+			"at cap nothing materialized")
+	# Death and freeing must both release slots, and the ledger must
+	# survive freed references: a typed call on a freed object errors at
+	# the call boundary, so the final read runs after the body is gone.
+	var victim := held[0]
+	victim.take_damage(99, _player.global_position)
+	_check(close_summon.is_ready(),
+			"a dying summon releases its slot at once")
+	# The wait polls the instance id, not the reference: a lambda captures
+	# by value, and a freed captured object logs a lambda-capture error on
+	# every call (instance_from_id returns null for a dead id).
+	var victim_id := victim.get_instance_id()
+	var freed := await _wait_until(
+			func() -> bool: return instance_from_id(victim_id) == null, 4.0)
+	_check(freed, "the killed summon freed through its death animation")
+	_check(close_summon.is_ready(),
+			"a freed summon prunes cleanly off the ledger")
+	# The materialized skeleton joins the stage actors so teardown frees it.
+	for child in get_tree().current_scene.get_children():
+		if child.scene_file_path == FLAIL_SKELETON_SCENE:
+			_stage_actors.append(child)
+
+
+func _count_flail_skeletons() -> int:
+	var count := 0
+	for child in get_tree().current_scene.get_children():
+		if child.scene_file_path == FLAIL_SKELETON_SCENE:
+			count += 1
+	return count
 
 
 func _build_corridor() -> void:
@@ -592,7 +703,13 @@ func _build_plain_tile_set() -> TileSet:
 	source.texture = ImageTexture.create_from_image(image)
 	source.texture_region_size = Vector2i(CELL_SIZE, CELL_SIZE)
 	source.create_tile(Vector2i.ZERO)
+	# The floor is summonable so EnemySummon's flood-fill finds placement
+	# cells in the probe room (the real tilesets' custom-data contract).
 	tile_set.add_source(source, 0)
+	tile_set.add_custom_data_layer()
+	tile_set.set_custom_data_layer_name(0, "is_summonable")
+	tile_set.set_custom_data_layer_type(0, TYPE_BOOL)
+	source.get_tile_data(Vector2i.ZERO, 0).set_custom_data("is_summonable", true)
 	return tile_set
 
 
