@@ -8,6 +8,9 @@
 | Necromancer fires from bad spots | Resolved: arrival-satisfied whiff gate + EnemyReposition + panic reflexes shipped (cd7473a..2260066) | Tuning continues via scene exports |
 
 Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
+
+Quality audit — whole codebase, one segment at a time (audit → plan → fix per segment): `quality-audit.md`.
+
 ## Combat feel & verdicts — F-
 | ID | Sz | Task | Notes |
 |---|---|---|---|
@@ -21,7 +24,7 @@ Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wan
 | F-9 | M | Death/restart flow | Restart prompt/option on player death |
 | F-10 | S | Boss pacing | Inter-attack cooldowns, magic missile lifetime |
 | F-11 | M | Volley light cost | Projectile PointLight2D burst render cost during volleys |
-| F-12 | S | Code-comment sweep | 7 pre-rework comment sites → current-behavior voice: enemy_summon.gd:161,199; player_attack.gd:5; player_block.gd:5; max_hp_item.gd:5; player_movement.gd:4; nav_baker.gd:489; dedupe the doubled R-40-debt note |
+| F-12 | S | Code-comment sweep | 7 pre-rework comment sites → current-behavior voice: enemy_summon.gd:161,199; player_attack.gd:5; player_block.gd:5; max_hp_item.gd:5; player_movement.gd:4; nav_baker.gd:489; dedupe the doubled R-40-debt note — absorbed into the quality audit (QA-1/QA-4/QA-6) |
 ## Frameworks — R- room blocks & descent · D-9 group retirement
 D-9 convention (Godot docs + Game Programming Patterns "Service Locator"): `Global.player` at point of use — the `"Player"` group stays private to `global.gd`; physics-contact identity uses collision-layer bits; groups are broadcast/tagging only.
 | ID | Sz | Task | Notes |
