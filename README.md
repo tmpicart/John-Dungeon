@@ -9,37 +9,46 @@
 - One handcrafted dungeon level  
 - Player upgrades and consumables
 
-## Goals
-**John Dungeon** is now being continued as a solo project under the title **John Dungeon: Remastered**. This version aims to build on the original's foundation with the following goals:
-- Fix bugs from the original game  
-- Refactor the codebase for easier content expansion  
-- Quality-of-life improvements  
-- New enemies and bosses  
-- Deeper progression systems  
-- An expanded dungeon with multiple levels  
-- More refined and strategic combat mechanics  
-- Smarter enemy AI  
-- A more prominent dialogue system and NPC interactions  
-- Improved shop and item systems  
-- Complete sound and music design
+## The Remaster
+**John Dungeon: Remastered** continues the original as a solo project, building on its foundation in four areas:
+- **Code quality**: fix the original's bugs, refactor for easier content expansion, quality-of-life improvements
+- **Combat and AI**: more refined and strategic combat, smarter enemy AI, new enemies and bosses
+- **Progression and content**: deeper progression systems, an expanded multi-level dungeon, better shops and items
+- **Presentation and world**: a bigger dialogue and NPC system, complete sound and music
 
-## Current Status
+## What's different from the original
 
-**Architecture & code quality**
-- Enemy logic refactored into an extendable base class for better modularity  
-- Player code modularized and using state machine architecture for separation of concerns  
-- Proper collision layers implemented, removing reliance on groups  
-- TileMapLayer now properly tied to map collisions
-- Standardized door template (colliders, interaction, nav links) for modular room blocks
+**Combat**
+- A new dash ability
+- Blocking into an attack parries it. Melee enemies get stunned and projectiles bounce back at whoever fired them. The necromancer's magic missiles even home in on the way back
+- Parrying the Sorceress's melee attacks staggers her
+- Some boss attacks can't be blocked and have to be dodged
+- Reworked player animations and more reliable hit detection
 
-**Gameplay & combat**
-- Enemy AI now pathfinds on a runtime-baked navmesh with local avoidance  
-- Player combat animations reworked; dash ability added  
-- Hitboxes, hurtboxes, and reflection systems refined  
-- General gameplay fluidity improvements
+**Enemies**
+- Enemies path around walls and each other instead of running straight at you
+- Ranged enemies hold fire when they can't see you and move to get a clear shot
+- The necromancer telegraphs his summons and can only keep so many skeletons alive at once
+- He panics when cornered, moves when his missiles miss, and his missiles curve around cover and come back around
+- Wounded enemies fall back. Cornered enemies stand and fight
+
+**World and systems**
+- NPC dialogue with portraits, one-time story moments, and shops that open when the conversation ends
+- A click-to-buy shop with a coin bar
+- Locked doors and chests consume a key with a clear prompt flash
+- The boss key plays its boss's taunt when you grab it
+- Chests roll their loot from loot tables, and pickups bounce out and land on open floor
+- More sound effects for coins, enemy deaths, weapon swings, footsteps, and shields
+
+**Under the hood**
+- All enemies run on one shared framework. Each enemy is just a list of settings instead of its own scripts, so new enemies are quick to add
+- The player is split into small modules driven by a state machine
+- Hits and hurtboxes are told apart with collision layers instead of name tags
+- The HUD updates from signals instead of checking every frame
+- Art and audio stay out of the repo, with credits and licenses recorded
+- Headless test suites cover the interaction system and missile behavior
 
 **Bug fixes**
-- Fixed summoning, jittery movement, and other enemy behavior bugs  
-- Resolved issues with on-hit animations for both player and enemies
+- Fixed summoning bugs, jittery movement, on-hit animation glitches, doorway sprites vanishing, and enemies clipping through archways
 
-> **Note:** The remaster is mid-rebuild: the original dungeon level is being replaced by modular room blocks, so there is no shippable build yet — the test room is fully playable.
+> **Note:** The remaster is mid-rebuild. Levels will be built from hand-made room blocks shuffled together, so there is no shippable build yet. The test room is fully playable.
