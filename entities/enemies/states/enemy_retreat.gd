@@ -307,6 +307,14 @@ func _pick_firing_route() -> void:
 		return
 	var away := (enemy.global_position - player.global_position).normalized()
 	var map: RID = enemy.get_world_2d().navigation_map
+	# The player's clamped mesh point is constant across the fan: one
+	# closest-point query per run instead of one per connectability check.
+	var player_point := NavigationServer2D.map_get_closest_point(
+			map, player.global_position)
+	# Folded candidates repeat stances — near walls most fan angles clamp
+	# onto the same mesh points — so each distinct stance's band and
+	# connectability verdicts are computed once per run.
+	var verdicts := {}
 	var in_band_target := Vector2.ZERO
 	var in_band_length := INF
 	var clear_target := Vector2.ZERO
@@ -326,17 +334,21 @@ func _pick_firing_route() -> void:
 			if first_step.dot(away) < DOUBLETBACK_DOT_LIMIT:
 				continue
 			var stance: Vector2 = path[path.size() - 1]
-			if not attack_state.band_clear_at(stance):
+			if not verdicts.has(stance):
+				verdicts[stance] = _stance_verdict(stance, player_point)
+			var verdict: Array = verdicts[stance]
+			# Non-band-clear stances rank nowhere; the fallback tier is
+			# band-clear-but-unconnectable (same filter as ever).
+			if not verdict[0]:
 				continue
 			var route_length := 0.0
 			for i in path.size() - 1:
 				route_length += path[i].distance_to(path[i + 1])
-			var connectable := _stance_connectable(stance)
-			if _candidate_in_band(stance) and connectable:
+			if _candidate_in_band(stance) and verdict[1]:
 				if route_length < in_band_length:
 					in_band_length = route_length
 					in_band_target = stance
-			elif connectable:
+			elif verdict[1]:
 				if route_length < clear_length:
 					clear_length = route_length
 					clear_target = stance
@@ -383,6 +395,25 @@ func _stance_connectable(stance: Vector2) -> bool:
 	for i in path.size() - 1:
 		route_length += path[i].distance_to(path[i + 1])
 	return route_length <= from.distance_to(to) * max_detour_ratio
+
+
+## Band-clear and connectability for one distinct clamped stance (see the
+## verdict cache in _pick_firing_route). Mirrors _stance_connectable's
+## query shape: both endpoints clamped, optimize=false; the player point
+## arrives pre-clamped from the run.
+func _stance_verdict(stance: Vector2, player_point: Vector2) -> Array:
+	if not attack_state.band_clear_at(stance):
+		return [false, false]
+	var map: RID = enemy.get_world_2d().navigation_map
+	var stance_point := NavigationServer2D.map_get_closest_point(map, stance)
+	var path := NavigationServer2D.map_get_path(
+			map, stance_point, player_point, false)
+	var route_length := 0.0
+	for i in path.size() - 1:
+		route_length += path[i].distance_to(path[i + 1])
+	var connectable := path.size() >= 2 and route_length \
+			<= stance_point.distance_to(player_point) * max_detour_ratio
+	return [true, connectable]
 
 
 ## Cornered exit: chase regains control with its retreat triggers

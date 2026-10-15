@@ -24,6 +24,12 @@ const REPOSITION_GATE_CONFIRM := 0.1
 ## flight triggers — same boundary logic as REPOSITION_GATE_CONFIRM: a
 ## body straddling the radius edge must not flap retreat/chase.
 const PROXIMITY_RETREAT_CONFIRM := 0.1
+## Seconds the outcome-gate verdict is cached on the in-range tick path:
+## the band half re-reads the same static geometry every tick while the
+## body holds a stance (3 muzzles x 4 physics queries), and the whiff half
+## cannot flip faster than a volley settles. Direct callers (the
+## reposition scorer, the probes) read raw.
+const GATE_CACHE_SECONDS := 0.1
 ## Shuffle steps never come tighter than this, so a retarget landing next
 ## to the body cannot re-roll the drift direction almost every tick.
 const SHUFFLE_MIN_STEP := 8.0
@@ -131,6 +137,10 @@ var _retreat_suppressed := 0.0
 ## Continuous seconds the outcome gate has read closed on this stance
 ## (see REPOSITION_GATE_CONFIRM).
 var _gate_closed_for := 0.0
+## Cached outcome-gate verdict and its remaining shelf life (see
+## GATE_CACHE_SECONDS).
+var _gate_clock := 0.0
+var _gate_value := true
 ## Continuous seconds the player has held inside retreat_range (see
 ## PROXIMITY_RETREAT_CONFIRM).
 var _retreat_trigger_for := 0.0
@@ -153,6 +163,7 @@ func enter() -> void:
 	_press_flipped = false
 	_guarding = false
 	_gate_closed_for = 0.0
+	_gate_clock = 0.0
 	_retreat_trigger_for = 0.0
 	_shuffle_clock = 0.0
 	# RVO steering runs only while a movement state owns the agent; the
@@ -282,8 +293,7 @@ func suppress_retreat(duration: float) -> void:
 ## instead of bouncing the attack handover every tick (the bounce
 ## re-rolled the summon chance on every cooldown frame).
 func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
-	var attack := attack_state as EnemyAttack
-	var gate_open := attack == null or attack.fire_gate_open()
+	var gate_open := _gate_open_cached(delta)
 	_gate_closed_for = 0.0 if gate_open else _gate_closed_for + delta
 	if blind or not gate_open:
 		if not blind and reposition_state != null:
@@ -304,6 +314,16 @@ func _handle_in_range(delta: float, to_player: Vector2, blind: bool) -> void:
 		_hold_ground(delta)
 		return
 	_enter_attack()
+
+
+## The outcome gate on the chase's cached clock (see GATE_CACHE_SECONDS).
+func _gate_open_cached(delta: float) -> bool:
+	_gate_clock -= delta
+	if _gate_clock <= 0.0:
+		_gate_clock = GATE_CACHE_SECONDS
+		var attack := attack_state as EnemyAttack
+		_gate_value = attack == null or attack.fire_gate_open()
+	return _gate_value
 
 
 ## Standoff hold: zero both velocities (the avoidance server keeps

@@ -37,6 +37,15 @@ const EXIT_CLEARANCE_PX := 3.0
 ## Half-angle of the acquisition cone, measured off the missile's own
 ## heading.
 @export var seek_cone_deg := 120.0
+## Seconds between targetless cone-acquisition sweeps while reflected: the
+## lock is sticky once set, so this only bounds the empty-cone polling
+## cost (a seek-radius intersect_shape per targetless missile).
+@export var seek_interval := 0.1
+## Seconds the shot may hunt before self-freeing. A dodged missile
+## otherwise re-hunts indefinitely, stacking a live light, per-tick flight
+## work, and volley telemetry for as long as the player keeps dodging.
+## Same medicine as the arrow's max_lifetime.
+@export var max_lifetime := 10.0
 ## Seconds between blocked-line checks while flying direct arcs.
 @export var route_check_interval := 0.1
 ## Seconds between path re-queries while routing around cover.
@@ -60,6 +69,14 @@ var target: Node2D
 var launch_angle := 0.0
 ## Volley outcome telemetry, assigned by the spawner (see VolleyReport).
 var volley_report: VolleyReport
+## Seconds this shot has flown (see max_lifetime).
+var _lifetime := 0.0
+## Countdown to the next targetless cone sweep while reflected; the first
+## sweep runs immediately.
+var _seek_clock := 0.0
+## Preallocated acquisition query: the shape is constant, only the origin
+## moves (see _acquire_cone_target).
+var _seek_query: PhysicsShapeQueryParameters2D
 
 ## Route mode: the direct line is blocked; steering follows baked-mesh
 ## waypoints until the line has been clear for the hysteresis window.
@@ -70,9 +87,19 @@ var _check_clock := 0.0
 var _repath_clock := 0.0
 var _clear_clock := 0.0
 
+@onready var _anim: AnimationPlayer = $AnimationPlayer
+@onready var _hitbox: Area2D = $Hitbox
+
 
 func _ready() -> void:
 	player = Global.player as CharacterBody2D
+	_seek_query = PhysicsShapeQueryParameters2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = seek_range
+	_seek_query.shape = circle
+	_seek_query.collision_mask = 1 << 8  # EnemyHurtbox
+	_seek_query.collide_with_areas = true
+	_seek_query.collide_with_bodies = false
 
 
 ## Volley bookkeeping: leaving the flight (any free path) retires the shot
@@ -83,6 +110,12 @@ func _exit_tree() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_lifetime += delta
+	if _lifetime >= max_lifetime:
+		# The volley telemetry retires through _exit_tree, same as any
+		# other death.
+		queue_free()
+		return
 	if reflected:
 		_steer_reflected(delta)
 	elif _routing:
@@ -103,7 +136,7 @@ func _physics_process(delta: float) -> void:
 	# a blocked back-hit — damage without a parry — still pairs with the
 	# consume the way a plain hit does.
 	if not reflected:
-		for body in $Hitbox.get_overlapping_bodies():
+		for body in _hitbox.get_overlapping_bodies():
 			if body == player:
 				queue_free()
 				break
@@ -121,7 +154,10 @@ func _physics_process(delta: float) -> void:
 			and not reflected and distance_to_player < volley_report.arrival_radius:
 		volley_report.settle_arrived()
 
-	$AnimationPlayer.play("Track")
+	# The Track loop plays once: re-issuing play() per tick re-resolves
+	# the animation name for no effect.
+	if _anim.current_animation != &"Track":
+		_anim.play(&"Track")
 
 
 ## Direct-seek homing — the pre-routing flight, unchanged: wherever the line
@@ -246,7 +282,10 @@ func _lane_clear_wide() -> bool:
 ## Only contact ends it.
 func _steer_reflected(delta: float) -> void:
 	if not is_instance_valid(target):
-		target = _acquire_cone_target()
+		_seek_clock -= delta
+		if _seek_clock <= 0.0:
+			_seek_clock = seek_interval
+			target = _acquire_cone_target()
 	var desired_angle := launch_angle
 	if target != null:
 		desired_angle = (target.global_position - global_position).normalized().angle()
@@ -259,19 +298,12 @@ func _steer_reflected(delta: float) -> void:
 ## half-angle of the current heading. No line-of-sight gate — around-corner
 ## locks are the design; steering must earn them.
 func _acquire_cone_target() -> Node2D:
-	var query := PhysicsShapeQueryParameters2D.new()
-	var circle := CircleShape2D.new()
-	circle.radius = seek_range
-	query.shape = circle
-	query.transform = Transform2D(0.0, global_position)
-	query.collision_mask = 1 << 8 # EnemyHurtbox
-	query.collide_with_areas = true
-	query.collide_with_bodies = false
+	_seek_query.transform = Transform2D(0.0, global_position)
 
 	var heading := Vector2.RIGHT.rotated(rotation)
 	var best: Node2D = null
 	var best_distance := INF
-	for hit in get_world_2d().direct_space_state.intersect_shape(query):
+	for hit in get_world_2d().direct_space_state.intersect_shape(_seek_query):
 		var surface := hit.collider as Area2D
 		var enemy := surface.owner as BaseEnemy
 		if enemy == null or enemy.is_dead:
