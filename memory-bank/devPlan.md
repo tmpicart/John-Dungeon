@@ -4,7 +4,7 @@
 | Topic | Status | Next look |
 |---|---|---|
 | Aim controller model | Decided: direction + soft lock (no reticle) | Revisit at F-3 (straight-launch reflect) |
-| Archer whiff repositioning | Ships OFF by default | F-1 playtest verdict |
+| Archer whiff repositioning | Ships OFF by default | F-2 dedicated look — F-1 closed with no archer read |
 | Necromancer fires from bad spots | Resolved: arrival-satisfied whiff gate + EnemyReposition + panic reflexes shipped (cd7473a..2260066) | Tuning continues via scene exports |
 
 Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
@@ -17,8 +17,7 @@ Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wan
 ## Combat feel & verdicts — F-
 | ID | Sz | Task | Notes |
 |---|---|---|---|
-| F-1 | M | Necromancer playtest verdict | Hard-8 summon cap + 4s/3s cast cadence — the lag verdict for the missile/necromancer rework; decides F-2 and the tuning exports |
-| F-2 | S | Archer whiff-flip decision | Enable or keep OFF the archer whiff-repositioning default, from F-1 |
+| F-2 | S | Archer whiff-flip decision | Enable or keep OFF the archer whiff-repositioning default; awaits a dedicated archer look — F-1 closed with no archer read |
 | F-3 | L | Straight-launch reflect | Alternative to the aim-locked arcing reflect; revisit the aim-controller decision here |
 | F-4 | S | Hit feedback pass | On-hit flash duration/timeout up across the board; hit-stop/frame-freeze tuning; damage-scaled shake down, time-freeze up |
 | F-5 | M | Stun collision-off | Stunned enemies drop attack hitbox + body collision — they stop eating projectiles and the player phases through (anti-crowding) |
