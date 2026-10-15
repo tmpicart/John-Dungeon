@@ -41,3 +41,5 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-14 | docs | Necromancer playtest verdict: pass — hard-8 summon cap and 4s/3s cast cadence ship as-is; archer whiff-flip parked pending a dedicated look (F-2).
 - 2026-10-14 | docs | Rules restructure: commit protocol and asset intake rehomed to memory-bank, gate stubs kept in .clinerules; session start reads activeContext only (DOC-7).
 - 2026-10-15 | docs | Rules: editor conflict model (cache-stale overwrite, two-writer lost update); soft caps 180/100/60 + compression rules (DOC-8).
+- 2026-10-15 | docs | DOC-9: README status reframed against the original-game baseline; goals condensed to four fronts; pck baseline noted in techContext.
+- 2026-10-15 | docs | README recast as a feature comparison of original vs remaster; reflect claim scoped to magic missiles.

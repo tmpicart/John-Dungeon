@@ -8,10 +8,6 @@
 | Necromancer fires from bad spots | Resolved: arrival-satisfied whiff gate + EnemyReposition + panic reflexes shipped (cd7473a..2260066) | Tuning continues via scene exports |
 
 Resolved 2026-10-13 decisions landed in owning docs: aim → systemPatterns; wand/potion → productContext + S-5/S-6 rows; S-2 → its row; unknown assets → ASSETS.md (closed as-is).
-## Docs refinement — DOC- (current lead; one task per session, entries delete on ship)
-| ID | Task | Notes |
-|---|---|---|
-| DOC-9 | README refresh | Align Current Status with shipped state; trim duplicated goals list; stays self-contained |
 ## Combat feel & verdicts — F-
 | ID | Sz | Task | Notes |
 |---|---|---|---|

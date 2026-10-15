@@ -85,5 +85,6 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - CI: none by decision (2026-10-04) — the lint-only action (`Scony/godot-gdscript-toolkit`) is a 5-minute add once the gdlint baseline is repo-wide clean; test CI is blocked by the code-only asset policy (scene-booting probes need assets on disk)
 - `.gitattributes`: `* text=auto eol=lf` · `.gitignore`: `.godot/`, `*.tmp`, `*~`, `.vscode/`, plus the asset policy block (`/assets/*` with whitelists — see `ASSETS.md`)
 - Asset policy: code-only repo (manifest + whitelist: `ASSETS.md`); asset blobs purged from history 2026-09-08
+- Original-game baseline: `D:\Godot_Games\John Dungeon Guy.pck` (4.2.2 export, 699 entries / 387 real paths) and `John-Dungeon-assets-backup-20260908\` beside the repo — PCK v2 directory: count u32 @0x60 after 16 reserved u32s; entries = u32 len + path + 36 B (offset, size, md5, flags)
 - `.uid` sidecar files are tracked (Godot 4.4+); always move them together with their script/scene
 - Godot upgrades rewrite `.import` sidecars with new importer metadata — a normal one-time migration (commit procedure: `memory-bank/commit-protocol.md`)
