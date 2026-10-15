@@ -6,15 +6,16 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- DOC-6 devPlan restructure: D-1 grab-bag re-IDed as the sized F- track (playtest/archer-flip/reflect = F-1..F-3), R-40/D-9 subtasked, R-47 visual range toggles dropped, Sept 2-13 log rotated to memory-bank/archive/progress-2026-q3.md
-- bcdbfdd summon ledger: necromancer caps live skeletons at 8 (partial casts fire, at-cap stands down), cast cooldowns 12→4 s / 8→3 s; probe stage covers clamp, bounce, dying/freed slot release
-- 39f6d6d perf: chase outcome-gate 0.1 s cache, firing-fan stance dedup + hoisted player point, reflected cone 0.1 s sweep + 10 s missile lifetime, Track loop plays once
+- Necromancer playtest verdict (F-1): pass — hard-8 summon cap + 4s/3s cast cadence ship as-is; F-2 and the archer Open Decision re-pointed to a dedicated archer look
+- Rules rehome (DOC-7): commit protocol → `memory-bank/commit-protocol.md`, asset intake → `memory-bank/asset-intake.md`, gate stubs stay in `.clinerules`; session start reads activeContext only via the when-to-read-what table in `.clinerules/memory-bank.md`
 
 ## Next Up
-1. F-1 necromancer playtest (hard-8 cap + faster cast cadence) — the lag verdict; decides F-2 and the archer Open Decision
-2. F-4 hit feedback pass (flash, hit-stop, shake) — start of the F- feel backlog
-3. DOC-7 rules: git + loading — docs track lead
+1. F-4 hit feedback pass (flash, hit-stop, shake) — start of the F- feel backlog
+2. DOC-8 rules: editor + hygiene — godot-collaboration + log-hygiene rewrite per research
+3. DOC-9 README refresh
 4. R-40a layer-stack standard when content work resumes — `devPlan.md`
+
+F-2 (archer whiff-flip) stays parked until a dedicated archer look.
 
 ## Pointers
 - Conventions & architecture: `systemPatterns.md`

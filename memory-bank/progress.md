@@ -39,3 +39,4 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-14 | planning | R-47 visual range toggles: exported ranges draw as shapes for tuning.
 - 2026-10-14 | docs | DOC-6 devPlan restructure: D-1 re-IDed as sized F- track (playtest/archer-flip/reflect = F-1..F-3), R-40/D-9 subtasks, R-47 dropped, comment-sweep row; Sept 2-13 log archived.
 - 2026-10-14 | docs | Necromancer playtest verdict: pass — hard-8 summon cap and 4s/3s cast cadence ship as-is; archer whiff-flip parked pending a dedicated look (F-2).
+- 2026-10-14 | docs | Rules restructure: commit protocol and asset intake rehomed to memory-bank, gate stubs kept in .clinerules; session start reads activeContext only (DOC-7).
