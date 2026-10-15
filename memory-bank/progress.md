@@ -44,3 +44,4 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-15 | docs | DOC-9: README status reframed against the original-game baseline; goals condensed to four fronts; pck baseline noted in techContext.
 - 2026-10-15 | docs | README recast as a feature comparison of original vs remaster; reflect claim scoped to magic missiles.
 - 2026-10-15 | docs | Quality-audit program chartered: 170-file pass in segments QA-0..QA-X (quality-audit.md); history context-only; F-12 absorbed.
+- 2026-10-15 | qa | QA-0 repo-wide conventions sweep closed: 170/170 appendix-verified, baseline strong (no H findings), 15 findings triaged to segment checklists; gdlint unchanged (44).

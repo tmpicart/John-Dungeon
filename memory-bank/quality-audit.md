@@ -33,7 +33,6 @@ Implement the chosen plan on the user's go. Intent: functionality remains unchan
 ## Segments — queue (risk-ordered; uniform depth)
 | ID | Scope | Status |
 |---|---|---|
-| QA-0 | Repo-wide pattern sweep (all 170 files; conventions baseline + triage; seeds Cross-cutting) | pending |
 | QA-1 | Nav foundation: `nav_baker.gd` + nav/level_nav/scene probes | pending |
 | QA-2 | Enemy movement/combat states + chase probe family | pending |
 | QA-3 | Projectiles & reflect (magic_missile, volley_report, player_combat) + missile_probe | pending |
@@ -45,6 +44,37 @@ Implement the chosen plan on the user's go. Intent: functionality remains unchan
 | QA-9 | Pickups, interactables, NPCs, props | pending |
 | QA-T | Test-suite consolidation: all 16 test scripts (~4,700 lines) — keep/retire/dedupe | pending |
 | QA-X | Cross-cutting consolidation + conventions codified | pending |
+
+## QA-0 — closed 2026-10-15 (triage register; rows consumed by their owning segments)
+Appendix 170/170 verified · 12 probe lenses (git grep — search_codebase excludes code files) · every candidate context-validated · spot-samples per cluster. No H findings at sweep depth.
+
+### Conventions verified holding (repo-wide)
+| Convention | Result |
+|---|---|
+| D-9 accessor | all 27 production reads via `Global.player` |
+| Velocity px/s | 0 violations; all 12 delta uses legit (accel/angle/manual integration) |
+| Inventory API | all mutations inside `player_inventory.gd` |
+| NodePath wiring | root→child + state→`../` sibling everywhere (loader quirk clean) |
+| .tres authoring | no StringName/PackedStringArray serialized |
+| Layers/masks | all values match the techContext map; .gd masks via named constants |
+| Connect style | method-reference everywhere but bomb.gd:16 |
+| Production hygiene | no print/TODO/FIXME/dead markers; 32 uniform push_error/warning sites |
+| stop() sites | boss_stagger (documented pause), base_enemy (post-frame, token-guarded), the_sorceress (timer ctx) sanctioned; shield.gd:57 → finding below |
+| create_timer awaits | 25 sites; explicit guards in 7 files; full exit-safety → X-5 |
+
+Baselines refreshed: appendix 170/170 · gdlint unchanged (44: player 41, bomb.gd 3).
+
+### Findings — segment-triaged (decisions recorded 2026-10-15)
+- [M] shield.gd:57 — parry() stop() may run mid-physics-flush (parry routes from hurtbox contact). Routes: (a) QA-6 verifies; re-route via pause/deferred if flush-timed (b) prove safe, document. Decision: (a)
+- [L] player_animation.gd:12, shield.gd:10, weapon.gd:11 — `var Direction = Global.Direction` aliases drive most player gdlint findings. Routes: (a) inline during QA-6 (b) standalone cleanup now. Decision: (a)
+- [L] character.tscn:700 — body mask 31 (layers 1–5) vs enemy standard 7. Routes: (a) tighten at QA-6 (b) document exception. Decision: (a)
+- [L] character.tscn:813 — z_index 50 outlier. Routes: (a) QA-6 verify purpose (b) comment/normalize. Decision: (a)
+- [L] bomb.gd:3,16,19 — dead `player` var; string connect + redundant disconnect; explode()/_ready double play. Routes: (a) QA-3 batch (b) now. Decision: (a)
+- [L] bomb.tscn:102 — composite collision values 160/320 undocumented. Routes: (a) QA-3 verify + comment (b) split surfaces. Decision: (a)
+- [L] enemy_idle.gd:19,30,35 — restating comments (F-12 lens). Routes: (a) QA-2 sweep (b) now. Decision: (a)
+- [L] tests/interaction_smoke.gd:216,292 — object-capturing lambdas (freed-capture class). Routes: (a) QA-T audit (b) bind methods now. Decision: (a)
+- [L] the_sorceress state names spaced ("Magic Missile") vs enemy PascalCase. Routes: (a) QA-7 normalize (b) codify both styles at QA-X. Decision: (b)
+- [L] boss_door.tscn:106 — mask default while siblings set 3 — recorded pre-standard exception; act at boss-arena reseating only. Decision: baseline exception stands
 
 History's role — context only, never an audit object:
 - The audit unit is the file cluster at current state; commit content may already be overwritten or redesigned, and commit messages may not describe current behavior.
@@ -58,7 +88,11 @@ Closing gate — the Lookback: (1) re-run the QA-0 sweep for drift introduced by
 - Missile-gate failure chain (audit lenses for QA-3): zero-clearance cell-boundary paths · `local_to_map` boundary flooring · overhang polys poking into walkable cells · pure-pursuit orbit when acceptance window < turn radius (advance by projection) · waypoint anchoring near corner cells.
 
 ## Cross-cutting findings (parked → resolved in QA-X)
-- (none yet)
+- X-1 [M] D-9a gap — enemy_idle.gd:31 reads the `"Player"` group (the plan names chase/pounce/retreat only); its cached ref also never re-resolves after a player free. Routes: (a) extend D-9a scope, migrate in batch (b) migrate now in QA-0. Decision: (a) — D-9a row updated in devPlan
+- X-2 [M] D-9c scope — `"Enemies"` also tags 6 combatant roots (the_sorceress + 5 enemy .tscn roots); chase/missile/retreat/room_spawn probes consume the tag. Routes: (a) extend the D-9c strip + update probes (b) sanction combatant-root tags, strip only projectile/boss-script sites. Decision: (b) — D-9c row updated in devPlan
+- X-3 [L] D-9c confirm — `"health"` tag (test_room.tscn:149 HeartBar) has no consumer; main_scene wires the node path directly. Routes: (a) strip with D-9c (b) keep. Decision: (a)
+- X-4 [L] z-ladder (0 floor / 3 entities / 4 projectiles / 10 overhead) consistent repo-wide but uncoded. Routes: (a) codify in systemPatterns at QA-X (b) leave tribal. Decision: (a)
+- X-5 [M] create_timer awaits in state scripts (25 sites; explicit guards in 7 files) — per-segment exit-safety verification is a standing checklist item. Routes: (a) fold into each segment's checklist (QA-2/3/6/7/9) (b) dedicated pass at QA-X. Decision: (a)
 
 ## Per-file assignment — must always sum to 170/170 (Lookback re-verifies)
 

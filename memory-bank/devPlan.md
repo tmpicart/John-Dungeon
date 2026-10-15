@@ -39,9 +39,9 @@ D-9 convention (Godot docs + Game Programming Patterns "Service Locator"): `Glob
 | R-45 | M | Const-derivation pass | Runtime-derive cell-size/roster/projectile constants; per-entity values become exports |
 | R-46 | S | Tileset nav-polygon cleanup | Delete the dead painted nav polygons from `custom_dungeon.tres` (runtime bakes instead); optional bake debug draw |
 | D-10 | — | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
-| D-9a | M | `Global.player` migration | Boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat), projectiles (magic_missile/curse_glyph) |
+| D-9a | M | `Global.player` migration | Boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat/idle — QA-0 X-1), projectiles (magic_missile/curse_glyph) |
 | D-9b | S | `interactable.gd` layer check | `is_in_group("Player")` → collision-layer check |
-| D-9c | M | Vestigial tag strip | `"Enemies"` (Sorceress + 4 projectile scenes, `add_to_group` on 5 boss-spawn scripts, `beam.gd` exception loop), `"health"` (HeartBars — verify main_scene wiring first); keep smoke stubs' `"Player"` |
+| D-9c | M | Vestigial tag strip | `"Enemies"` strip = 4 projectile scene tags + 5 boss-spawn `add_to_group` sites (no production reader); combatant-root tags stay (beam + probes consume — QA-0 X-2); `"health"` confirmed consumerless — strip; keep smoke stubs' `"Player"` |
 ## Content tracks — S- systems · E- enemies · W- descent slices · B- bosses
 Variants = new/modified attack + additional effects (S-2 when unparked) + shading — not config-only tints. Build order: S-1 → E-1 → S-4 → S-3 → S-5 → S-6 → S-7 (S-2 parked).
 | ID | Task | Notes |

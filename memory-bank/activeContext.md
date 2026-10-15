@@ -6,10 +6,10 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- Quality-audit program chartered (`memory-bank/quality-audit.md`): whole-codebase pass, 170 files, segments QA-0..QA-X; history is context only; F-12 absorbed
+- QA-0 repo-wide conventions sweep closed: 170/170 verified, baseline strong (no H findings), 15 findings triaged to segments (`quality-audit.md` §QA-0 + §Cross-cutting)
 
 ## Next Up
-1. QA-0 repo-wide conventions sweep — first segment of the quality audit (`quality-audit.md`)
+1. QA-1 nav foundation — first deep-audit segment (`quality-audit.md`, QA-1 file set)
 2. F-4 hit feedback pass — queued behind the audit program
 
 F-2 (archer whiff-flip) stays parked until a dedicated archer look.
