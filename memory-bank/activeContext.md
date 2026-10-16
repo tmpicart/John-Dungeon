@@ -6,10 +6,10 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- QA-0 repo-wide conventions sweep closed: 170/170 verified, baseline strong (no H findings), 15 findings triaged to segments (`quality-audit.md` §QA-0 + §Cross-cutting)
+- QA-1 nav foundation closed (2026-10-15): audit + fixes — nav_probe sync-race flake fixed (mesh-readiness poll), baker doc drift + F-12 site resolved, no behavior change; X-6/X-7 parked
 
 ## Next Up
-1. QA-1 nav foundation — first deep-audit segment (`quality-audit.md`, QA-1 file set)
+1. QA-2 enemy movement/combat states — next deep-audit segment (`quality-audit.md` queue)
 2. F-4 hit feedback pass — queued behind the audit program
 
 F-2 (archer whiff-flip) stays parked until a dedicated archer look.

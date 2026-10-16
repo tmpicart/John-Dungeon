@@ -45,3 +45,4 @@ Migration complete: frameworks R-01..R-33 landed; current lead and task order: `
 - 2026-10-15 | docs | README recast as a feature comparison of original vs remaster; reflect claim scoped to magic missiles.
 - 2026-10-15 | docs | Quality-audit program chartered: 170-file pass in segments QA-0..QA-X (quality-audit.md); history context-only; F-12 absorbed.
 - 2026-10-15 | qa | QA-0 repo-wide conventions sweep closed: 170/170 appendix-verified, baseline strong (no H findings), 15 findings triaged to segment checklists; gdlint unchanged (44).
+- 2026-10-15 | qa | QA-1 nav-foundation audit closed: nav_probe region→map sync flake fixed (mesh-readiness poll); baker doc drift + F-12 comment site resolved; no behavior change.

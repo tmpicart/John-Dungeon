@@ -72,6 +72,7 @@ Unwalkable ≠ solid: carve nav without collision (water/pits) by adding the lay
 - Probe homing locks sit downrange past the assert stop: a lock on the flight line gets overshot and lerp_angle's wrap turns the return into an orbit.
 - Headless engine runs on this machine: `Start-Process -FilePath <engine> -ArgumentList ... -Wait -PassThru` to capture exit codes and redirected output.
 - `NavigationPolygon.agent_radius` erodes the baked surface — enemy discs run 5.88–7.14 px, inside `AGENT_RADIUS := 7.0` with 2 px slack in 16-px doorways.
+- Region-to-map registration lands on a later sync frame than the region node's creation — queries before it see an empty map; probes poll `map_get_closest_point` (≤ 2 px at a known on-mesh point, frame-capped) instead of fixed frame waits.
 - `NavigationAgent2D.radius` is avoidance-only and does not affect pathfinding.
 
 ## Tests

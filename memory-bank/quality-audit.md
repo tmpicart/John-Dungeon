@@ -33,7 +33,7 @@ Implement the chosen plan on the user's go. Intent: functionality remains unchan
 ## Segments — queue (risk-ordered; uniform depth)
 | ID | Scope | Status |
 |---|---|---|
-| QA-1 | Nav foundation: `nav_baker.gd` + nav/level_nav/scene probes | pending |
+| QA-1 | Nav foundation: `nav_baker.gd` + nav/level_nav/scene probes | closed 2026-10-15 |
 | QA-2 | Enemy movement/combat states + chase probe family | pending |
 | QA-3 | Projectiles & reflect (magic_missile, volley_report, player_combat) + missile_probe | pending |
 | QA-4 | Necromancer & summon loop (retreat/standoff, ledger) + retreat/room_spawn probes | pending |
@@ -87,12 +87,20 @@ Closing gate — the Lookback: (1) re-run the QA-0 sweep for drift introduced by
 - Named keeper concepts: runtime NavBaker (prop-exclusion radius 12), `require_line_of_sight = false` necromancer, RVO crowd wiring, nav/missile probes.
 - Missile-gate failure chain (audit lenses for QA-3): zero-clearance cell-boundary paths · `local_to_map` boundary flooring · overhang polys poking into walkable cells · pure-pursuit orbit when acceptance window < turn radius (advance by projection) · waypoint anchoring near corner cells.
 
+## QA-1 — closed 2026-10-15
+Audit + fixes landed: nav_probe mesh-readiness poll closes the region→map sync flake (fact → techContext); `_bake_region` doc drift and the F-12 comment site rewritten; duplicate-layer warning, assumption/contract comments, `BLOCKER_MASK` → `NavBaker.EXCLUSION_MASK`. No behavior change; gates green (gdlint · nav_probe ×3 · level_nav · scene · smoke 66). All 8 findings resolved en route (a).
+- [M] tests/nav_probe.gd:113 — flaky fixed-frame settle: the route query can precede region-to-map registration (sync lands on a later frame than the region node's creation; level_nav_probe.gd:124-134 documents the same race and polls `map_get_closest_point` until the mesh answers — nav_probe waits a fixed 5+5 frames). Observed: baseline run 1 returned an empty route; identical geometry passed on rerun (diag: 29 polygons, endpoint mesh gaps 0.0 px). Routes: (a) port the readiness poll before the path stage (b) retry loop around the path assertion only. Decision: (a)
+- Standing note for QA-5: level_nav_probe pins ~30 hardcoded `test_room.tscn` coordinates (spawn, mouths, lane sweeps) — room edits must re-run the probe.
+- Structural probe dedupe → X-6; main_scene await guard → X-7 (§Cross-cutting).
+
 ## Cross-cutting findings (parked → resolved in QA-X)
 - X-1 [M] D-9a gap — enemy_idle.gd:31 reads the `"Player"` group (the plan names chase/pounce/retreat only); its cached ref also never re-resolves after a player free. Routes: (a) extend D-9a scope, migrate in batch (b) migrate now in QA-0. Decision: (a) — D-9a row updated in devPlan
 - X-2 [M] D-9c scope — `"Enemies"` also tags 6 combatant roots (the_sorceress + 5 enemy .tscn roots); chase/missile/retreat/room_spawn probes consume the tag. Routes: (a) extend the D-9c strip + update probes (b) sanction combatant-root tags, strip only projectile/boss-script sites. Decision: (b) — D-9c row updated in devPlan
 - X-3 [L] D-9c confirm — `"health"` tag (test_room.tscn:149 HeartBar) has no consumer; main_scene wires the node path directly. Routes: (a) strip with D-9c (b) keep. Decision: (a)
 - X-4 [L] z-ladder (0 floor / 3 entities / 4 projectiles / 10 overhead) consistent repo-wide but uncoded. Routes: (a) codify in systemPatterns at QA-X (b) leave tribal. Decision: (a)
 - X-5 [M] create_timer awaits in state scripts (25 sites; explicit guards in 7 files) — per-segment exit-safety verification is a standing checklist item. Routes: (a) fold into each segment's checklist (QA-2/3/6/7/9) (b) dedicated pass at QA-X. Decision: (a)
+- X-6 [L] probe harness duplication — `_check`/`_tee` helpers in 8 probe scripts; the nav walker harness (`_walk_the_route`/`_walk_route`, stall gates, `WALKER_*` consts) duplicated across nav_probe/level_nav_probe. QA-1 decision (2026-10-15): park to QA-T — one consolidation design for the whole 16-script family beats a 2-of-8 local fix; a new shared file would also grow the closed set (appendix updates then). Routes: (a) shared probe base/util at QA-T (b) keep probes self-contained, codify the pattern. Decision: parked to QA-T (QA-1, 2026-10-15); consolidation shape decided at QA-T
+- X-7 [L] ui/main_scene.gd:39-42 — `_bake_nav()` awaits 2 physics frames unguarded; scene teardown inside the window logs a freed-instance resume error (X-5 family, outside the 25 state-script sites). Found during QA-1; file is QA-8's. Routes: (a) `is_inside_tree` guard after the awaits (fix at QA-8) (b) accept — the main-scene chain is persistent. Decision: —
 
 ## Per-file assignment — must always sum to 170/170 (Lookback re-verifies)
 
