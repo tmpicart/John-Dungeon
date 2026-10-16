@@ -71,6 +71,7 @@ static func bake(scope: Node) -> TileMapLayer:
 		if blocker != null:
 			blockers.append(blocker)
 
+	# Uniform square atoms assumed: .x is the cell size on both axes.
 	var nav_layer := _find_or_create_nav_layer(scope, floor_layer.tile_set.tile_size.x)
 	var transient_outlines: Array[PackedVector2Array] = []
 	var body_bounds: Array[Rect2] = []
@@ -100,10 +101,9 @@ static func bake(scope: Node) -> TileMapLayer:
 
 
 ## Builds and bakes the merged region: the used-rect bound as the traversable
-## outline, the padded obstruction outlines (tile polygons, cell fallbacks and
-## static bodies, with padding suppressed inside door gaps) plus the door
-## bodies' real-footprint outlines. Clearance
-## is already authored into the outlines, so the bake itself runs with
+## outline, the padded obstruction outlines (tile polygons, cell fallbacks,
+## static bodies) plus the door bodies' real-footprint outlines. Clearance is
+## already authored into the outlines, so the bake itself runs with
 ## agent_radius 0. Outline points are emitted in global space and the region
 ## keeps an identity transform, so polygon space equals world space regardless
 ## of the tile layers' own transforms.
@@ -258,8 +258,9 @@ static func _collect_obstruction_outlines(
 
 ## World-space authored collision polygons of every blocker layer painting
 ## the cell; TileData polygons are layer-local points relative to the tile
-## center. Walkability-only paint (no physics polygons) yields nothing, as
-## before.
+## center. Blockers read physics layer 0 — the single physics layer every
+## shipped tileset carries. Walkability-only paint (no physics polygons)
+## yields nothing, as before.
 static func _cell_tile_polygons(
 		cell: Vector2i,
 		blockers: Array[TileMapLayer]) -> Array[PackedVector2Array]:
@@ -315,7 +316,8 @@ static func _rect_outline(rect: Rect2) -> PackedVector2Array:
 ## left, bottom-left, bottom-right, top-right — negative shoelace area). The
 ## server's own offset step rewound inputs when agent_radius did the
 ## clearance; the raw subtraction at agent_radius 0 does not, and mixed
-## windings self-intersect the result and kill the convex partition.
+## windings self-intersect the result and kill the convex partition. Reverses
+## in place and returns the same array — callers must own their outline.
 static func _normalize_winding(outline: PackedVector2Array) -> PackedVector2Array:
 	var area := 0.0
 	for i in outline.size():
@@ -397,8 +399,10 @@ static func _ray_intersect(
 
 
 ## Local-space convex outline for the blocker shape types: circles and
-## capsules become 16-gon approximations (the capsule's bounding ellipse),
-## area-less shapes (segments, world boundaries) are skipped.
+## capsules become 16-gon approximations (the capsule's bounding ellipse,
+## which under-covers the stadium flanks by up to ~2 px — inside the
+## AGENT_RADIUS slack), area-less shapes (segments, world boundaries) are
+## skipped.
 static func _shape_outline(shape: Shape2D) -> PackedVector2Array:
 	var circle := shape as CircleShape2D
 	if circle != null:
@@ -486,8 +490,8 @@ static func _build_nav_tile_set(cell_size: int) -> TileSet:
 	return tile_set
 
 
-## All TileMapLayer descendants by name, descending through legacy TileMap
-## wrappers (R-40 debt) that hold the layers one level deeper.
+## All TileMapLayer descendants by name, descending through container nodes
+## that hold the layers one level deeper.
 static func _collect_tile_layers(scope: Node) -> Dictionary:
 	var layers := {}
 	var stack: Array[Node] = [scope]
@@ -495,6 +499,9 @@ static func _collect_tile_layers(scope: Node) -> Dictionary:
 		var node: Node = stack.pop_back()
 		for child in node.get_children():
 			if child is TileMapLayer:
+				if layers.has(child.name):
+					push_warning("NavBaker: duplicate layer name '%s'; the last one wins"
+							% child.name)
 				layers[child.name] = child
 			else:
 				stack.append(child)

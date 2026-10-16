@@ -41,7 +41,7 @@ const MAP_WINDOW := Rect2i(-6, -2, 21, 16)
 const GAP_DETAIL_COLUMNS: Array[int] = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7]
 ## Physics masks: Environment blockers (walls, props, chests, NPC foot
 ## bodies), default characters.
-const BLOCKER_MASK := 1 << 2
+const BLOCKER_MASK := NavBaker.EXCLUSION_MASK
 const CHARACTER_MASK := 1
 ## Cause-map approximation: a body whose collision reaches within this radius
 ## of a cell center is reported as the cell's obstruction cause; the bake

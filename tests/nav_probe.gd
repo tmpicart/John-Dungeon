@@ -18,6 +18,10 @@ const GOAL_CELL := Vector2i(7, 3)
 ## 64 cells minus 6 wall, 1 obstacle, 1 prop footprint.
 const EXPECTED_COVERAGE := 56
 const FRAMES_TO_SETTLE := 5
+## Region-to-map registration lands on a later sync frame than the region
+## node's creation; queries before it see an empty map (level_nav_probe
+## guards the same race). Cap for the mesh-readiness poll below.
+const REGION_TIMEOUT_FRAMES := 240
 ## Walker stage: an archer-like follower (the inscribed disc of its capsule)
 ## driven with the states' steering — get_next_path_position() every physics
 ## frame at NavBaker.WAYPOINT_REACH_DISTANCE — through physical blocker bodies.
@@ -26,9 +30,9 @@ const WALKER_SPEED := 42.0
 const WALKER_TIME_BUDGET := 12.0
 const WALKER_STALL_SECONDS := 1.0
 const WALKER_ARRIVAL_DISTANCE := 12.0
-## Physics layer of the walker-stage blocker bodies (Environment), the
-## Environment bit of NavBaker's exclusion mask.
-const BLOCKER_MASK := 1 << 2
+## Physics layer of the walker-stage blocker bodies: the Environment bit of
+## NavBaker's exclusion mask.
+const BLOCKER_MASK := NavBaker.EXCLUSION_MASK
 
 var _failures := 0
 var _completed := false
@@ -102,6 +106,23 @@ func _run() -> void:
 		_check(poly != null and poly.agent_radius == 0.0,
 				"polygon bakes at radius 0 (clearance authored per outline)")
 
+	# Region-to-map registration lands on a later sync frame than the region
+	# node's creation; queries before it return an empty map (level_nav_probe
+	# guards the same race). Poll until the mesh answers at the start cell
+	# instead of trusting a fixed frame count.
+	var map: RID = get_viewport().get_world_2d().navigation_map
+	var start: Vector2 = _floor_layer.map_to_local(START_CELL)
+	var mesh_ready := false
+	for i in REGION_TIMEOUT_FRAMES:
+		var closest := NavigationServer2D.map_get_closest_point(map, start)
+		if closest.distance_to(start) <= 2.0:
+			mesh_ready = true
+			break
+		await get_tree().physics_frame
+	_check(mesh_ready, "merged mesh live at the start cell")
+	if not mesh_ready:
+		return
+
 	# NavigationAgent2D extends Node, not Node2D: it paths from its parent's
 	# transform, so the start position lives on a holder node.
 	var agent_holder := Node2D.new()
@@ -140,7 +161,6 @@ func _run() -> void:
 	# at prop radius + agent clearance (10px). A cell-claim bake would push
 	# the boundary to the cell edge plus clearance (>= 15px).
 	var prop_center: Vector2 = _floor_layer.map_to_local(PROP_CELL)
-	var map: RID = get_viewport().get_world_2d().navigation_map
 	var closest_point: Vector2 = NavigationServer2D.map_get_closest_point(map, prop_center)
 	var clearance: float = closest_point.distance_to(prop_center)
 	_check(clearance >= 9.0 and clearance <= 11.5,
