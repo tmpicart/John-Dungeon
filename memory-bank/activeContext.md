@@ -6,19 +6,23 @@
 Development phase — charter: `projectbrief.md` §Current Phase; task order: `devPlan.md`.
 
 ## Just Landed
-- QA-1 nav foundation closed (2026-10-15): audit + fixes — nav_probe sync-race flake fixed (mesh-readiness poll), baker doc drift + F-12 site resolved, no behavior change; X-6/X-7 parked
+- QA-2 enemy states closed (2026-10-15): audit + fixes — pounce tick countdown vs freed-instance resume, missing-anim guard + attack handover, red slime explosion sfx wired, chase enter guards, hurtbox damage contract; slime_contact probe hardened; contact-damage stall traced → QA-10
 
 ## Next Up
-1. QA-2 enemy movement/combat states — next deep-audit segment (`quality-audit.md` queue)
-2. F-4 hit feedback pass — queued behind the audit program
-
-F-2 (archer whiff-flip) stays parked until a dedicated archer look.
+1. QA-2 close-out commits — message drafted, awaiting user approval; playtest first: red slime explosion sound + a pounce suicide (sound plays, no debugger spam); reload saved scenes before editor saves (slime_red.tscn changed)
+2. QA-10 micro-fix (recommended next): contact_hitbox re-arm on empty overlap read + probe rerun
+3. QA-3 projectiles & reflect — next audit segment
 
 ## Pointers
-- Quality-audit checklist & segments: `memory-bank/quality-audit.md`
 - Conventions & architecture: `systemPatterns.md`
 - Engine facts, tests, gates: `techContext.md`
-- Original-game baseline: `techContext.md` §Repository (pck beside the repo)
+- Quality-audit program (closed registers, queue): `memory-bank/quality-audit.md`
 - Open decisions register: `devPlan.md` §Open Decisions
 - Work log & history: `progress.md` (pre-2026-09-30 lines in `archive/`)
+
+## Notes
+- QA-1 + QA-2 closed 2026-10-15; F-2 stays parked until a dedicated archer look
+- F-overlap policy: QA segments stay no-behavior-change; feel work lives on the F- rows (F-4/F-5/F-6/F-7)
+- Commit discipline: messages drafted only after task DONE confirmed; never push unless told
+
 

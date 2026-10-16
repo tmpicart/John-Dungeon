@@ -34,7 +34,7 @@ Implement the chosen plan on the user's go. Intent: functionality remains unchan
 | ID | Scope | Status |
 |---|---|---|
 | QA-1 | Nav foundation: `nav_baker.gd` + nav/level_nav/scene probes | closed 2026-10-15 |
-| QA-2 | Enemy movement/combat states + chase probe family | pending |
+| QA-2 | Enemy movement/combat states + chase probe family | closed 2026-10-15 |
 | QA-3 | Projectiles & reflect (magic_missile, volley_report, player_combat) + missile_probe | pending |
 | QA-4 | Necromancer & summon loop (retreat/standoff, ledger) + retreat/room_spawn probes | pending |
 | QA-5 | Doors, z-bands, level scenes | pending |
@@ -42,6 +42,7 @@ Implement the chosen plan on the user's go. Intent: functionality remains unchan
 | QA-7 | Boss — Sorceress states | pending |
 | QA-8 | Systems (dialogue, shop, interaction, loot, state_core, global) + UI | pending |
 | QA-9 | Pickups, interactables, NPCs, props | pending |
+| QA-10 | Contact-damage re-drive stall: `contact_hitbox.gd` empty-read at expiry (traced 2026-10-15 via slime_contact) | pending — re-arm-on-empty fix + probe rerun |
 | QA-T | Test-suite consolidation: all 16 test scripts (~4,700 lines) — keep/retire/dedupe | pending |
 | QA-X | Cross-cutting consolidation + conventions codified | pending |
 
@@ -92,6 +93,13 @@ Audit + fixes landed: nav_probe mesh-readiness poll closes the region→map sync
 - [M] tests/nav_probe.gd:113 — flaky fixed-frame settle: the route query can precede region-to-map registration (sync lands on a later frame than the region node's creation; level_nav_probe.gd:124-134 documents the same race and polls `map_get_closest_point` until the mesh answers — nav_probe waits a fixed 5+5 frames). Observed: baseline run 1 returned an empty route; identical geometry passed on rerun (diag: 29 polygons, endpoint mesh gaps 0.0 px). Routes: (a) port the readiness poll before the path stage (b) retry loop around the path assertion only. Decision: (a)
 - Standing note for QA-5: level_nav_probe pins ~30 hardcoded `test_room.tscn` coordinates (spawn, mouths, lane sweeps) — room edits must re-run the probe.
 - Structural probe dedupe → X-6; main_scene await guard → X-7 (§Cross-cutting).
+
+## QA-2 — closed 2026-10-15
+Audit (24 files) + fixes landed; all 11 findings route (a), no behavior change. Gates: gdlint (8 files) · chase family · smoke 66 · missile 39 · 4/4 scene boots green; slime_contact hardened (below). Two implementation-time notes: F1's planned post-await guard cannot run in the fatal case — the engine drops the resume into the freed instance (the X-7 error class itself) — so the pounce timer became a physics_update countdown (nothing outlives the node); F7 retracted on ground truth — kill()'s queue_free (:266) is already outside both has_animation guards, no corpse path exists. L-fix summary: explode() re-entry guard + docstring drift fixed (slime_red explodes on every death), chase enter null-player fallback to idle (velocity_computed connected before the bail-out — exit() disconnects unconditionally) + time_since_last_path reset, hurtbox damage contract mirrored from player_hurtbox (own `damage` → owner fallback), idle comment sweep + normalized wander vector, D-9c exemption for enemy_attack.gd:148 recorded on its devPlan row.
+- [M] enemy_pounce.gd:28 — the 3.0 s timer await was orphaned on every contact explosion (state node freed mid-await; X-7-class error). Fixed structurally: physics-tick countdown in the state.
+- [M] base_enemy.gd:370 + enemy_attack.gd:51 — a variant wired to EnemyAttack without an "Attack" animation hung its machine silently on the first swing (config-only E-1..E-8 exposure). Fixed: has_animation guard (push_error + false) in run_action_animation; the attack state hands back to chase on every non-routed false (from-state guard no-ops routed interrupts).
+- [M] slime_red.tscn:262 — explode_sfx shipped streamless: pounce-explosion deaths were silent. Fixed: explosion randomizer assigned, 6.0 dB (F-4 tunes if it feels off).
+- Standing note for QA-10: the hardened slime_contact check traced a real pre-existing stall — contact_hitbox.gd's expiry tick can read an empty overlap set (broadphase pair dropped during the player's i-frame body-layer toggles, player_combat.gd:103-117) and return without re-arming → silent until re-entry. Self-heals in live play (a moving player re-fires area_entered). Probe now polls the re-tick with a 2 s cap and traces the failing state (hp/is_hit/overlaps/rearm) instead of racing a fixed deadline one retry interval wide.
 
 ## Cross-cutting findings (parked → resolved in QA-X)
 - X-1 [M] D-9a gap — enemy_idle.gd:31 reads the `"Player"` group (the plan names chase/pounce/retreat only); its cached ref also never re-resolves after a player free. Routes: (a) extend D-9a scope, migrate in batch (b) migrate now in QA-0. Decision: (a) — D-9a row updated in devPlan

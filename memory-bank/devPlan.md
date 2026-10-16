@@ -41,7 +41,7 @@ D-9 convention (Godot docs + Game Programming Patterns "Service Locator"): `Glob
 | D-10 | — | Enemy brain split threshold | Single shared state tree until an enemy-count/perf threshold justifies splitting chase/attack off |
 | D-9a | M | `Global.player` migration | Boss states (cast/curse/melee/slide_into/slide_away/stars/beam), enemy states (chase/pounce/retreat/idle — QA-0 X-1), projectiles (magic_missile/curse_glyph) |
 | D-9b | S | `interactable.gd` layer check | `is_in_group("Player")` → collision-layer check |
-| D-9c | M | Vestigial tag strip | `"Enemies"` strip = 4 projectile scene tags + 5 boss-spawn `add_to_group` sites (no production reader); combatant-root tags stay (beam + probes consume — QA-0 X-2); `"health"` confirmed consumerless — strip; keep smoke stubs' `"Player"` |
+| D-9c | M | Vestigial tag strip | `"Enemies"` strip = 4 projectile scene tags + 5 boss-spawn `add_to_group` sites (no production reader); combatant-root tags stay (beam + probes consume — QA-0 X-2); exempt `enemy_attack.gd:148` volley tag (chase_probe arrow stages consume; redesign is QA-T's); `"health"` confirmed consumerless — strip; keep smoke stubs' `"Player"` |
 ## Content tracks — S- systems · E- enemies · W- descent slices · B- bosses
 Variants = new/modified attack + additional effects (S-2 when unparked) + shading — not config-only tints. Build order: S-1 → E-1 → S-4 → S-3 → S-5 → S-6 → S-7 (S-2 parked).
 | ID | Task | Notes |
