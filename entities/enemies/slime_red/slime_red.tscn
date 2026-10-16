@@ -260,6 +260,8 @@ stream = SubResource("AudioStreamRandomizer_q2ith")
 volume_db = 20.0
 
 [node name="explode_sfx" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamRandomizer_q2ith")
+volume_db = 6.0
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true

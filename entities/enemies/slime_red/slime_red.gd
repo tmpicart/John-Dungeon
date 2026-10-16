@@ -1,7 +1,7 @@
 extends "res://entities/enemies/base_enemy.gd"
 
-## The red slime dies to any damage or parry and explodes when its pounce
-## connects with anything.
+## The red slime dies to any damage or parry and explodes on every death —
+## pounce contact or damage; the Death track arms the explosion hitbox.
 
 @export var pounce_state: EnemyPounce
 
@@ -13,6 +13,9 @@ func _ready() -> void:
 		push_error("%s: pounce_state is not assigned" % get_path())
 
 func explode():
+	if is_dead:
+		return
+
 	is_dead = true
 	velocity = Vector2.ZERO
 	$explode_sfx.play()

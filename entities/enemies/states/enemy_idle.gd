@@ -16,7 +16,8 @@ func _ready() -> void:
 	enemy = actor
 
 func randomized_stroll():
-	# Set a new wander duration
+	# A stroll is a short commitment — re-rolling every 1–4 s reads as idle
+	# rather than patrol — with one roll in three holding still.
 	duration = randf_range(1, 4)
 
 	var still = randi_range(1, 3)
@@ -24,15 +25,13 @@ func randomized_stroll():
 	if still == 1:
 		wander_direction = Vector2()
 	else:
-		wander_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1))
+		wander_direction = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
 
 func enter() -> void:
-	# On enter, get the player and set the wander direction
 	player = get_tree().get_first_node_in_group("Player")
 	randomized_stroll()
 
 func physics_update(delta: float) -> void:
-	# Handle wander direction and update it based on the elapsed time (duration)
 	if duration > 0:
 		duration -= delta
 	else:

@@ -15,6 +15,10 @@ signal pounce_contact
 
 var direction := Vector2.ZERO
 var enemy: BaseEnemy
+## Ticked in physics_update instead of a scene-tree timer await: the state
+## node can be freed mid-pounce (the red slime's contact explosion), and a
+## pending tree timer would resume into the freed instance.
+var _pounce_clock := 0.0
 
 func _ready() -> void:
 	enemy = actor
@@ -24,18 +28,17 @@ func enter() -> void:
 	if player:
 		direction = (player.global_position - enemy.global_position).normalized()
 
+	_pounce_clock = 0.0
 	enemy.attacking = true
-	await get_tree().create_timer(pounce_duration).timeout
 
-	enemy.attacking = false
-
+func physics_update(delta: float) -> void:
 	if enemy.is_dead:
 		return
 
-	transition_to(chase_state)
-
-func physics_update(_delta: float) -> void:
-	if enemy.is_dead:
+	_pounce_clock += delta
+	if _pounce_clock >= pounce_duration:
+		enemy.attacking = false
+		transition_to(chase_state)
 		return
 
 	enemy.velocity = direction * pounce_speed

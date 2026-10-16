@@ -333,11 +333,16 @@ func run_action_animation(anim_name: String, sfx: AudioStreamPlayer2D = null) ->
 	if attacking or is_dead or is_hit or stunned:
 		return false
 
+	# A config-only variant wired to this flow without the animation must
+	# fail loudly here, not strand _wait_for_animation forever.
+	if not animation_player.has_animation(anim_name):
+		push_error("%s: no '%s' animation" % [get_path(), anim_name])
+		return false
+
 	attacking = true
 	var flow = _flow_id
 
-	if animation_player.has_animation(anim_name):
-		animation_player.play(anim_name)
+	animation_player.play(anim_name)
 	if sfx:
 		sfx.play()
 

@@ -50,8 +50,10 @@ func enter() -> void:
 	_face_target()
 	if await enemy.attack():
 		_spawn_projectiles()
-		transition_to(chase_state)
-	# Interrupted flows (hit/stun/death) route themselves to their states.
+	# Interrupted flows (hit/stun/death) route themselves to their states;
+	# a false without a route (the missing-animation guard) still hands
+	# back to chase instead of stranding here.
+	transition_to(chase_state)
 
 
 ## The chase handover consults this before entering the attack flow (same

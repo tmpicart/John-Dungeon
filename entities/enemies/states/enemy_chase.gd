@@ -153,6 +153,12 @@ func _ready() -> void:
 
 func enter() -> void:
 	player = Global.player as CharacterBody2D
+	# Connected before the null-player handover below: exit() disconnects
+	# unconditionally, so the bail-out has to route through it.
+	navigation_agent.velocity_computed.connect(_on_velocity_computed)
+	if player == null:
+		transition_to(idle_state)
+		return
 	navigation_agent.path_desired_distance = NavBaker.PATH_SWITCH_DISTANCE
 	navigation_agent.target_position = player.global_position
 	_pathed_target = player.global_position
@@ -166,9 +172,7 @@ func enter() -> void:
 	_gate_clock = 0.0
 	_retreat_trigger_for = 0.0
 	_shuffle_clock = 0.0
-	# RVO steering runs only while a movement state owns the agent; the
-	# signal keeps emitting while avoidance is enabled, so leave it clean.
-	navigation_agent.velocity_computed.connect(_on_velocity_computed)
+	time_since_last_path = 0.0
 
 func exit() -> void:
 	enemy.facing_pinned = false
