@@ -51,7 +51,21 @@ func _run() -> void:
 	_check(_player.combat.hp == 2, "body contact lands one damage tick")
 	await _wait_seconds(0.5)
 	_check(_player.combat.hp == 2, "grind holds inside the rearm cooldown")
-	await _wait_seconds(0.5)
+	# The re-tick lands on the contact hitbox's first retry cadence after
+	# the player's i-frames clear, and is_hit is animation-time driven, so
+	# its expiry drifts a few ticks between runs — poll for the tick
+	# instead of racing a fixed deadline one retry interval wide.
+	var clock := 0.0
+	while _player.combat.hp == 2 and clock < 2.0:
+		await get_tree().physics_frame
+		clock += get_physics_process_delta_time()
+	if _player.combat.hp != 1:
+		# Fail trace: distinguish "retry loop still fighting i-frames"
+		# from the permanent-silent stall (no overlap read at expiry).
+		var contact := _slime.get_node("Hitbox") as EnemyContactHitbox
+		_tee("  trace hp=%d is_hit=%s overlaps=%d rearm=%.3f" % [
+			_player.combat.hp, _player.combat.is_hit,
+			contact.get_overlapping_areas().size(), contact._rearm_clock])
 	_check(_player.combat.hp == 1, "persistent grind re-ticks after the cooldown")
 	_slime.queue_free()
 	_player.queue_free()
